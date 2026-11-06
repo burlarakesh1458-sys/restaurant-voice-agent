@@ -1,0 +1,24 @@
+[project]
+name = "trattoria-voice-agent"
+version = "0.1.0"
+description = "Voice AI agent for a fictional restaurant: ASR -> LLM tool calling -> TTS, with an allergen guardrail and a scenario eval suite"
+requires-python = ">=3.11"
+authors = [{ name = "Rakesh Burla", email = "burlarakesh1458@gmail.com" }]
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"scenarios/suite.py" = ["E501"]
+"app/agent.py" = ["E501"]
+"tests/*" = ["E501"]

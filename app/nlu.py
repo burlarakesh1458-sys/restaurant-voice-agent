@@ -139,7 +139,8 @@ def find_time(text: str) -> str | None:
     words = "|".join(k for k in NUM_WORDS if " " not in k and NUM_WORDS[k] <= 12 and NUM_WORDS[k] >= 1)
     m = None
     for prep in ("at|around|by|about", "for"):
-        m = re.search(rf"\b(?:{prep})\s+({words}|\d{{1,2}})(?:\s+(thirty|fifteen|forty five|forty-five|o'clock|oclock))?"
+        m = re.search(rf"\b(?:{prep})\s+({words}|\d{{1,2}})"
+                      rf"(?:\s+(thirty|fifteen|forty five|forty-five|o'clock|oclock))?"
                       rf"(?:\s*(a\.?m\.?|p\.?m\.?))?(?!\s*(?:people|persons|guests|of us|pax))\b", t)
         if m and prep == "for" and not (m.group(2) or m.group(3)):
             m = None  # "for two" is a party size unless it carries a time marker ("for 8 pm")

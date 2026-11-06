@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trattoria Verde · voice agent</title>
+<style>
+  :root { --bg:#f6f4ef; --ink:#1f2a1f; --muted:#6b7266; --green:#2f6b3a; --card:#fff; --warn:#a0522d; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--ink); }
+  header { padding:18px 24px; border-bottom:1px solid #e3dfd4; display:flex; align-items:center; gap:12px; }
+  header h1 { font-size:18px; margin:0; }
+  header .pill { font-size:12px; color:var(--muted); border:1px solid #d9d4c6; border-radius:99px; padding:2px 10px; }
+  main { display:grid; grid-template-columns: 1.4fr 1fr; gap:18px; padding:18px 24px; max-width:1200px; margin:auto; }
+  section { background:var(--card); border:1px solid #e6e1d6; border-radius:12px; padding:14px; min-height:200px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 10px; }
+  #log { height:52vh; overflow:auto; display:flex; flex-direction:column; gap:8px; }
+  .msg { padding:8px 11px; border-radius:10px; max-width:88%; }
+  .user { align-self:flex-end; background:#e7efe5; }
+  .agent { align-self:flex-start; background:#f2efe7; }
+  .meta { font-size:12px; color:var(--muted); }
+  .controls { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+  button { border:0; border-radius:9px; padding:10px 14px; font-weight:600; cursor:pointer; background:var(--green); color:#fff; }
+  button.secondary { background:#e3dfd4; color:var(--ink); }
+  button.rec { background:#b3261e; }
+  input[type=text] { flex:1; min-width:200px; border:1px solid #d9d4c6; border-radius:9px; padding:10px; font:inherit; }
+  #tools { height:30vh; overflow:auto; font:12px/1.4 ui-monospace, Menlo, monospace; white-space:pre-wrap; }
+  #metrics td { padding:2px 8px 2px 0; font-size:13px; } #metrics td:last-child { text-align:right; font-variant-numeric:tabular-nums; }
+  .warn { color:var(--warn); }
+  @media (max-width:860px){ main{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Trattoria Verde · phone agent</h1>
+  <span class="pill" id="status">disconnected</span>
+  <span class="pill">Hold the mic button to talk · talking over the agent interrupts it</span>
+</header>
+<main>
+  <section>
+    <h2>Call</h2>
+    <div id="log"></div>
+    <div class="controls">
+      <button id="call">Start call</button>
+      <button id="mic" class="secondary" disabled>Hold to talk</button>
+      <button id="stop" class="secondary" disabled>Interrupt</button>
+    </div>
+    <div class="controls">
+      <input id="text" type="text" placeholder="…or type: Table for four at 7:30 tonight, also does the pesto contain nuts?" disabled>
+      <button id="send" class="secondary" disabled>Send</button>
+    </div>
+  </section>
+  <section>
+    <h2>Last turn latency (ms)</h2>
+    <table id="metrics"></table>
+    <h2 style="margin-top:14px">Tool calls</h2>
+    <div id="tools"></div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let ws, ctx, playHead = 0, sources = [], micStream, micNode, recording = false;
+
+function log(text, who, meta) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  if (meta) { const m = document.createElement('div'); m.className = 'meta'; m.textContent = meta; d.appendChild(m); }
+  $('log').appendChild(d); $('log').scrollTop = 1e9;
+}
+function stopPlayback() { sources.forEach(s => { try { s.stop(); } catch (e) {} }); sources = []; playHead = 0; }
+function playPcm(b64, sr) {
+  const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const pcm = new Int16Array(bytes.buffer);
+  const buf = ctx.createBuffer(1, pcm.length, sr);
+  const ch = buf.getChannelData(0);
+  for (let i = 0; i < pcm.length; i++) ch[i] = pcm[i] / 32768;
+  const src = ctx.createBufferSource(); src.buffer = buf; src.connect(ctx.destination);
+  playHead = Math.max(playHead, ctx.currentTime + 0.03);
+  src.start(playHead); playHead += buf.duration; sources.push(src);
+  src.onended = () => { sources = sources.filter(s => s !== src); };
+}
+function send(o) { ws && ws.readyState === 1 && ws.send(JSON.stringify(o)); }
+
+$('call').onclick = async () => {
+  ctx = new AudioContext();
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.onopen = () => send({ type: 'start', caller_phone: '+919811111111' });
+  ws.onclose = () => { $('status').textContent = 'disconnected'; };
+  ws.onmessage = (ev) => {
+    const e = JSON.parse(ev.data);
+    if (e.type === 'started') { $('status').textContent = 'on call · ' + e.llm; ['mic','stop','text','send'].forEach(i => $(i).disabled = false); }
+    else if (e.type === 'transcript') log(e.text || '(nothing heard)', 'user', `ASR confidence ${e.confidence ?? '–'}`);
+    else if (e.type === 'tool_call') $('tools').textContent = `${e.name}(${JSON.stringify(e.args)})\n→ ${JSON.stringify(e.result)}\n\n` + $('tools').textContent;
+    else if (e.type === 'reply') log(e.text, 'agent', (e.guard_rewrote ? 'allergen guard rewrote this reply · ' : '') + (e.handoff ? 'handed off to staff' : ''));
+    else if (e.type === 'audio') playPcm(e.data, e.sample_rate);
+    else if (e.type === 'metrics') {
+      const m = e.metrics, rows = [['ASR', m.asr_ms], ['LLM (all rounds)', m.llm_ms], ['LLM calls', m.llm_calls], ['tools', m.tool_ms],
+        ['TTS first sentence', m.tts_first_ms], ['first audio (any)', m.ttfa_any_ms], ['first answer audio', m.ttfa_answer_ms]];
+      $('metrics').innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${v == null ? '–' : Math.round(v)}</td></tr>`).join('');
+    }
+    else if (e.type === 'turn_done' && e.status === 'interrupted') log('(interrupted)', 'agent');
+    else if (e.type === 'error') log('error: ' + e.message, 'agent warn');
+  };
+};
+async function startMic() {
+  stopPlayback(); send({ type: 'interrupt' });   // barge-in
+  micStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true } });
+  const src = ctx.createMediaStreamSource(micStream);
+  micNode = ctx.createScriptProcessor(4096, 1, 1);
+  const ratio = ctx.sampleRate / 16000;
+  micNode.onaudioprocess = (ev) => {
+    if (!recording) return;
+    const x = ev.inputBuffer.getChannelData(0), n = Math.floor(x.length / ratio), out = new Int16Array(n);
+    for (let i = 0; i < n; i++) out[i] = Math.max(-1, Math.min(1, x[Math.floor(i * ratio)])) * 32767;
+    send({ type: 'audio', data: btoa(String.fromCharCode(...new Uint8Array(out.buffer))), sample_rate: 16000 });
+  };
+  src.connect(micNode); micNode.connect(ctx.destination);
+  recording = true; $('mic').classList.add('rec'); $('mic').textContent = 'Listening…';
+}
+function stopMic() {
+  if (!recording) return;
+  recording = false; $('mic').classList.remove('rec'); $('mic').textContent = 'Hold to talk';
+  micNode && micNode.disconnect(); micStream && micStream.getTracks().forEach(t => t.stop());
+  send({ type: 'end_utterance' });
+}
+$('mic').onmousedown = startMic; $('mic').onmouseup = stopMic; $('mic').onmouseleave = stopMic;
+$('mic').ontouchstart = (e) => { e.preventDefault(); startMic(); }; $('mic').ontouchend = stopMic;
+$('stop').onclick = () => { stopPlayback(); send({ type: 'interrupt' }); };
+$('send').onclick = () => { const t = $('text').value.trim(); if (!t) return; stopPlayback(); log(t, 'user', 'typed'); send({ type: 'text', text: t }); $('text').value = ''; };
+$('text').onkeydown = (e) => { if (e.key === 'Enter') $('send').click(); };
+</script>
+</body>
+</html>

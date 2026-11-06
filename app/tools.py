@@ -107,13 +107,18 @@ class FaultPlan:
 # ----------------------------------------------------------------------------------------------
 # Tool schemas (OpenAI function-calling format). Descriptions are kept short to save tokens.
 # ----------------------------------------------------------------------------------------------
+CATEGORY_WORDS = {"dessert": "dolci", "desserts": "dolci", "sweet": "dolci", "sweets": "dolci",
+                  "starter": "antipasti", "starters": "antipasti", "appetizer": "antipasti", "appetizers": "antipasti",
+                  "main": "secondi", "mains": "secondi", "soup": "zuppe", "soups": "zuppe", "salad": "insalate",
+                  "salads": "insalate", "bread": "pane"}
+DATE_DESC = "the caller's words, e.g. 'tonight', 'tomorrow', 'saturday'; don't convert relative dates yourself"
 TOOL_SCHEMAS = [
     {"type": "function", "function": {
         "name": "check_availability",
         "description": "Check if a table is free. Returns alternatives if not.",
         "parameters": {"type": "object", "properties": {
-            "date": {"type": "string", "description": "YYYY-MM-DD or words like 'tonight', 'saturday'"},
-            "time": {"type": "string", "description": "HH:MM 24h or spoken, e.g. '7:30 pm'"},
+            "date": {"type": "string", "description": DATE_DESC},
+            "time": {"type": "string", "description": "as said, e.g. '7:30 pm'"},
             "party_size": {"type": "integer"}},
             "required": ["date", "time", "party_size"]}}},
     {"type": "function", "function": {
@@ -132,13 +137,13 @@ TOOL_SCHEMAS = [
     {"type": "function", "function": {
         "name": "get_opening_hours",
         "description": "Opening hours for a date (or the whole week if no date).",
-        "parameters": {"type": "object", "properties": {"date": {"type": "string"}}}}},
+        "parameters": {"type": "object", "properties": {"date": {"type": "string", "description": DATE_DESC}}}}},
     {"type": "function", "function": {
         "name": "create_reservation",
         "description": "Book a table. Needs the caller's name. Idempotent.",
         "parameters": {"type": "object", "properties": {
             "name": {"type": "string"}, "party_size": {"type": "integer"},
-            "date": {"type": "string"}, "time": {"type": "string"},
+            "date": {"type": "string", "description": DATE_DESC}, "time": {"type": "string"},
             "notes": {"type": "string", "description": "e.g. allergy, high chair"}},
             "required": ["name", "party_size", "date", "time"]}}},
     {"type": "function", "function": {
@@ -146,7 +151,8 @@ TOOL_SCHEMAS = [
         "description": "Change date/time/party size of an existing booking.",
         "parameters": {"type": "object", "properties": {
             "code": {"type": "string", "description": "confirmation code, e.g. TV-AB12"},
-            "name": {"type": "string"}, "new_date": {"type": "string"}, "new_time": {"type": "string"},
+            "name": {"type": "string"}, "new_date": {"type": "string", "description": DATE_DESC},
+            "new_time": {"type": "string"},
             "new_party_size": {"type": "integer"}}}}},
     {"type": "function", "function": {
         "name": "cancel_reservation",
@@ -197,7 +203,8 @@ class RestaurantTools:
             return {"error": "time_in_past", "date": d, "time": t,
                     "message": "That time has already passed or is too soon."}, None
         if slot_dt > now + timedelta(days=BOOKING_HORIZON_DAYS):
-            return {"error": "too_far_ahead", "message": f"We take bookings up to {BOOKING_HORIZON_DAYS} days ahead."}, None
+            return {"error": "too_far_ahead",
+                    "message": f"We take bookings up to {BOOKING_HORIZON_DAYS} days ahead."}, None
         return None, (d, t, p)
 
     def _in_service(self, d: str, t: str) -> bool:
@@ -268,7 +275,7 @@ class RestaurantTools:
         q = (query or category or "").strip().lower()
         stop = {"menu", "dishes", "dish", "food", "options", "something", "anything", "what", "the", "a",
                 "do", "you", "have", "any", "your", "on", "items", "item"}
-        terms = [w for w in nlu.tokens(q) if w not in stop and len(w) > 2]
+        terms = [CATEGORY_WORDS.get(w, w) for w in nlu.tokens(q) if w not in stop and len(w) > 2]
         out = []
         for r in rows:
             hay = " ".join([r["name"], r["aliases"] or "", r["category"], r["description"], r["ingredients"]]).lower()
@@ -601,7 +608,7 @@ class ToolExecutor:
             except TypeError as e:  # bad argument names from the LLM: not retryable
                 return ToolCallRecord(name, clean, {"error": "bad_arguments", "message": str(e)[:200]},
                                       (time.perf_counter() - t0) * 1000, attempts)
-            except (asyncio.TimeoutError, ToolError, sqlite3.OperationalError) as e:
+            except (TimeoutError, ToolError, sqlite3.OperationalError) as e:
                 last_err = type(e).__name__ if isinstance(e, asyncio.TimeoutError) else str(e)
                 if attempt < self.retries:
                     await asyncio.sleep(self.backoff_s * (2 ** attempt))

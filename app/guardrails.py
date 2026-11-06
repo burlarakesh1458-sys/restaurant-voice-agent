@@ -30,9 +30,9 @@ _A = "|".join(sorted((re.escape(k) for k in ALLERGEN_WORDS), key=len, reverse=Tr
 POSITIVE = re.compile(r"\b(contain|contains|containing|has|have|made with|includes?|including|uses?|with|"
                       r"topped|cooked in|traces|may)\b", re.I)
 NEGATIVE = re.compile(
-    r"\b(no|zero|without|none of)\s+(?:\w+\s+){0,2}?(?:%(A)s)\b|(?:%(A)s)[- ]free\b|\bfree (?:of|from)\b|"
+    r"\b(no|zero|without|none of)\s+(?:\w+\s+){0,2}?(?:" + _A + r")\b|(?:" + _A + r")[- ]free\b|\bfree (?:of|from)\b|"
     r"\b(?:doesn't|does not|don't|do not|isn't|is not|aren't|are not|won't|never|didn't)\s+(?:\w+\s+){0,2}?"
-    r"(?:contain|have|include|use|made)|(?<!not )(?<!n't )\bsafe (?:for|to)\b|\bnothing\b" % {"A": _A}, re.I)
+    r"(?:contain|have|include|use|made)|(?<!not )(?<!n't )\bsafe (?:for|to)\b|\bnothing\b", re.I)
 UNSAFE = re.compile(r"\b(not|isn't|aren't|wouldn't|is not)\s+(?:be\s+)?safe\b|\bunsafe\b", re.I)
 _ALLERGEN_RE = re.compile(
     r"\b(" + "|".join(sorted((re.escape(k) for k in ALLERGEN_WORDS if k not in {"cheese", "milk", "fish"}),
@@ -111,7 +111,7 @@ class AllergenGuard:
             if not mentions or not targets:
                 continue
             prev_end, polarity = 0, None
-            for st, en, word in mentions:
+            for _st, en, word in mentions:
                 seg = clause[prev_end:min(len(clause), en + 6)]
                 if UNSAFE.search(clause[prev_end:]) and not NEGATIVE.search(seg.replace("not safe", "")):
                     pol = "contains"

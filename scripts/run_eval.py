@@ -29,7 +29,7 @@ from app import nlu  # noqa: E402
 from app.clock import FixedClock  # noqa: E402
 from app.factory import build_agent  # noqa: E402
 from app.guardrails import AllergenGuard  # noqa: E402
-from app.llm import FaultyLLM, LLMError  # noqa: E402
+from app.llm import FaultyLLM, _retry_after  # noqa: E402
 from app.pipeline import VoiceSession  # noqa: E402
 from app.speech import FakeTTS, GroqWhisperASR, PiperTTS, wav_to_pcm16  # noqa: E402
 from app.tools import FaultPlan, canonical_allergens  # noqa: E402
@@ -238,10 +238,12 @@ def aggregate(results: list[dict], meta: dict) -> dict:
     per_call = [x for t in live_turns for x in t["result"]["llm_ms"]]
     lat = {
         "turns_measured": len(live_turns),
-        "llm_turn_ms": {"p50": pct([t["llm_ms"] for t in live_turns], .5), "p95": pct([t["llm_ms"] for t in live_turns], .95)},
+        "llm_turn_ms": {"p50": pct([t["llm_ms"] for t in live_turns], .5),
+                        "p95": pct([t["llm_ms"] for t in live_turns], .95)},
         "llm_call_ms": {"p50": pct(per_call, .5), "p95": pct(per_call, .95), "n": len(per_call)},
         "llm_calls_per_turn_mean": round(sum(t["llm_calls"] for t in live_turns) / max(1, len(live_turns)), 2),
-        "tool_ms": {"p50": pct([t["tool_ms"] for t in live_turns], .5), "p95": pct([t["tool_ms"] for t in live_turns], .95)},
+        "tool_ms": {"p50": pct([t["tool_ms"] for t in live_turns], .5),
+                    "p95": pct([t["tool_ms"] for t in live_turns], .95)},
         "tts_first_sentence_ms": {"p50": pct([t["tts_first_ms"] for t in live_turns], .5),
                                   "p95": pct([t["tts_first_ms"] for t in live_turns], .95)},
         "ttfa_any_ms": {"p50": pct([t["ttfa_any_ms"] for t in live_turns], .5),
@@ -293,9 +295,11 @@ async def main() -> None:
     ap.add_argument("--tag", default="")
     ap.add_argument("--fresh", action="store_true", help="ignore previous partial results")
     ap.add_argument("--sleep", type=float, default=0.0, help="pause between scenarios (rate limits)")
+    ap.add_argument("--max-wait-s", type=float, default=6 * 3600, help="total time to wait out daily token quotas")
     args = ap.parse_args()
     model = os.environ.get("LLM_MODELS", "openai/gpt-oss-20b") if args.llm == "groq" else args.llm
-    tag = args.tag or f"{args.llm if args.llm != 'groq' else model.split('/')[-1]}{'_hybrid' if args.hybrid else ''}_{args.mode}{args.audio_suffix}"
+    base = args.llm if args.llm != "groq" else model.split("/")[-1]
+    tag = args.tag or f"{base}{'_hybrid' if args.hybrid else ''}_{args.mode}{args.audio_suffix}"
     out = ROOT / "reports" / f"results_{tag}.json"
     scen = [s for s in SCENARIOS if not args.only or s["id"] in args.only.split(",")]
     if args.mode == "audio":
@@ -312,13 +316,23 @@ async def main() -> None:
             "clock": NOW, "host": "2 vCPU / 7 GB RAM sandbox, no GPU"}
     results = [done[s["id"]] for s in scen if s["id"] in done]
     t_start = time.time()
+    waited = 0.0
     for s in scen:
         if s["id"] in done:
             continue
-        try:
-            r = await run_scenario(s, args, tts, asr)
-        except QuotaExhausted as e:
-            print(f"!! LLM quota exhausted at {s['id']}: {str(e)[:200]}  -> partial results saved; rerun to resume")
+        r = None
+        while r is None:
+            try:
+                r = await run_scenario(s, args, tts, asr)
+            except QuotaExhausted as e:
+                wait = (_retry_after(None, str(e)) or 300) + 15
+                waited += wait
+                if waited > args.max_wait_s:
+                    print(f"!! LLM quota exhausted at {s['id']}; gave up after waiting {waited:.0f}s. Rerun to resume.")
+                    break
+                print(f"   quota window full at {s['id']}; waiting {wait:.0f}s (scenario will be re-run)", flush=True)
+                await asyncio.sleep(wait)
+        if r is None:
             break
         results.append(r)
         print(f"{s['id']:4s} {'PASS' if r['passed'] else 'FAIL'}  {s['title'][:60]}"

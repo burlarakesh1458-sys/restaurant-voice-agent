@@ -226,7 +226,8 @@ _YES = re.compile(r"^\s*(yes|yeah|yep|yup|correct|that's right|that is right|rig
                   r"confirm|perfect|ok|okay|sounds good|book it)\b", re.I)
 _NO = re.compile(r"^\s*(no|nope|not quite|wrong|that's wrong)\b", re.I)
 _HUMAN = re.compile(r"\b(human|real person|a person|manager|staff member|someone|speak to|talk to|transfer)\b", re.I)
-_COMPLAINT = re.compile(r"\b(complain|complaint|terrible|awful|food poisoning|sick after|rude|refund|disgusting)\b", re.I)
+_COMPLAINT = re.compile(
+    r"\b(complain|complaint|terrible|awful|food poisoning|sick after|rude|refund|disgusting)\b", re.I)
 _CANCEL = re.compile(r"\bcancel\b", re.I)
 _MODIFY = re.compile(r"\b(change|move|modify|push|reschedule|instead|make it)\b", re.I)
 _BOOK = re.compile(r"\b(book|reserve|reservation|table for|a table|booking)\b", re.I)

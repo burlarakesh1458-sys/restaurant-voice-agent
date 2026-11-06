@@ -221,7 +221,7 @@ SCENARIOS = [
       {"no_new_reservation": True, "handoff": False, "max_tool_calls": 0,
        "reply_any": [{"turn": 0, "patterns": [r"didn't catch|say (it|that) again|repeat"]}]}),
     S("R06", "barge_in", "Caller interrupts the menu read-out to book instead",
-      [{"user": "What vegetarian dishes do you have?", "barge_in_after_ms": 1500},
+      [{"user": "What vegetarian dishes do you have?", "barge_in_after_ms": 1200},
        "Sorry to cut in, just book a table for two on Sunday at 7 pm, name Kavya Iyer."],
       {"reservations": [{"name": "Kavya Iyer", "party_size": 2, "date": SUN, "time": "19:00"}], "handoff": False,
        "interrupted_turns": [0],

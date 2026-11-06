@@ -88,7 +88,7 @@ class GroqWhisperASR:
                 segs = j.get("segments") or []
                 if segs:
                     w = [max(1e-3, s.get("end", 0) - s.get("start", 0)) for s in segs]
-                    lp = sum(s.get("avg_logprob", 0) * wi for s, wi in zip(segs, w)) / sum(w)
+                    lp = sum(s.get("avg_logprob", 0) * wi for s, wi in zip(segs, w, strict=False)) / sum(w)
                     nsp = max(s.get("no_speech_prob", 0) for s in segs)
                 else:
                     lp, nsp = (0.0 if j.get("text") else -5.0), 0.0
@@ -156,7 +156,7 @@ class FakeTTS:
 
     async def synth(self, text: str) -> tuple[bytes, int]:
         await asyncio.sleep(self.delay_s)
-        n = int(self.sr * 0.06 * max(1, len(text.split())))  # ~60 ms per word of silence
+        n = int(self.sr * 0.3 * max(1, len(text.split())))  # ~300 ms per word, roughly speech rate
         return b"\x00\x00" * n, self.sr
 
     async def warmup(self) -> None:

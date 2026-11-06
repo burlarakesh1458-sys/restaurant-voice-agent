@@ -138,7 +138,7 @@
      {
       "turn": 0,
       "patterns": [
-       "(contain|has|made with|includes?)\\b.{0,40}nut"
+       "(contains?|has|made with|includes?)\\b.{0,40}nut"
       ]
      },
      {
@@ -482,7 +482,7 @@
      {
       "turn": 0,
       "patterns": [
-       "(contain|has|have|made with|includes?|yes)\\b.{0,40}(nut|walnut)|walnut"
+       "(contains?|has|have|made with|includes?|yes)\\b.{0,40}(nut|walnut)|walnut"
       ]
      }
     ],
@@ -1454,7 +1454,7 @@
    "turns": [
     {
      "user": "What vegetarian dishes do you have?",
-     "barge_in_after": 1
+     "barge_in_after_ms": 1200
     },
     {
      "user": "Sorry to cut in, just book a table for two on Sunday at 7 pm, name Kavya Iyer."
