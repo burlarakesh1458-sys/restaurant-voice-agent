@@ -17,12 +17,13 @@ def _f(v, pct=False):
         return "–"
     if pct:
         return f"{v * 100:.1f}%"
-    return f"{v:,.0f}" if isinstance(v, (int, float)) and abs(v) >= 10 else str(v)
+    return f"{v:,.0f}" if isinstance(v, int | float) and abs(v) >= 10 else str(v)
 
 
 def run_table(files: list[Path]) -> str:
     rows = ["| run | LLM | scenarios | task completion | tool-call accuracy (right tool + args) | unexpected writes | "
-            "allergen violations heard (guard audit / scenario regex) | drafts rewritten by guard | handoff accuracy (P / R) |",
+            "allergen violations heard (guard audit / scenario regex) | drafts rewritten by guard | "
+            "handoff accuracy (P / R) |",
             "|---|---|---|---|---|---|---|---|---|"]
     for f in files:
         s = json.loads(f.read_text())["summary"]
@@ -52,10 +53,11 @@ def latency_table(files: list[Path]) -> str:
         s = json.loads(f.read_text())["summary"]
         lat = s["latency"]
 
-        def pp(k):
+        def pp(k, lat=lat):
             v = lat.get(k)
             return "–" if not v or v.get("p50") is None else f"{_f(v['p50'])} / {_f(v['p95'])}"
-        rows.append(f"| `{f.stem.removeprefix('results_')}` | {lat['turns_measured']} | {lat['llm_calls_per_turn_mean']} "
+        name = f.stem.removeprefix("results_")
+        rows.append(f"| `{name}` | {lat['turns_measured']} | {lat['llm_calls_per_turn_mean']} "
                     f"| {pp('llm_call_ms')} | {pp('llm_turn_ms')} | {pp('tool_ms')} | {pp('tts_first_sentence_ms')} | "
                     f"{pp('asr_ms')} | {pp('ttfa_any_ms')} | {pp('ttfa_answer_ms')} |")
     return "\n".join(rows)

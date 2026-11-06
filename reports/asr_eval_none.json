@@ -15,8 +15,8 @@
    "below_confirm_threshold_0.70": 0,
    "below_reprompt_threshold_0.40": 0,
    "latency_ms": {
-    "p50": 248.2,
-    "p95": 371.3
+    "p50": 244.1,
+    "p95": 376.1
    }
   },
   "noisy": {
@@ -29,8 +29,8 @@
    "below_confirm_threshold_0.70": 1,
    "below_reprompt_threshold_0.40": 0,
    "latency_ms": {
-    "p50": 251.6,
-    "p95": 347.1
+    "p50": 249.0,
+    "p95": 281.8
    }
   }
  },
@@ -44,8 +44,8 @@
    "words": 18,
    "confidence": 0.855,
    "no_speech_prob": 0,
-   "ms": 515.0,
-   "ms_incl_rate_limit_waits": 515.0,
+   "ms": 497.0,
+   "ms_incl_rate_limit_waits": 497.0,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -63,8 +63,8 @@
    "words": 18,
    "confidence": 0.868,
    "no_speech_prob": 0,
-   "ms": 220.6,
-   "ms_incl_rate_limit_waits": 220.6,
+   "ms": 248.1,
+   "ms_incl_rate_limit_waits": 248.1,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -82,8 +82,8 @@
    "words": 18,
    "confidence": 0.817,
    "no_speech_prob": 0,
-   "ms": 279.0,
-   "ms_incl_rate_limit_waits": 279.0,
+   "ms": 311.0,
+   "ms_incl_rate_limit_waits": 311.0,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -101,8 +101,8 @@
    "words": 18,
    "confidence": 0.833,
    "no_speech_prob": 0,
-   "ms": 302.0,
-   "ms_incl_rate_limit_waits": 302.0,
+   "ms": 289.3,
+   "ms_incl_rate_limit_waits": 289.3,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -120,8 +120,8 @@
    "words": 3,
    "confidence": 0.783,
    "no_speech_prob": 0,
-   "ms": 230.9,
-   "ms_incl_rate_limit_waits": 230.9,
+   "ms": 240.0,
+   "ms_incl_rate_limit_waits": 240.0,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 1.8
@@ -135,8 +135,8 @@
    "words": 3,
    "confidence": 0.685,
    "no_speech_prob": 0,
-   "ms": 431.0,
-   "ms_incl_rate_limit_waits": 431.0,
+   "ms": 230.6,
+   "ms_incl_rate_limit_waits": 230.6,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 1.8
@@ -150,8 +150,8 @@
    "words": 11,
    "confidence": 0.778,
    "no_speech_prob": 0,
-   "ms": 277.6,
-   "ms_incl_rate_limit_waits": 277.6,
+   "ms": 273.6,
+   "ms_incl_rate_limit_waits": 273.6,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -169,8 +169,8 @@
    "words": 11,
    "confidence": 0.72,
    "no_speech_prob": 0,
-   "ms": 266.5,
-   "ms_incl_rate_limit_waits": 266.5,
+   "ms": 277.7,
+   "ms_incl_rate_limit_waits": 277.7,
    "attempts": 1,
    "slots_ok": {
     "party": false,
@@ -188,8 +188,8 @@
    "words": 2,
    "confidence": 0.765,
    "no_speech_prob": 0,
-   "ms": 236.6,
-   "ms_incl_rate_limit_waits": 236.6,
+   "ms": 242.8,
+   "ms_incl_rate_limit_waits": 242.8,
    "attempts": 1,
    "slots_ok": {
     "time": true
@@ -205,8 +205,8 @@
    "words": 2,
    "confidence": 0.775,
    "no_speech_prob": 0,
-   "ms": 210.4,
-   "ms_incl_rate_limit_waits": 210.4,
+   "ms": 198.1,
+   "ms_incl_rate_limit_waits": 198.1,
    "attempts": 1,
    "slots_ok": {
     "time": true
@@ -222,8 +222,8 @@
    "words": 13,
    "confidence": 0.828,
    "no_speech_prob": 0,
-   "ms": 238.1,
-   "ms_incl_rate_limit_waits": 238.1,
+   "ms": 266.7,
+   "ms_incl_rate_limit_waits": 266.7,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 4.36
@@ -237,8 +237,8 @@
    "words": 13,
    "confidence": 0.711,
    "no_speech_prob": 0,
-   "ms": 217.2,
-   "ms_incl_rate_limit_waits": 217.2,
+   "ms": 277.8,
+   "ms_incl_rate_limit_waits": 277.8,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 4.36
@@ -252,8 +252,8 @@
    "words": 13,
    "confidence": 0.867,
    "no_speech_prob": 0,
-   "ms": 241.9,
-   "ms_incl_rate_limit_waits": 241.9,
+   "ms": 242.0,
+   "ms_incl_rate_limit_waits": 242.0,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 4.07
@@ -267,8 +267,8 @@
    "words": 13,
    "confidence": 0.969,
    "no_speech_prob": 0,
-   "ms": 255.2,
-   "ms_incl_rate_limit_waits": 255.2,
+   "ms": 275.6,
+   "ms_incl_rate_limit_waits": 275.6,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 4.07
@@ -282,8 +282,8 @@
    "words": 7,
    "confidence": 0.738,
    "no_speech_prob": 0,
-   "ms": 265.7,
-   "ms_incl_rate_limit_waits": 265.7,
+   "ms": 245.3,
+   "ms_incl_rate_limit_waits": 245.3,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.04
@@ -297,8 +297,8 @@
    "words": 7,
    "confidence": 0.967,
    "no_speech_prob": 0,
-   "ms": 240.3,
-   "ms_incl_rate_limit_waits": 240.3,
+   "ms": 240.9,
+   "ms_incl_rate_limit_waits": 240.9,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.04
@@ -312,8 +312,8 @@
    "words": 8,
    "confidence": 0.833,
    "no_speech_prob": 0,
-   "ms": 247.9,
-   "ms_incl_rate_limit_waits": 247.9,
+   "ms": 252.5,
+   "ms_incl_rate_limit_waits": 252.5,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.4
@@ -327,8 +327,8 @@
    "words": 8,
    "confidence": 0.797,
    "no_speech_prob": 0,
-   "ms": 219.4,
-   "ms_incl_rate_limit_waits": 219.4,
+   "ms": 246.1,
+   "ms_incl_rate_limit_waits": 246.1,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.4
@@ -342,8 +342,8 @@
    "words": 7,
    "confidence": 0.798,
    "no_speech_prob": 0,
-   "ms": 230.8,
-   "ms_incl_rate_limit_waits": 230.8,
+   "ms": 196.5,
+   "ms_incl_rate_limit_waits": 196.5,
    "attempts": 1,
    "slots_ok": {
     "date": true
@@ -359,8 +359,8 @@
    "words": 7,
    "confidence": 0.953,
    "no_speech_prob": 0,
-   "ms": 236.1,
-   "ms_incl_rate_limit_waits": 236.1,
+   "ms": 223.0,
+   "ms_incl_rate_limit_waits": 223.0,
    "attempts": 1,
    "slots_ok": {
     "date": true
@@ -376,8 +376,8 @@
    "words": 10,
    "confidence": 0.896,
    "no_speech_prob": 0,
-   "ms": 246.0,
-   "ms_incl_rate_limit_waits": 246.0,
+   "ms": 286.1,
+   "ms_incl_rate_limit_waits": 286.1,
    "attempts": 1,
    "slots_ok": {
     "code": true
@@ -393,8 +393,8 @@
    "words": 10,
    "confidence": 0.808,
    "no_speech_prob": 0,
-   "ms": 264.6,
-   "ms_incl_rate_limit_waits": 264.6,
+   "ms": 246.6,
+   "ms_incl_rate_limit_waits": 246.6,
    "attempts": 1,
    "slots_ok": {
     "code": true
@@ -410,8 +410,8 @@
    "words": 9,
    "confidence": 0.83,
    "no_speech_prob": 0,
-   "ms": 248.6,
-   "ms_incl_rate_limit_waits": 248.6,
+   "ms": 239.7,
+   "ms_incl_rate_limit_waits": 239.7,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.28
@@ -425,8 +425,8 @@
    "words": 9,
    "confidence": 0.908,
    "no_speech_prob": 0,
-   "ms": 286.4,
-   "ms_incl_rate_limit_waits": 286.4,
+   "ms": 264.2,
+   "ms_incl_rate_limit_waits": 264.2,
    "attempts": 1,
    "slots_ok": {},
    "audio_s": 3.28
@@ -440,8 +440,8 @@
    "words": 18,
    "confidence": 0.845,
    "no_speech_prob": 0,
-   "ms": 294.0,
-   "ms_incl_rate_limit_waits": 294.0,
+   "ms": 226.9,
+   "ms_incl_rate_limit_waits": 226.9,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -459,8 +459,8 @@
    "words": 18,
    "confidence": 0.797,
    "no_speech_prob": 0,
-   "ms": 263.0,
-   "ms_incl_rate_limit_waits": 263.0,
+   "ms": 277.7,
+   "ms_incl_rate_limit_waits": 277.7,
    "attempts": 1,
    "slots_ok": {
     "party": true,
@@ -478,8 +478,8 @@
    "words": 18,
    "confidence": 0.707,
    "no_speech_prob": 0,
-   "ms": 287.5,
-   "ms_incl_rate_limit_waits": 287.5,
+   "ms": 219.4,
+   "ms_incl_rate_limit_waits": 219.4,
    "attempts": 1,
    "slots_ok": {
     "date": true
@@ -495,8 +495,8 @@
    "words": 18,
    "confidence": 0.799,
    "no_speech_prob": 0,
-   "ms": 248.0,
-   "ms_incl_rate_limit_waits": 248.0,
+   "ms": 249.9,
+   "ms_incl_rate_limit_waits": 249.9,
    "attempts": 1,
    "slots_ok": {
     "date": true

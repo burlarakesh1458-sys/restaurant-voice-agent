@@ -28,6 +28,10 @@ def dish_aliases(tools: RestaurantTools) -> dict[str, str]:
 def make_llm(kind: str, tools: RestaurantTools, clock: Clock, cache_path: str | None = None):
     if kind == "rules":
         return RuleBasedLLM(dish_aliases(tools), clock.now)
+    if kind.startswith("ollama:"):  # local model on CPU via Ollama's OpenAI-compatible API
+        url = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/v1")
+        return FallbackLLM([GroqLLM(kind.split(":", 1)[1], api_key="ollama", base_url=url, timeout_s=600,
+                                    cache=ResponseCache(cache_path) if cache_path else None, max_retries=3)])
     cache = ResponseCache(cache_path) if cache_path else None
     models = [m.strip() for m in os.environ.get("LLM_MODELS", "openai/gpt-oss-20b").split(",") if m.strip()]
     if kind != "groq":

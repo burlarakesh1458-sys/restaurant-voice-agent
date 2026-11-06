@@ -1,0 +1,200 @@
+{
+ "summary": {
+  "meta": {
+   "llm": "openai/gpt-oss-120b,openai/gpt-oss-20b,qwen/qwen3.8-27b",
+   "hybrid": false,
+   "mode": "text",
+   "audio_variant": null,
+   "tts": "piper:en_US-lessac-low",
+   "asr": null,
+   "clock": "2026-11-13T16:00:00+05:30",
+   "host": "2 vCPU / 7 GB RAM sandbox, no GPU",
+   "finished_at": "2026-11-06 14:47:57"
+  },
+  "scenarios": 1,
+  "task_completion_rate": 1.0,
+  "passed": 1,
+  "by_category": {
+   "booking": "1/1"
+  },
+  "tool_calling": {
+   "expected_calls": 1,
+   "correct": 1,
+   "wrong_args": 0,
+   "missing": 0,
+   "accuracy": 1.0,
+   "unjustified_mutating_calls": 0
+  },
+  "allergen_guardrail": {
+   "final_reply_violations": 0,
+   "scenario_regex_violations": 0,
+   "llm_draft_violations_caught_and_rewritten": 0
+  },
+  "handoff": {
+   "accuracy": 1.0,
+   "tp": 0,
+   "fp": 0,
+   "fn": 0,
+   "tn": 1,
+   "precision": null,
+   "recall": null
+  },
+  "latency": {
+   "turns_measured": 1,
+   "llm_turn_ms": {
+    "p50": 1668.8,
+    "p95": 1668.8
+   },
+   "llm_call_ms": {
+    "p50": 556.3,
+    "p95": 746.2,
+    "n": 3
+   },
+   "llm_calls_per_turn_mean": 3.0,
+   "tool_ms": {
+    "p50": 2.9,
+    "p95": 2.9
+   },
+   "tts_first_sentence_ms": {
+    "p50": 201.2,
+    "p95": 201.2
+   },
+   "ttfa_any_ms": {
+    "p50": 599.5,
+    "p95": 599.5
+   },
+   "ttfa_answer_ms": {
+    "p50": 2118.0,
+    "p95": 2118.0
+   }
+  },
+  "llm_calls_by_model": {
+   "openai/gpt-oss-120b": 1,
+   "openai/gpt-oss-20b": 1,
+   "qwen/qwen3.8-27b": 1
+  },
+  "failures": []
+ },
+ "results": [
+  {
+   "id": "B01",
+   "category": "booking",
+   "title": "Happy path, everything in one sentence",
+   "passed": true,
+   "failed_checks": [],
+   "tool_score": {
+    "expected": 1,
+    "correct": 1,
+    "wrong_args": 0,
+    "missing": 0,
+    "details": [
+     {
+      "expected": {
+       "tool": "create_reservation",
+       "args": {
+        "name": "Arjun Patel",
+        "party_size": 2,
+        "date": "2026-11-14",
+        "time": "13:00"
+       }
+      },
+      "status": "correct"
+     }
+    ]
+   },
+   "unjustified_mutating_calls": [],
+   "handoff_expected": false,
+   "handoff_done": false,
+   "allergen_final_violations": [],
+   "allergen_draft_violations": [],
+   "allergen_regex_violations": [],
+   "turns": [
+    {
+     "user": "Hi, I'd like to book a table for two tomorrow at 1 PM. My name is Arjun Patel.",
+     "turn": 1,
+     "transcript": "Hi, I'd like to book a table for two tomorrow at 1 PM. My name is Arjun Patel.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 1668.7636389999625,
+     "llm_calls": 3,
+     "llm_cached_calls": 0,
+     "tool_ms": 2.910740999936934,
+     "tts_first_ms": 201.16999599997598,
+     "tts_total_ms": 1117.2191200000725,
+     "ttfa_any_ms": 599.4826649999823,
+     "ttfa_answer_ms": 2117.9968399999325,
+     "total_ms": 3031.9797610000023,
+     "audio_ms_sent": 10480.0,
+     "interrupted": false,
+     "spoken_text": "You're all set, Arjun. That's a table for two under Arjun Patel on Saturday 14 November at 1 PM, confirmation code TV-JQU7.",
+     "result": {
+      "text": "You're all set, Arjun. That's a table for two under Arjun Patel on Saturday 14 November at 1 PM, confirmation code TV-JQU7.",
+      "draft": "You're all set, Arjun. That's a table for two under Arjun Patel on Saturday 14 November at 1 PM, confirmation code TV-JQU7.",
+      "tool_calls": [
+       {
+        "name": "check_availability",
+        "args": {
+         "date": "tomorrow",
+         "party_size": 2,
+         "time": "1 PM"
+        },
+        "result": {
+         "available": true,
+         "date": "2026-11-14",
+         "time": "13:00",
+         "party_size": 2,
+         "spoken": "Saturday 14 November at 1 PM for 2"
+        },
+        "ms": 1.2,
+        "attempts": 1
+       },
+       {
+        "name": "create_reservation",
+        "args": {
+         "date": "2026-11-14",
+         "name": "Arjun Patel",
+         "party_size": 2,
+         "time": "1 PM"
+        },
+        "result": {
+         "status": "confirmed",
+         "code": "TV-JQU7",
+         "date": "2026-11-14",
+         "time": "13:00",
+         "party_size": 2,
+         "name": "Arjun Patel",
+         "readback": "a table for 2 under Arjun Patel on Saturday 14 November at 1 PM, confirmation code T V J Q U 7"
+        },
+        "ms": 1.7,
+        "attempts": 1
+       }
+      ],
+      "llm_ms": [
+       556.3167450000037,
+       767.24698299995,
+       345.1999110000088
+      ],
+      "llm_cached": [
+       false,
+       false,
+       false
+      ],
+      "llm_models": [
+       "openai/gpt-oss-120b",
+       "openai/gpt-oss-20b",
+       "qwen/qwen3.8-27b"
+      ],
+      "prompt_tokens": 3139,
+      "completion_tokens": 166,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 1914.0842470000052
+     }
+    }
+   ]
+  }
+ ]
+}

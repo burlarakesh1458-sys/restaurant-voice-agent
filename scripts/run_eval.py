@@ -317,6 +317,7 @@ async def main() -> None:
     args = ap.parse_args()
     model = os.environ.get("LLM_MODELS", "openai/gpt-oss-20b") if args.llm == "groq" else args.llm
     base = args.llm if args.llm != "groq" else ("groqpool" if "," in model else model.split("/")[-1])
+    base = base.replace("ollama:", "").replace(":", "-") + ("-ollama" if args.llm.startswith("ollama:") else "")
     tag = args.tag or f"{base}{'_hybrid' if args.hybrid else ''}_{args.mode}{args.audio_suffix}"
     out = ROOT / "reports" / f"results_{tag}.json"
     scen = [s for s in SCENARIOS if not args.only or s["id"] in args.only.split(",")]

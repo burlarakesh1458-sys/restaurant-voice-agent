@@ -96,7 +96,7 @@ class GroqLLM:
                  timeout_s: float = 30.0, max_retries: int = 6, max_wait_s: float = 90.0,
                  temperature: float = 0.0, max_tokens: int = 700):
         self.model = model
-        self.name = f"groq:{model}"
+        self.name = f"{'ollama' if '11434' in base_url else 'groq'}:{model}"
         self.api_key = api_key or os.environ.get("GROQ_API_KEY", "")
         self.base_url = base_url.rstrip("/")
         self.cache = cache
@@ -106,7 +106,8 @@ class GroqLLM:
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.usage = {"calls": 0, "cached": 0, "prompt_tokens": 0, "completion_tokens": 0, "retries": 0}
-        self._client = httpx.AsyncClient(timeout=timeout_s)
+        local = any(h in self.base_url for h in ("127.0.0.1", "localhost", "ollama:"))
+        self._client = httpx.AsyncClient(timeout=timeout_s, trust_env=not local)  # no proxy for local servers
 
     def _payload(self, messages: list[dict], tools: list[dict] | None, tool_choice: str) -> dict:
         p = {"model": self.model, "messages": messages, "temperature": self.temperature,
