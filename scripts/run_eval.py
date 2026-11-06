@@ -200,7 +200,16 @@ def evaluate(sc, turns, before, after, handoffs, tools, clock) -> dict:
         {a["tool"] for e in exp.get("calls", []) for a in e.get("any_of", [])}
     if want_handoff:
         justified.add("handoff_to_human")
-    unjustified = [c for c in actual_calls if c["name"] in MUTATING and c["name"] not in justified]
+    if exp.get("reservations"):
+        justified.add("create_reservation")
+    if exp.get("cancelled"):
+        justified.add("cancel_reservation")
+    if exp.get("modified"):
+        justified.add("modify_reservation")
+    succeeded = {"confirmed", "cancelled", "modified", "handoff_created"}
+    # a write that actually happened (validation rejections don't count) and that the scenario did not call for
+    unjustified = [c for c in actual_calls if c["name"] in MUTATING and c["name"] not in justified
+                   and c["result"].get("status") in succeeded and not c["result"].get("duplicate")]
     return {
         "id": sc["id"], "category": sc["category"], "title": sc["title"],
         "passed": all(ok for _, ok, _ in checks),
@@ -221,6 +230,15 @@ def pct(xs: list[float], q: float) -> float | None:
     k = (len(xs) - 1) * q
     lo, hi = int(k), min(int(k) + 1, len(xs) - 1)
     return round(xs[lo] + (xs[hi] - xs[lo]) * (k - lo), 1)
+
+
+def _model_counts(results: list[dict]) -> dict:
+    out: dict[str, int] = {}
+    for r in results:
+        for t in r["turns"]:
+            for m in t["result"].get("llm_models", []):
+                out[m] = out.get(m, 0) + 1
+    return out
 
 
 def aggregate(results: list[dict], meta: dict) -> dict:
@@ -279,6 +297,7 @@ def aggregate(results: list[dict], meta: dict) -> dict:
                     "precision": round(tp / (tp + fp), 3) if tp + fp else None,
                     "recall": round(tp / (tp + fn), 3) if tp + fn else None},
         "latency": lat,
+        "llm_calls_by_model": _model_counts(results),
         "failures": [{"id": r["id"], "failed_checks": r["failed_checks"]} for r in results if not r["passed"]],
     }
 
@@ -297,7 +316,7 @@ async def main() -> None:
     ap.add_argument("--max-wait-s", type=float, default=6 * 3600, help="total time to wait out daily token quotas")
     args = ap.parse_args()
     model = os.environ.get("LLM_MODELS", "openai/gpt-oss-20b") if args.llm == "groq" else args.llm
-    base = args.llm if args.llm != "groq" else model.split("/")[-1]
+    base = args.llm if args.llm != "groq" else ("groqpool" if "," in model else model.split("/")[-1])
     tag = args.tag or f"{base}{'_hybrid' if args.hybrid else ''}_{args.mode}{args.audio_suffix}"
     out = ROOT / "reports" / f"results_{tag}.json"
     scen = [s for s in SCENARIOS if not args.only or s["id"] in args.only.split(",")]

@@ -118,6 +118,9 @@ class GroqLLM:
         if "gpt-oss" in self.model:
             p["reasoning_effort"] = "low"
             p["include_reasoning"] = False
+        elif "qwen3" in self.model:
+            p["reasoning_format"] = "hidden"
+            p["reasoning_effort"] = "none"
         return p
 
     async def complete(self, messages: list[dict], tools: list[dict] | None = None,
@@ -154,8 +157,8 @@ class GroqLLM:
             if r.status_code == 429 or r.status_code >= 500:
                 wait = _retry_after(r.headers, body) or min(2 ** attempt, 20)
                 if "tokens per day" in body or "requests per day" in body or wait > self.max_wait_s:
-                    raise LLMError(f"{self.name} daily quota exhausted: {body[:200]}", retryable=False,
-                                   retry_after=wait)
+                    raise LLMError(f"{self.name} daily quota exhausted; Please try again in {wait:.1f}s",
+                                   retryable=False, retry_after=wait)
                 last = LLMError(f"HTTP {r.status_code}", retry_after=wait)
                 self.usage["retries"] += 1
                 await asyncio.sleep(wait + 0.25)
@@ -184,23 +187,30 @@ class GroqLLM:
 
 
 class FallbackLLM:
+    """Try providers in order. A provider that hits its quota cools down for its Retry-After, then rejoins."""
+
     def __init__(self, providers: list):
         self.providers = providers
         self.name = "->".join(p.name for p in providers)
-        self.disabled: set[str] = set()
+        self.cooldown_until: dict[str, float] = {}
 
     async def complete(self, messages, tools=None, tool_choice="auto") -> LLMResponse:
-        err: Exception | None = None
+        err: LLMError | None = None
+        now = time.monotonic()
         for p in self.providers:
-            if p.name in self.disabled:
+            if self.cooldown_until.get(p.name, 0) > now:
                 continue
             try:
                 return await p.complete(messages, tools, tool_choice)
             except LLMError as e:
                 err = e
-                if not e.retryable and "quota" in str(e):
-                    self.disabled.add(p.name)
-        raise err or LLMError("no providers")
+                if "quota" in str(e):
+                    self.cooldown_until[p.name] = time.monotonic() + (e.retry_after or 300)
+        if err is None:  # everyone is cooling down
+            wait = min(self.cooldown_until.values()) - now
+            err = LLMError(f"all providers quota exhausted; Please try again in {max(1.0, wait):.1f}s",
+                           retryable=False, retry_after=wait)
+        raise err
 
 
 class FaultyLLM:
@@ -285,7 +295,7 @@ class RuleBasedLLM:
                     st["name"] = text.strip().rstrip(".")
             elif m["role"] == "tool":
                 try:
-                    r = json.loads(m["content"])
+                    r = m.get("_result") or json.loads(m["content"])
                 except Exception:
                     continue
                 if r.get("status") in ("confirmed",):
@@ -374,7 +384,7 @@ class RuleBasedLLM:
         for m in reversed(messages):
             if m["role"] != "tool":
                 break
-            results.append((m.get("name", ""), json.loads(m["content"])))
+            results.append((m.get("name", ""), m.get("_result") or json.loads(m["content"])))
         results.reverse()
         st = self._state(messages)
         parts: list[str] = []

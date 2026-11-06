@@ -111,60 +111,32 @@ CATEGORY_WORDS = {"dessert": "dolci", "desserts": "dolci", "sweet": "dolci", "sw
                   "starter": "antipasti", "starters": "antipasti", "appetizer": "antipasti", "appetizers": "antipasti",
                   "main": "secondi", "mains": "secondi", "soup": "zuppe", "soups": "zuppe", "salad": "insalate",
                   "salads": "insalate", "bread": "pane"}
-DATE_DESC = "the caller's words, e.g. 'tonight', 'tomorrow', 'saturday'; don't convert relative dates yourself"
+DATE_DESC = "as the caller said it, e.g. 'tonight', 'saturday'"
+
+
+def _fn(name: str, desc: str, props: dict, required: list[str] | None = None) -> dict:
+    params: dict = {"type": "object", "properties": props}
+    if required:
+        params["required"] = required
+    return {"type": "function", "function": {"name": name, "description": desc, "parameters": params}}
+
+
+_S, _I, _B = {"type": "string"}, {"type": "integer"}, {"type": "boolean"}
+_D = {"type": "string", "description": DATE_DESC}
 TOOL_SCHEMAS = [
-    {"type": "function", "function": {
-        "name": "check_availability",
-        "description": "Check if a table is free. Returns alternatives if not.",
-        "parameters": {"type": "object", "properties": {
-            "date": {"type": "string", "description": DATE_DESC},
-            "time": {"type": "string", "description": "as said, e.g. '7:30 pm'"},
-            "party_size": {"type": "integer"}},
-            "required": ["date", "time", "party_size"]}}},
-    {"type": "function", "function": {
-        "name": "search_menu",
-        "description": "Search dishes by keyword/category/diet. Not for allergens.",
-        "parameters": {"type": "object", "properties": {
-            "query": {"type": "string"}, "vegetarian": {"type": "boolean"}, "vegan": {"type": "boolean"},
-            "free_of": {"type": "string", "description": "allergen; only VERIFIED-free dishes returned"},
-            "max_price_inr": {"type": "integer"}}}}},
-    {"type": "function", "function": {
-        "name": "get_allergens",
-        "description": "Verified allergen record for one dish. The ONLY source for allergen answers.",
-        "parameters": {"type": "object", "properties": {
-            "dish": {"type": "string"}, "allergen": {"type": "string", "description": "e.g. nuts, gluten"}},
-            "required": ["dish"]}}},
-    {"type": "function", "function": {
-        "name": "get_opening_hours",
-        "description": "Opening hours for a date (or the whole week if no date).",
-        "parameters": {"type": "object", "properties": {"date": {"type": "string", "description": DATE_DESC}}}}},
-    {"type": "function", "function": {
-        "name": "create_reservation",
-        "description": "Book a table. Needs the caller's name. Idempotent.",
-        "parameters": {"type": "object", "properties": {
-            "name": {"type": "string"}, "party_size": {"type": "integer"},
-            "date": {"type": "string", "description": DATE_DESC}, "time": {"type": "string"},
-            "notes": {"type": "string", "description": "e.g. allergy, high chair"}},
-            "required": ["name", "party_size", "date", "time"]}}},
-    {"type": "function", "function": {
-        "name": "modify_reservation",
-        "description": "Change date/time/party size of an existing booking.",
-        "parameters": {"type": "object", "properties": {
-            "code": {"type": "string", "description": "confirmation code, e.g. TV-AB12"},
-            "name": {"type": "string"}, "new_date": {"type": "string", "description": DATE_DESC},
-            "new_time": {"type": "string"},
-            "new_party_size": {"type": "integer"}}}}},
-    {"type": "function", "function": {
-        "name": "cancel_reservation",
-        "description": "Cancel an existing booking by code (or name if calling from the booking phone).",
-        "parameters": {"type": "object", "properties": {
-            "code": {"type": "string"}, "name": {"type": "string"}}}}},
-    {"type": "function", "function": {
-        "name": "handoff_to_human",
-        "description": "Transfer to staff: caller asks for a person, complaint, party over 8, events, "
-                       "unverifiable allergy needs the caller wants checked, or repeated tool failure.",
-        "parameters": {"type": "object", "properties": {
-            "reason": {"type": "string"}, "summary": {"type": "string"}}, "required": ["reason"]}}},
+    _fn("check_availability", "Is a table free? Returns alternatives if not.",
+        {"date": _D, "time": _S, "party_size": _I}, ["date", "time", "party_size"]),
+    _fn("search_menu", "Find dishes by keyword/diet. free_of returns only VERIFIED allergen-free dishes.",
+        {"query": _S, "vegetarian": _B, "vegan": _B, "free_of": _S, "max_price_inr": _I}),
+    _fn("get_allergens", "Verified allergen record of a dish. Sole source for allergen answers.",
+        {"dish": _S, "allergen": _S}, ["dish"]),
+    _fn("get_opening_hours", "Opening hours for a date, or the week.", {"date": _D}),
+    _fn("create_reservation", "Book a table (idempotent).",
+        {"name": _S, "party_size": _I, "date": _D, "time": _S, "notes": _S}, ["name", "party_size", "date", "time"]),
+    _fn("modify_reservation", "Change an existing booking.",
+        {"code": _S, "name": _S, "new_date": _D, "new_time": _S, "new_party_size": _I}),
+    _fn("cancel_reservation", "Cancel a booking by code, or by name from the booking phone.", {"code": _S, "name": _S}),
+    _fn("handoff_to_human", "Transfer the caller to staff.", {"reason": _S, "summary": _S}, ["reason"]),
 ]
 TOOL_NAMES = [t["function"]["name"] for t in TOOL_SCHEMAS]
 
