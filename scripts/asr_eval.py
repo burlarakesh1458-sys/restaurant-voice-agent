@@ -19,18 +19,29 @@ sys.path.insert(0, str(ROOT))
 
 from app import nlu  # noqa: E402
 from app.clock import FixedClock  # noqa: E402
+from app.pipeline import MENU_PROMPT  # noqa: E402
 from app.speech import GroqWhisperASR, wav_to_pcm16  # noqa: E402
 from scenarios.suite import NOW, SCENARIOS  # noqa: E402
 from scripts.run_eval import pct  # noqa: E402
 
 AUDIO = ROOT / "data" / "audio"
-PROMPT = "Trattoria Verde. Trofie al pesto, risotto, tiramisu, panna cotta, calamari."
+PROMPTS = {
+    "none": None,
+    "short": "Trattoria Verde. Trofie al pesto, risotto, tiramisu, panna cotta, calamari.",
+    "menu": MENU_PROMPT,
+}
+_NUM = {w: str(n) for w, n in nlu.NUM_WORDS.items() if " " not in w and n <= 20}
 
 
 def norm(s: str) -> list[str]:
-    s = s.lower().replace("-", " ")
+    """Lowercase, unify '7.30'/'7:30', '1pm'/'1 PM', spelled codes and number words before scoring."""
+    s = s.lower()
+    s = re.sub(r"\btv[\s-]*([a-z0-9])\s*([a-z0-9])\s*([a-z0-9])\s*([a-z0-9])\b", r"tv\1\2\3\4", s)
+    s = re.sub(r"(\d)[.:](\d\d)", r"\1:\2", s)
+    s = re.sub(r"(\d)\s*([ap])\.?m\.?\b", r"\1 \2m", s)
+    s = s.replace("-", " ")
     s = re.sub(r"[^a-z0-9: ']", " ", s)
-    return s.split()
+    return [_NUM.get(w, w) for w in s.split()]
 
 
 def wer(ref: str, hyp: str) -> tuple[int, int]:
@@ -50,6 +61,12 @@ def slots(text: str, now) -> dict:
 
 
 async def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--prompt", default="menu", choices=list(PROMPTS))
+    ap.add_argument("--pace", type=float, default=3.2, help="seconds between requests")
+    args = ap.parse_args()
+    prompt = PROMPTS[args.prompt]
     asr = GroqWhisperASR()
     now = FixedClock(NOW).now()
     rows = []
@@ -59,12 +76,14 @@ async def main() -> None:
         for i, t in enumerate(s["turns"]):
             for variant in ("", "_noisy"):
                 pcm, sr = wav_to_pcm16((AUDIO / f"{s['id']}_t{i}{variant}.wav").read_bytes())
-                tr = await asr.transcribe(pcm, sr, PROMPT)
+                await asyncio.sleep(args.pace)  # free tier: 20 requests/minute
+                tr = await asr.transcribe(pcm, sr, prompt)
                 e, n = wer(t["user"], tr.text)
                 ref_slots, hyp_slots = slots(t["user"], now), slots(tr.text, now)
                 rows.append({"id": f"{s['id']}_t{i}", "variant": variant.strip("_") or "clean", "ref": t["user"],
                              "hyp": tr.text, "errors": e, "words": n, "confidence": tr.confidence,
                              "no_speech_prob": tr.no_speech_prob, "ms": round(tr.ms, 1),
+                             "ms_incl_rate_limit_waits": round(tr.total_ms, 1), "attempts": tr.attempts,
                              "slots_ok": {k: ref_slots[k] == hyp_slots[k] for k in ref_slots if ref_slots[k]},
                              "audio_s": round(len(pcm) / 2 / sr, 2)})
                 print(f"{rows[-1]['id']:7s} {rows[-1]['variant']:5s} conf={tr.confidence:.2f} {e}/{n}  {tr.text[:80]}",
@@ -82,9 +101,9 @@ async def main() -> None:
             "below_reprompt_threshold_0.40": sum(r["confidence"] < 0.40 for r in rs),
             "latency_ms": {"p50": pct([r["ms"] for r in rs], .5), "p95": pct([r["ms"] for r in rs], .95)},
         }
-    out = {"asr": asr.name, "caller_voice": "piper en_GB-alan-low", "noise": "white noise, 5 dB SNR",
-           "summary": summary, "rows": rows}
-    (ROOT / "reports" / "asr_eval.json").write_text(json.dumps(out, indent=1))
+    out = {"asr": asr.name, "prompt": args.prompt, "prompt_text": prompt, "caller_voice": "piper en_GB-alan-low",
+           "noise": "white noise, 5 dB SNR", "summary": summary, "rows": rows}
+    (ROOT / "reports" / f"asr_eval_{args.prompt}.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(summary, indent=1))
 
 

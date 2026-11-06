@@ -30,7 +30,7 @@ from app.clock import FixedClock  # noqa: E402
 from app.factory import build_agent  # noqa: E402
 from app.guardrails import AllergenGuard  # noqa: E402
 from app.llm import FaultyLLM, _retry_after  # noqa: E402
-from app.pipeline import VoiceSession  # noqa: E402
+from app.pipeline import MENU_PROMPT, VoiceSession  # noqa: E402
 from app.speech import FakeTTS, GroqWhisperASR, PiperTTS, wav_to_pcm16  # noqa: E402
 from app.tools import FaultPlan, canonical_allergens  # noqa: E402
 from scenarios.suite import NOW, SCENARIOS  # noqa: E402
@@ -117,8 +117,7 @@ async def run_scenario(sc: dict, args, tts, asr) -> dict:
     async def emit(e):
         events.append({k: v for k, v in e.items() if k != "data"})
 
-    session = VoiceSession(agent, asr, tts, emit, realtime=False, filler=True,
-                           asr_prompt="Trattoria Verde. Trofie al pesto, risotto, tiramisu, panna cotta, calamari.")
+    session = VoiceSession(agent, asr, tts, emit, realtime=False, filler=True, asr_prompt=MENU_PROMPT)
     await session.warmup()
     turns = []
     use_audio = args.mode == "audio"

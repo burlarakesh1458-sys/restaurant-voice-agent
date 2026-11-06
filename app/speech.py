@@ -49,8 +49,10 @@ class Transcript:
     text: str
     confidence: float      # 0..1, exp(mean segment avg_logprob)
     no_speech_prob: float
-    ms: float
+    ms: float               # latency of the request that succeeded
     provider: str
+    total_ms: float = 0.0   # including retries / rate-limit waits
+    attempts: int = 1
 
 
 class ASRError(Exception):
@@ -75,6 +77,7 @@ class GroqWhisperASR:
         t0 = time.perf_counter()
         last = ""
         for attempt in range(self.retries + 1):
+            ta = time.perf_counter()
             try:
                 r = await self._client.post(f"{self.base_url}/audio/transcriptions",
                                             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -92,8 +95,9 @@ class GroqWhisperASR:
                     nsp = max(s.get("no_speech_prob", 0) for s in segs)
                 else:
                     lp, nsp = (0.0 if j.get("text") else -5.0), 0.0
+                now = time.perf_counter()
                 return Transcript(j.get("text", "").strip(), round(math.exp(lp), 3), round(nsp, 3),
-                                  (time.perf_counter() - t0) * 1000, self.name)
+                                  (now - ta) * 1000, self.name, (now - t0) * 1000, attempt + 1)
             last = f"HTTP {r.status_code}: {r.text[:120]}"
             if r.status_code == 429 or r.status_code >= 500:
                 await asyncio.sleep(min(20, 1.0 * (2 ** attempt)))

@@ -17,6 +17,11 @@ from .agent import Agent, TurnResult
 
 Emit = Callable[[dict], Awaitable[None]]
 FILLER = "One moment, let me check that."
+# Whisper vocabulary hint: dish names it would otherwise mishear ("gnocchi" -> "nokai").
+MENU_PROMPT = ("Trattoria Verde, Hyderabad. Bruschetta, burrata, calamari, arancini, minestrone, caprese, Caesar, "
+               "trofie al pesto, carbonara, arrabbiata, linguine frutti di mare, lasagna, gnocchi gorgonzola, "
+               "margherita, diavola, cacciatora, branzino, risotto, parmigiana, tiramisu, panna cotta, torta caprese, "
+               "sorbetto, focaccia. Booking code TV-D4F8.")
 
 
 def split_sentences(text: str) -> list[str]:
@@ -115,7 +120,7 @@ class VoiceSession:
             if tr is None:
                 text, asr_confidence = "", 0.0
             else:
-                m.asr_ms, text, asr_confidence = tr.ms, tr.text, tr.confidence
+                m.asr_ms, text, asr_confidence = tr.total_ms or tr.ms, tr.text, tr.confidence
                 if tr.no_speech_prob > 0.8:
                     text = ""
             m.asr_confidence = asr_confidence

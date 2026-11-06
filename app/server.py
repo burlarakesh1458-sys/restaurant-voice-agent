@@ -25,7 +25,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from .clock import Clock, FixedClock
 from .factory import ROOT, build_agent
-from .pipeline import VoiceSession
+from .pipeline import MENU_PROMPT, VoiceSession
 from .speech import FakeASR, FakeTTS, GroqWhisperASR, PiperTTS
 
 LLM_KIND = os.environ.get("LLM_KIND", "groq" if os.environ.get("GROQ_API_KEY") else "rules")
@@ -93,7 +93,7 @@ async def ws(websocket: WebSocket):
                                     caller_phone=msg.get("caller_phone") or "+919811111111", hybrid=HYBRID,
                                     cache_path=None)
                 agent.session_id = uuid.uuid4().hex[:8]
-                session = VoiceSession(agent, get_asr(), get_tts(), emit, realtime=True)
+                session = VoiceSession(agent, get_asr(), get_tts(), emit, realtime=True, asr_prompt=MENU_PROMPT)
                 await session.warmup()
                 await emit({"type": "started", "session_id": agent.session_id, "llm": LLM_KIND})
             elif session is None:
