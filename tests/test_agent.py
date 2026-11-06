@@ -52,7 +52,7 @@ def test_low_confidence_reprompts_without_llm(tools, clock, scripted):
 def test_medium_confidence_flags_and_gates(tools, clock, scripted):
     llm = scripted([[("create_reservation", {"name": "Rohan", "party_size": 4, "date": "tonight", "time": "7:30"})],
                     "Just to confirm, four people at 7:30 tonight under Rohan?"])
-    r = asyncio.run(make(tools, clock, llm).handle_turn("book for for at seven thirty", asr_confidence=0.55))
+    r = asyncio.run(make(tools, clock, llm).handle_turn("book for for at seven thirty under Rohan", asr_confidence=0.55))
     assert r.tool_calls[0].result["status"] == "needs_confirmation"
     assert "confidence 0.55" in llm.seen[0][-1]["content"]
 
@@ -71,3 +71,18 @@ def test_mark_interrupted(tools, clock, scripted):
     asyncio.run(a.handle_turn("what starters do you have"))
     a.mark_interrupted("We have bruschetta ...")
     assert a.history[-1]["content"].startswith("We have bruschetta ...") and "interrupted" in a.history[-1]["content"]
+
+
+def test_invented_booking_name_is_blocked(tools, clock, scripted):
+    llm = scripted([[("create_reservation", {"name": "John Doe", "party_size": 4, "date": "tonight", "time": "7:30"})],
+                    "May I have your name?"])
+    r = asyncio.run(make(tools, clock, llm).handle_turn("table for four at 7:30 tonight"))
+    assert r.tool_calls[0].result["error"] == "name_not_from_caller"
+    assert tools.conn.execute("SELECT COUNT(*) FROM reservations WHERE name='John Doe'").fetchone()[0] == 0
+
+
+def test_tool_markup_never_spoken(tools, clock, scripted):
+    llm = scripted(['Booked. <toolresponse {"name": "getallergens", "arguments": {"dish":"Pesto"}} </toolresponse '
+                    'Anything else?'])
+    r = asyncio.run(make(tools, clock, llm).handle_turn("hi"))
+    assert "toolresponse" not in r.text and "{" not in r.text and r.text.startswith("Booked.")

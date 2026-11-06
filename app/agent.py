@@ -78,7 +78,10 @@ def _wire(m: dict) -> dict:
 
 
 def _speakable(text: str) -> str:
-    text = re.sub(r"[*_#`>|]", "", text or "")
+    # small models sometimes leak pseudo tool-call markup into the reply; never speak it
+    text = re.sub(r"<\s*/?\s*tool[\s\S]*?(?:</\s*tool\w*\s*>?|$)", " ", text or "", flags=re.I)
+    text = re.sub(r"\{\s*\"name\"\s*:[\s\S]*?\}\s*\}?", " ", text)
+    text = re.sub(r"[*_#`>|<]", "", text)
     text = re.sub(r"^\s*[-•]\s*", "", text, flags=re.M)
     text = re.sub(r"\s*\n+\s*", " ", text)
     return text.strip()
@@ -151,7 +154,8 @@ class Agent:
                 notified = True
                 await on_tool_start()
             for tc in resp.tool_calls:
-                rec = await self.executor.execute(tc.name, tc.arguments, ctx)
+                blocked = self._ungrounded(tc.name, tc.arguments)
+                rec = blocked or await self.executor.execute(tc.name, tc.arguments, ctx)
                 res.tool_calls.append(rec)
                 if rec.name == "handoff_to_human" and rec.result.get("status") == "handoff_created" or \
                         rec.result.get("handoff_created"):
@@ -188,6 +192,19 @@ class Agent:
         self.history.append({"role": "assistant", "content": draft})
         res.total_ms = (time.perf_counter() - t0) * 1000
         return res
+
+    def _ungrounded(self, name: str, args: dict) -> ToolCallRecord | None:
+        """Slot grounding: a booking name must be something the caller actually said, never a model invention."""
+        if name != "create_reservation" or not args.get("name"):
+            return None
+        said = " ".join(m["content"].lower() for m in self.history if m["role"] == "user")
+        said_tokens = set(re.findall(r"[a-z]+", said))
+        name_tokens = [t for t in re.findall(r"[a-z]+", str(args["name"]).lower()) if len(t) > 1]
+        if name_tokens and all(t in said_tokens for t in name_tokens):
+            return None
+        return ToolCallRecord(name, args, {"error": "name_not_from_caller",
+                                           "message": "The caller has not said this name. Ask for their name; "
+                                                      "never invent one."}, 0.0, 0)
 
     async def _degraded(self, res: TurnResult, ctx: CallContext, err: str, t0: float) -> TurnResult:
         """The LLM is down: never leave the caller in silence and never improvise. Open a callback ticket."""

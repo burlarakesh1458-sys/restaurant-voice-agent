@@ -1,0 +1,422 @@
+{
+ "summary": {
+  "meta": {
+   "llm": "ollama:qwen2.5:3b",
+   "hybrid": false,
+   "mode": "text",
+   "audio_variant": null,
+   "tts": "piper:en_US-lessac-low",
+   "asr": null,
+   "clock": "2026-11-13T16:00:00+05:30",
+   "host": "2 vCPU / 7 GB RAM sandbox, no GPU",
+   "finished_at": "2026-11-06 14:54:59"
+  },
+  "scenarios": 2,
+  "task_completion_rate": 1.0,
+  "passed": 2,
+  "by_category": {
+   "booking": "2/2"
+  },
+  "tool_calling": {
+   "expected_calls": 2,
+   "correct": 2,
+   "wrong_args": 0,
+   "missing": 0,
+   "accuracy": 1.0,
+   "unjustified_mutating_calls": 0
+  },
+  "allergen_guardrail": {
+   "final_reply_violations": 0,
+   "scenario_regex_violations": 0,
+   "llm_draft_violations_caught_and_rewritten": 0
+  },
+  "handoff": {
+   "accuracy": 1.0,
+   "tp": 0,
+   "fp": 0,
+   "fn": 0,
+   "tn": 2,
+   "precision": null,
+   "recall": null
+  },
+  "latency": {
+   "turns_measured": 0,
+   "llm_turn_ms": {
+    "p50": null,
+    "p95": null
+   },
+   "llm_call_ms": {
+    "p50": null,
+    "p95": null,
+    "n": 0
+   },
+   "llm_calls_per_turn_mean": 0.0,
+   "tool_ms": {
+    "p50": null,
+    "p95": null
+   },
+   "tts_first_sentence_ms": {
+    "p50": null,
+    "p95": null
+   },
+   "ttfa_any_ms": {
+    "p50": null,
+    "p95": null
+   },
+   "ttfa_answer_ms": {
+    "p50": null,
+    "p95": null
+   }
+  },
+  "llm_calls_by_model": {
+   "qwen2.5:3b": 8
+  },
+  "failures": []
+ },
+ "results": [
+  {
+   "id": "B01",
+   "category": "booking",
+   "title": "Happy path, everything in one sentence",
+   "passed": true,
+   "failed_checks": [],
+   "tool_score": {
+    "expected": 1,
+    "correct": 1,
+    "wrong_args": 0,
+    "missing": 0,
+    "details": [
+     {
+      "expected": {
+       "tool": "create_reservation",
+       "args": {
+        "name": "Arjun Patel",
+        "party_size": 2,
+        "date": "2026-11-14",
+        "time": "13:00"
+       }
+      },
+      "status": "correct"
+     }
+    ]
+   },
+   "unjustified_mutating_calls": [],
+   "handoff_expected": false,
+   "handoff_done": false,
+   "allergen_final_violations": [],
+   "allergen_draft_violations": [],
+   "allergen_regex_violations": [],
+   "turns": [
+    {
+     "user": "Hi, I'd like to book a table for two tomorrow at 1 PM. My name is Arjun Patel.",
+     "turn": 1,
+     "transcript": "Hi, I'd like to book a table for two tomorrow at 1 PM. My name is Arjun Patel.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 0.0,
+     "llm_calls": 2,
+     "llm_cached_calls": 2,
+     "tool_ms": 2.0901150001009228,
+     "tts_first_ms": 431.18354900002487,
+     "tts_total_ms": 1021.4114020002398,
+     "ttfa_any_ms": 4.998324000098364,
+     "ttfa_answer_ms": 457.0850520001386,
+     "total_ms": 1047.3891589999766,
+     "audio_ms_sent": 8352.0,
+     "interrupted": false,
+     "spoken_text": "Your table is booked, Arjun Patel. Confirmation code is T V J Q U 7. Enjoy your meal.",
+     "result": {
+      "text": "Your table is booked, Arjun Patel. Confirmation code is T V J Q U 7. Enjoy your meal.",
+      "draft": "Your table is booked, Arjun Patel. Confirmation code is T V J Q U 7. Enjoy your meal.",
+      "tool_calls": [
+       {
+        "name": "create_reservation",
+        "args": {
+         "time": "1 PM",
+         "name": "Arjun Patel",
+         "party_size": 2,
+         "date": "tomorrow"
+        },
+        "result": {
+         "status": "confirmed",
+         "code": "TV-JQU7",
+         "date": "2026-11-14",
+         "time": "13:00",
+         "party_size": 2,
+         "name": "Arjun Patel",
+         "readback": "a table for 2 under Arjun Patel on Saturday 14 November at 1 PM, confirmation code T V J Q U 7"
+        },
+        "ms": 2.1,
+        "attempts": 1
+       }
+      ],
+      "llm_ms": [
+       0.0,
+       0.0
+      ],
+      "llm_cached": [
+       true,
+       true
+      ],
+      "llm_models": [
+       "qwen2.5:3b",
+       "qwen2.5:3b"
+      ],
+      "prompt_tokens": 2012,
+      "completion_tokens": 68,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 24.83649000009791
+     }
+    }
+   ]
+  },
+  {
+   "id": "B02",
+   "category": "booking",
+   "title": "Slot filling across four turns",
+   "passed": true,
+   "failed_checks": [],
+   "tool_score": {
+    "expected": 1,
+    "correct": 1,
+    "wrong_args": 0,
+    "missing": 0,
+    "details": [
+     {
+      "expected": {
+       "tool": "create_reservation",
+       "args": {
+        "name": "Neha Gupta",
+        "party_size": 4,
+        "date": "2026-11-15",
+        "time": "19:00"
+       }
+      },
+      "status": "correct"
+     }
+    ]
+   },
+   "unjustified_mutating_calls": [],
+   "handoff_expected": false,
+   "handoff_done": false,
+   "allergen_final_violations": [],
+   "allergen_draft_violations": [],
+   "allergen_regex_violations": [],
+   "turns": [
+    {
+     "user": "I want to make a reservation.",
+     "turn": 1,
+     "transcript": "I want to make a reservation.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 0.0,
+     "llm_calls": 1,
+     "llm_cached_calls": 1,
+     "tool_ms": 0,
+     "tts_first_ms": 394.52959599998394,
+     "tts_total_ms": 756.7576439998902,
+     "ttfa_any_ms": 418.0627429998367,
+     "ttfa_answer_ms": 418.0627429998367,
+     "total_ms": 780.3702369999428,
+     "audio_ms_sent": 3312.0,
+     "interrupted": false,
+     "spoken_text": "Sure, I can help with that. When would you like to arrive?",
+     "result": {
+      "text": "Sure, I can help with that. When would you like to arrive?",
+      "draft": "Sure, I can help with that. When would you like to arrive?",
+      "tool_calls": [],
+      "llm_ms": [
+       0.0
+      ],
+      "llm_cached": [
+       true
+      ],
+      "llm_models": [
+       "qwen2.5:3b"
+      ],
+      "prompt_tokens": 924,
+      "completion_tokens": 16,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 23.288111000056233
+     }
+    },
+    {
+     "user": "Four people.",
+     "turn": 2,
+     "transcript": "Four people.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 0.0,
+     "llm_calls": 1,
+     "llm_cached_calls": 1,
+     "tool_ms": 0,
+     "tts_first_ms": 428.8742369999454,
+     "tts_total_ms": 1017.2572950000358,
+     "ttfa_any_ms": 431.66674500002955,
+     "ttfa_answer_ms": 431.66674500002955,
+     "total_ms": 1020.1913020000575,
+     "audio_ms_sent": 5104.0,
+     "interrupted": false,
+     "spoken_text": "And what time would you like to arrive? Please provide the time in HH:MM format.",
+     "result": {
+      "text": "And what time would you like to arrive? Please provide the time in HH:MM format.",
+      "draft": "And what time would you like to arrive? Please provide the time in HH:MM format.",
+      "tool_calls": [],
+      "llm_ms": [
+       0.0
+      ],
+      "llm_cached": [
+       true
+      ],
+      "llm_models": [
+       "qwen2.5:3b"
+      ],
+      "prompt_tokens": 952,
+      "completion_tokens": 20,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 2.6350299999648996
+     }
+    },
+    {
+     "user": "Sunday at 7 in the evening.",
+     "turn": 3,
+     "transcript": "Sunday at 7 in the evening.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 0.0,
+     "llm_calls": 2,
+     "llm_cached_calls": 2,
+     "tool_ms": 4.908283000077063,
+     "tts_first_ms": 165.28825899990807,
+     "tts_total_ms": 1562.222765999877,
+     "ttfa_any_ms": 9.467724999922211,
+     "ttfa_answer_ms": 203.8687449999088,
+     "total_ms": 1600.978877999978,
+     "audio_ms_sent": 10080.0,
+     "interrupted": false,
+     "spoken_text": "Great! Your reservation is available for Sunday, 15 November at 7 PM for your party of 4. Would you like to proceed with this booking?",
+     "result": {
+      "text": "Great! Your reservation is available for Sunday, 15 November at 7 PM for your party of 4. Would you like to proceed with this booking?",
+      "draft": "Great! Your reservation is available for Sunday, 15 November at 7 PM for your party of 4. Would you like to proceed with this booking?",
+      "tool_calls": [
+       {
+        "name": "check_availability",
+        "args": {
+         "time": "19:00",
+         "date": "Sunday",
+         "party_size": 4
+        },
+        "result": {
+         "available": true,
+         "date": "2026-11-15",
+         "time": "19:00",
+         "party_size": 4,
+         "spoken": "Sunday 15 November at 7 PM for 4"
+        },
+        "ms": 4.9,
+        "attempts": 1
+       }
+      ],
+      "llm_ms": [
+       0.0,
+       0.0
+      ],
+      "llm_cached": [
+       true,
+       true
+      ],
+      "llm_models": [
+       "qwen2.5:3b",
+       "qwen2.5:3b"
+      ],
+      "prompt_tokens": 2074,
+      "completion_tokens": 72,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 38.38694299997769
+     }
+    },
+    {
+     "user": "Name's Neha Gupta.",
+     "turn": 4,
+     "transcript": "Name's Neha Gupta.",
+     "asr_ms": null,
+     "asr_confidence": null,
+     "llm_ms": 0.0,
+     "llm_calls": 2,
+     "llm_cached_calls": 2,
+     "tool_ms": 13.254766000045493,
+     "tts_first_ms": 536.5301379999892,
+     "tts_total_ms": 2135.6798090000666,
+     "ttfa_any_ms": 2.543750999848271,
+     "ttfa_answer_ms": 559.7221729999546,
+     "total_ms": 2159.0850499999306,
+     "audio_ms_sent": 15328.0,
+     "interrupted": false,
+     "spoken_text": "Your reservation is confirmed, Neha Gupta. Your table is reserved for Sunday, 15 November at 7 PM. The confirmation code is T V Z F 7 X. Please keep this code safe. Is this information correct?",
+     "result": {
+      "text": "Your reservation is confirmed, Neha Gupta. Your table is reserved for Sunday, 15 November at 7 PM. The confirmation code is T V Z F 7 X. Please keep this code safe. Is this information correct?",
+      "draft": "Your reservation is confirmed, Neha Gupta. Your table is reserved for Sunday, 15 November at 7 PM. The confirmation code is T V Z F 7 X. Please keep this code safe. Is this information correct?",
+      "tool_calls": [
+       {
+        "name": "create_reservation",
+        "args": {
+         "party_size": 4,
+         "date": "2026-11-15",
+         "time": "19:00",
+         "name": "Neha Gupta"
+        },
+        "result": {
+         "status": "confirmed",
+         "code": "TV-ZF7X",
+         "date": "2026-11-15",
+         "time": "19:00",
+         "party_size": 4,
+         "name": "Neha Gupta",
+         "readback": "a table for 4 under Neha Gupta on Sunday 15 November at 7 PM, confirmation code T V Z F 7 X"
+        },
+        "ms": 13.3,
+        "attempts": 1
+       }
+      ],
+      "llm_ms": [
+       0.0,
+       0.0
+      ],
+      "llm_cached": [
+       true,
+       true
+      ],
+      "llm_models": [
+       "qwen2.5:3b",
+       "qwen2.5:3b"
+      ],
+      "prompt_tokens": 2412,
+      "completion_tokens": 97,
+      "guard_violations_draft": [],
+      "guard_rewrote": false,
+      "clarified": false,
+      "degraded": false,
+      "handoff": false,
+      "total_ms": 22.93789099985588
+     }
+    }
+   ]
+  }
+ ]
+}

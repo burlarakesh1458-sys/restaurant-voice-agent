@@ -9,7 +9,7 @@
    "asr": null,
    "clock": "2026-11-13T16:00:00+05:30",
    "host": "2 vCPU / 7 GB RAM sandbox, no GPU",
-   "finished_at": "2026-11-06 14:43:04"
+   "finished_at": "2026-11-06 14:55:57"
   },
   "scenarios": 44,
   "task_completion_rate": 0.909,
@@ -68,19 +68,19 @@
    "llm_calls_per_turn_mean": 1.85,
    "tool_ms": {
     "p50": 0.9,
-    "p95": 96.2
+    "p95": 95.2
    },
    "tts_first_sentence_ms": {
-    "p50": 683.4,
-    "p95": 1130.3
+    "p50": 642.8,
+    "p95": 1307.5
    },
    "ttfa_any_ms": {
-    "p50": 0.8,
-    "p95": 407.3
+    "p50": 1.0,
+    "p95": 419.1
    },
    "ttfa_answer_ms": {
-    "p50": 703.7,
-    "p95": 1486.2
+    "p50": 667.1,
+    "p95": 1363.0
    }
   },
   "llm_calls_by_model": {
@@ -177,13 +177,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 5.499473999975635,
-     "tts_first_ms": 988.0184400000189,
-     "tts_total_ms": 988.0184400000189,
-     "ttfa_any_ms": 13.517377999960445,
-     "ttfa_answer_ms": 1004.111340999998,
-     "total_ms": 1004.5463530000234,
-     "audio_ms_sent": 10096.0,
+     "tool_ms": 2.891330000011294,
+     "tts_first_ms": 1308.388955000055,
+     "tts_total_ms": 1308.388955000055,
+     "ttfa_any_ms": 6.892233000144188,
+     "ttfa_answer_ms": 1321.7695390001154,
+     "total_ms": 1325.908636000122,
+     "audio_ms_sent": 10032.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 2 under Arjun Patel on Saturday 14 November at 1 PM, confirmation code T V J Q U 7.",
      "result": {
@@ -207,7 +207,7 @@
          "name": "Arjun Patel",
          "readback": "a table for 2 under Arjun Patel on Saturday 14 November at 1 PM, confirmation code T V J Q U 7"
         },
-        "ms": 5.5,
+        "ms": 2.9,
         "attempts": 1
        }
       ],
@@ -230,7 +230,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 15.778129000068475
+      "total_ms": 12.227403999986564
      }
     }
    ]
@@ -278,12 +278,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 125.94966699998622,
-     "tts_total_ms": 528.319081999939,
-     "ttfa_any_ms": 134.27961599995797,
-     "ttfa_answer_ms": 134.27961599995797,
-     "total_ms": 535.1160749999053,
-     "audio_ms_sent": 4080.0,
+     "tts_first_ms": 304.22005300010824,
+     "tts_total_ms": 969.3543170001249,
+     "ttfa_any_ms": 307.8757200000837,
+     "ttfa_answer_ms": 307.8757200000837,
+     "total_ms": 973.1778099999246,
+     "audio_ms_sent": 4240.0,
      "interrupted": false,
      "spoken_text": "Happy to book that. Could you tell me how many people and what day and what time?",
      "result": {
@@ -306,7 +306,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 6.494361000022764
+      "total_ms": 3.4348500000760396
      }
     },
     {
@@ -319,12 +319,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 106.35043800004951,
-     "tts_total_ms": 366.7683260000558,
-     "ttfa_any_ms": 107.58123100004013,
-     "ttfa_answer_ms": 107.58123100004013,
-     "total_ms": 368.09701499998937,
-     "audio_ms_sent": 3056.0,
+     "tts_first_ms": 269.1554539999288,
+     "tts_total_ms": 795.2462739999646,
+     "ttfa_any_ms": 276.1604869999701,
+     "ttfa_answer_ms": 276.1604869999701,
+     "total_ms": 796.6079679999893,
+     "audio_ms_sent": 3248.0,
      "interrupted": false,
      "spoken_text": "Happy to book that. Could you tell me what day and what time?",
      "result": {
@@ -347,7 +347,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.1184759999878224
+      "total_ms": 1.1385450000034325
      }
     },
     {
@@ -359,13 +359,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.6152890000521438,
-     "tts_first_ms": 453.7729160000481,
-     "tts_total_ms": 642.7524620000895,
-     "ttfa_any_ms": 0.7040469999992638,
-     "ttfa_answer_ms": 458.1495290000248,
-     "total_ms": 645.2160170000525,
-     "audio_ms_sent": 8320.0,
+     "tool_ms": 2.7633950001018093,
+     "tts_first_ms": 930.3629519999959,
+     "tts_total_ms": 1350.3005099998973,
+     "ttfa_any_ms": 0.8342930000253546,
+     "ttfa_answer_ms": 937.6653770000303,
+     "total_ms": 1355.1710140000068,
+     "audio_ms_sent": 8416.0,
      "interrupted": false,
      "spoken_text": "Good news, we have a table Sunday 15 November at 7 PM for 4. May I have a name for the booking?",
      "result": {
@@ -386,7 +386,7 @@
          "party_size": 4,
          "spoken": "Sunday 15 November at 7 PM for 4"
         },
-        "ms": 0.6,
+        "ms": 2.8,
         "attempts": 1
        }
       ],
@@ -409,7 +409,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.266044999942096
+      "total_ms": 4.58381500016003
      }
     },
     {
@@ -421,13 +421,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.1630359999799111,
-     "tts_first_ms": 910.9811399999899,
-     "tts_total_ms": 910.9811399999899,
-     "ttfa_any_ms": 1.7625429999270636,
-     "ttfa_answer_ms": 914.0480599999137,
-     "total_ms": 914.4554989999278,
-     "audio_ms_sent": 9776.0,
+     "tool_ms": 1.7207980001785472,
+     "tts_first_ms": 1306.714225000178,
+     "tts_total_ms": 1306.714225000178,
+     "ttfa_any_ms": 2.4315300001944706,
+     "ttfa_answer_ms": 1314.1478880002069,
+     "total_ms": 1314.5914090000588,
+     "audio_ms_sent": 9760.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 4 under Neha Gupta on Sunday 15 November at 7 PM, confirmation code T V Z F 7 X.",
      "result": {
@@ -451,7 +451,7 @@
          "name": "Neha Gupta",
          "readback": "a table for 4 under Neha Gupta on Sunday 15 November at 7 PM, confirmation code T V Z F 7 X"
         },
-        "ms": 1.2,
+        "ms": 1.7,
         "attempts": 1
        }
       ],
@@ -474,7 +474,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.9052219999812223
+      "total_ms": 7.210049999912371
      }
     }
    ]
@@ -531,13 +531,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 4.408427000043957,
-     "tts_first_ms": 1696.9743449999442,
-     "tts_total_ms": 2785.5478100000255,
-     "ttfa_any_ms": 0.8693789999369983,
-     "ttfa_answer_ms": 1705.162360999907,
-     "total_ms": 2793.87430099996,
-     "audio_ms_sent": 26096.0,
+     "tool_ms": 3.9818689999719936,
+     "tts_first_ms": 1777.0636909999666,
+     "tts_total_ms": 3191.7030469996917,
+     "ttfa_any_ms": 3.9400359999035572,
+     "ttfa_answer_ms": 1789.383444999885,
+     "total_ms": 3204.0944600000785,
+     "audio_ms_sent": 26320.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Trofie al Pesto Genovese contains tree nuts and is verified free of peanuts. (Pesto made in-house with pine nuts) I can't confirm the allergens in the Pesto Rosso Bruschetta: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen. Good news, we have a table Friday 13 November at 7:30 PM for 4. May I have a name for the booking?",
      "result": {
@@ -577,7 +577,7 @@
           }
          ]
         },
-        "ms": 4.1,
+        "ms": 3.6,
         "attempts": 1
        },
        {
@@ -594,7 +594,7 @@
          "party_size": 4,
          "spoken": "Friday 13 November at 7:30 PM for 4"
         },
-        "ms": 0.3,
+        "ms": 0.4,
         "attempts": 1
        }
       ],
@@ -617,7 +617,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 8.028759000012542
+      "total_ms": 11.97034300002997
      }
     },
     {
@@ -629,13 +629,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.1456590000307187,
-     "tts_first_ms": 1050.620145000039,
-     "tts_total_ms": 1050.620145000039,
-     "ttfa_any_ms": 1.1668370000279538,
-     "ttfa_answer_ms": 1053.9232429999856,
-     "total_ms": 1054.4185840000182,
-     "audio_ms_sent": 10272.0,
+     "tool_ms": 2.4692399999821646,
+     "tts_first_ms": 910.8263219998207,
+     "tts_total_ms": 910.8263219998207,
+     "ttfa_any_ms": 1.1374670000350307,
+     "ttfa_answer_ms": 915.4845389998627,
+     "total_ms": 915.9086519998709,
+     "audio_ms_sent": 10080.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 4 under Priya Sharma on Friday 13 November at 7:30 PM, confirmation code T V 6 Q 4 5.",
      "result": {
@@ -659,7 +659,7 @@
          "name": "Priya Sharma",
          "readback": "a table for 4 under Priya Sharma on Friday 13 November at 7:30 PM, confirmation code T V 6 Q 4 5"
         },
-        "ms": 1.1,
+        "ms": 2.5,
         "attempts": 1
        }
       ],
@@ -682,7 +682,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 3.165798000054565
+      "total_ms": 4.543399999874964
      }
     }
    ]
@@ -739,13 +739,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 4.396886999984417,
-     "tts_first_ms": 486.1563430000615,
-     "tts_total_ms": 1325.3584890001093,
-     "ttfa_any_ms": 0.7165720001012232,
-     "ttfa_answer_ms": 492.82830000004196,
-     "total_ms": 1332.4138430000403,
-     "audio_ms_sent": 14080.0,
+     "tool_ms": 1.0535970002365502,
+     "tts_first_ms": 495.99406800007273,
+     "tts_total_ms": 1337.078498999972,
+     "ttfa_any_ms": 1.0476180000296154,
+     "ttfa_answer_ms": 503.7089400000241,
+     "total_ms": 1345.1581950000673,
+     "audio_ms_sent": 14384.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Tiramisu contains gluten. You're booked: a table for 2 under Karthik Reddy on Friday 13 November at 8 PM, confirmation code T V K 7 G Y.",
      "result": {
@@ -776,7 +776,7 @@
          },
          "answer": "Our verified allergen record says the Tiramisu contains gluten."
         },
-        "ms": 3.7,
+        "ms": 0.5,
         "attempts": 1
        },
        {
@@ -796,7 +796,7 @@
          "name": "Karthik Reddy",
          "readback": "a table for 2 under Karthik Reddy on Friday 13 November at 8 PM, confirmation code T V K 7 G Y"
         },
-        "ms": 0.7,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -819,7 +819,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 6.532751999998254
+      "total_ms": 7.403759999988324
      }
     }
    ]
@@ -884,13 +884,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.6720239999822297,
-     "tts_first_ms": 1044.0224740000303,
-     "tts_total_ms": 1044.0224740000303,
-     "ttfa_any_ms": 1.2694419999661477,
-     "ttfa_answer_ms": 1046.5973269999722,
-     "total_ms": 1047.0049950000657,
-     "audio_ms_sent": 9408.0,
+     "tool_ms": 0.7425280000461498,
+     "tts_first_ms": 790.4922759998954,
+     "tts_total_ms": 790.4922759998954,
+     "ttfa_any_ms": 0.8243039999342727,
+     "ttfa_answer_ms": 793.05189899992,
+     "total_ms": 793.4679089999008,
+     "audio_ms_sent": 9728.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 5 under Fatima Sheikh on Sunday 15 November at 1 PM, confirmation code T V U T U D.",
      "result": {
@@ -937,7 +937,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.412511000102313
+      "total_ms": 2.4786760000097274
      }
     }
    ]
@@ -1007,13 +1007,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3.278480999938438,
-     "tts_first_ms": 283.76808300004086,
-     "tts_total_ms": 712.0158260000835,
-     "ttfa_any_ms": 0.7191419999799109,
-     "ttfa_answer_ms": 288.8534819999222,
-     "total_ms": 717.2958389999167,
-     "audio_ms_sent": 8192.0,
+     "tool_ms": 1.0430540000925248,
+     "tts_first_ms": 248.66645999986758,
+     "tts_total_ms": 734.0008359999501,
+     "ttfa_any_ms": 0.6591429998934473,
+     "ttfa_answer_ms": 251.45779599984053,
+     "total_ms": 736.9677209999281,
+     "audio_ms_sent": 7968.0,
      "interrupted": false,
      "spoken_text": "Sorry, that time is fully booked. I can offer 6:30 PM, 7 PM, 7:30 PM.",
      "result": {
@@ -1042,7 +1042,7 @@
           "7:30 PM"
          ]
         },
-        "ms": 3.3,
+        "ms": 1.0,
         "attempts": 1
        }
       ],
@@ -1065,7 +1065,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 4.955075999987457
+      "total_ms": 2.6485480000246753
      }
     },
     {
@@ -1077,13 +1077,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.9270980000337659,
-     "tts_first_ms": 941.8592590000117,
-     "tts_total_ms": 941.8592590000117,
-     "ttfa_any_ms": 1.4124309999488105,
-     "ttfa_answer_ms": 944.5928710000544,
-     "total_ms": 945.0286989999768,
-     "audio_ms_sent": 10032.0,
+     "tool_ms": 5.729242999905182,
+     "tts_first_ms": 957.5818609998805,
+     "tts_total_ms": 957.5818609998805,
+     "ttfa_any_ms": 5.694210000001476,
+     "ttfa_answer_ms": 965.0967559998662,
+     "total_ms": 965.5409489998874,
+     "audio_ms_sent": 10016.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 4 under Sanjay Rao on Friday 13 November at 7:30 PM, confirmation code T V C V G E.",
      "result": {
@@ -1107,7 +1107,7 @@
          "name": "Sanjay Rao",
          "readback": "a table for 4 under Sanjay Rao on Friday 13 November at 7:30 PM, confirmation code T V C V G E"
         },
-        "ms": 0.9,
+        "ms": 5.7,
         "attempts": 1
        }
       ],
@@ -1130,7 +1130,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.5719910000816526
+      "total_ms": 7.411593999904653
      }
     }
    ]
@@ -1176,13 +1176,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.7432679999274114,
-     "tts_first_ms": 193.45759700001963,
-     "tts_total_ms": 643.1044720000045,
-     "ttfa_any_ms": 2.257797999959621,
-     "ttfa_answer_ms": 199.97902900001918,
-     "total_ms": 646.9340510000166,
-     "audio_ms_sent": 7472.0,
+     "tool_ms": 5.560796000054324,
+     "tts_first_ms": 254.90758700016158,
+     "tts_total_ms": 661.1979720003092,
+     "ttfa_any_ms": 4.577154999878985,
+     "ttfa_answer_ms": 262.4153039998873,
+     "total_ms": 668.8936019997982,
+     "audio_ms_sent": 7504.0,
      "interrupted": false,
      "spoken_text": "Sorry, that time is fully booked. I can offer 1:30 PM, 2 PM, 10 PM.",
      "result": {
@@ -1213,7 +1213,7 @@
           "10 PM"
          ]
         },
-        "ms": 1.7,
+        "ms": 5.6,
         "attempts": 1
        }
       ],
@@ -1236,7 +1236,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 3.4409910000476884
+      "total_ms": 7.346621999886338
      }
     }
    ]
@@ -1270,13 +1270,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.8126289999381697,
-     "tts_first_ms": 218.02242499995828,
-     "tts_total_ms": 218.02242499995828,
-     "ttfa_any_ms": 0.7274319999623913,
-     "ttfa_answer_ms": 220.34859699999743,
-     "total_ms": 220.45098399996732,
-     "audio_ms_sent": 3408.0,
+     "tool_ms": 3.4248810000008234,
+     "tts_first_ms": 198.4495379999771,
+     "tts_total_ms": 198.4495379999771,
+     "ttfa_any_ms": 3.3419080000385293,
+     "ttfa_answer_ms": 203.44847299998037,
+     "total_ms": 203.56589199991504,
+     "audio_ms_sent": 3520.0,
      "interrupted": false,
      "spoken_text": "We're closed on Mondays.",
      "result": {
@@ -1299,7 +1299,7 @@
          "status": "not_booked",
          "alternatives": []
         },
-        "ms": 0.8,
+        "ms": 3.4,
         "attempts": 1
        }
       ],
@@ -1322,7 +1322,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.2518289999879926
+      "total_ms": 4.9091329999555455
      }
     }
    ]
@@ -1356,13 +1356,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.1719179999545304,
-     "tts_first_ms": 866.0101069999655,
-     "tts_total_ms": 866.0101069999655,
-     "ttfa_any_ms": 0.6593470000098023,
-     "ttfa_answer_ms": 868.9402910000581,
-     "total_ms": 869.3619400000898,
-     "audio_ms_sent": 9440.0,
+     "tool_ms": 0.9471900000335154,
+     "tts_first_ms": 926.8766590000723,
+     "tts_total_ms": 926.8766590000723,
+     "ttfa_any_ms": 1.4495059999717341,
+     "ttfa_answer_ms": 933.8489310000568,
+     "total_ms": 934.2729029999646,
+     "audio_ms_sent": 9760.0,
      "interrupted": false,
      "spoken_text": "On Friday 13 November we're open 12 PM to 3 PM, 6 PM to 11 PM; last seating is an hour before closing.",
      "result": {
@@ -1390,7 +1390,7 @@
           "22:00"
          ]
         },
-        "ms": 1.2,
+        "ms": 0.9,
         "attempts": 1
        }
       ],
@@ -1413,7 +1413,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.8527779999194536
+      "total_ms": 6.729151000172351
      }
     }
    ]
@@ -1447,13 +1447,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3.583981000019776,
-     "tts_first_ms": 366.87597699994967,
-     "tts_total_ms": 366.87597699994967,
-     "ttfa_any_ms": 0.6858809999812365,
-     "ttfa_answer_ms": 371.985020000011,
-     "total_ms": 372.15828099999726,
-     "audio_ms_sent": 4832.0,
+     "tool_ms": 0.3635180000856053,
+     "tts_first_ms": 360.5616160000409,
+     "tts_total_ms": 360.5616160000409,
+     "ttfa_any_ms": 0.7275909999862051,
+     "ttfa_answer_ms": 362.37218600012966,
+     "total_ms": 362.54788500014,
+     "audio_ms_sent": 4960.0,
      "interrupted": false,
      "spoken_text": "That time has already passed or is too soon.",
      "result": {
@@ -1474,7 +1474,7 @@
          "time": "14:00",
          "message": "That time has already passed or is too soon."
         },
-        "ms": 3.6,
+        "ms": 0.4,
         "attempts": 1
        }
       ],
@@ -1497,7 +1497,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 5.01791899989712
+      "total_ms": 1.7208740000569378
      }
     }
    ]
@@ -1541,13 +1541,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.6385659999068594,
-     "tts_first_ms": 607.3914529999911,
-     "tts_total_ms": 607.3914529999911,
-     "ttfa_any_ms": 0.6614129999888974,
-     "ttfa_answer_ms": 609.7540179999896,
-     "total_ms": 610.0283629999694,
-     "audio_ms_sent": 7200.0,
+     "tool_ms": 1.4324320000014268,
+     "tts_first_ms": 600.6659310000941,
+     "tts_total_ms": 600.6659310000941,
+     "ttfa_any_ms": 1.9339519999448385,
+     "ttfa_answer_ms": 604.1101830001026,
+     "total_ms": 604.4210420000127,
+     "audio_ms_sent": 7488.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Gnocchi Gorgonzola e Noci contains tree nuts.",
      "result": {
@@ -1578,7 +1578,7 @@
          },
          "answer": "Our verified allergen record says the Gnocchi Gorgonzola e Noci contains tree nuts."
         },
-        "ms": 0.6,
+        "ms": 1.4,
         "attempts": 1
        }
       ],
@@ -1601,7 +1601,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.2911980000799304
+      "total_ms": 3.23849300002621
      }
     }
    ]
@@ -1646,13 +1646,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.6036360000507557,
-     "tts_first_ms": 481.7141849999871,
-     "tts_total_ms": 481.7141849999871,
-     "ttfa_any_ms": 0.4713350000429273,
-     "ttfa_answer_ms": 483.76759600000696,
-     "total_ms": 484.04357399999753,
-     "audio_ms_sent": 6592.0,
+     "tool_ms": 0.683094999885725,
+     "tts_first_ms": 676.100163000001,
+     "tts_total_ms": 676.100163000001,
+     "ttfa_any_ms": 0.5634130000089499,
+     "ttfa_answer_ms": 678.437638999867,
+     "total_ms": 678.728842000055,
+     "audio_ms_sent": 6928.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Penne Arrabbiata is verified free of milk.",
      "result": {
@@ -1680,7 +1680,7 @@
          },
          "answer": "Our verified allergen record says the Penne Arrabbiata is verified free of milk."
         },
-        "ms": 0.6,
+        "ms": 0.7,
         "attempts": 1
        }
       ],
@@ -1703,7 +1703,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.982389000090734
+      "total_ms": 2.2064769998451084
      }
     }
    ]
@@ -1747,13 +1747,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.6678500000134591,
-     "tts_first_ms": 708.3993769999779,
-     "tts_total_ms": 1066.261352999959,
-     "ttfa_any_ms": 0.8131730000968673,
-     "ttfa_answer_ms": 711.1182880000797,
-     "total_ms": 1069.1438659999903,
-     "audio_ms_sent": 11136.0,
+     "tool_ms": 3.6217680001300323,
+     "tts_first_ms": 963.58978499984,
+     "tts_total_ms": 1487.6664299999902,
+     "ttfa_any_ms": 0.7939300000998628,
+     "ttfa_answer_ms": 969.3793600001754,
+     "total_ms": 1493.5836180000024,
+     "audio_ms_sent": 11056.0,
      "interrupted": false,
      "spoken_text": "I can't confirm the allergens in the Risotto del Giorno: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
      "result": {
@@ -1773,7 +1773,7 @@
          "answer": "I can't confirm the allergens in the Risotto del Giorno: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
          "policy": "DO NOT GUESS. Say you can't confirm and offer a staff handoff."
         },
-        "ms": 0.7,
+        "ms": 3.6,
         "attempts": 1
        }
       ],
@@ -1796,7 +1796,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.5770400000055815
+      "total_ms": 5.6277210001098865
      }
     }
    ]
@@ -1847,13 +1847,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 2.089599999976599,
-     "tts_first_ms": 712.6191699999254,
-     "tts_total_ms": 1102.6927539999178,
-     "ttfa_any_ms": 0.9375219999583351,
-     "ttfa_answer_ms": 716.9983530000081,
-     "total_ms": 1107.2200589999284,
-     "audio_ms_sent": 10640.0,
+     "tool_ms": 7.338517999869509,
+     "tts_first_ms": 627.940566999996,
+     "tts_total_ms": 1010.608374999947,
+     "ttfa_any_ms": 0.7491949997984193,
+     "ttfa_answer_ms": 637.4316379999527,
+     "total_ms": 1020.2525529998638,
+     "audio_ms_sent": 10704.0,
      "interrupted": false,
      "spoken_text": "I can't confirm the allergens in the Sorbetto al Limone: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
      "result": {
@@ -1873,7 +1873,7 @@
          "answer": "I can't confirm the allergens in the Sorbetto al Limone: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
          "policy": "DO NOT GUESS. Say you can't confirm and offer a staff handoff."
         },
-        "ms": 2.1,
+        "ms": 7.3,
         "attempts": 1
        }
       ],
@@ -1896,7 +1896,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 4.175099999997656
+      "total_ms": 9.251294000023336
      }
     },
     {
@@ -1908,13 +1908,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.7299469999679786,
-     "tts_first_ms": 420.88086600006136,
-     "tts_total_ms": 420.88086600006136,
-     "ttfa_any_ms": 0.688843000034467,
-     "ttfa_answer_ms": 423.24856599998384,
-     "total_ms": 423.9911500000062,
-     "audio_ms_sent": 4960.0,
+     "tool_ms": 6.741448999946442,
+     "tts_first_ms": 374.9325020000924,
+     "tts_total_ms": 374.9325020000924,
+     "ttfa_any_ms": 0.866204000203652,
+     "ttfa_answer_ms": 383.47840400001587,
+     "total_ms": 383.72451300006105,
+     "audio_ms_sent": 4928.0,
      "interrupted": false,
      "spoken_text": "A member of staff will call you back as soon as we open.",
      "result": {
@@ -1929,10 +1929,10 @@
         },
         "result": {
          "status": "handoff_created",
-         "ticket": "H-85733",
+         "ticket": "H-BE537",
          "message": "A member of staff will call you back as soon as we open."
         },
-        "ms": 0.7,
+        "ms": 6.7,
         "attempts": 1
        }
       ],
@@ -1955,7 +1955,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": true,
-      "total_ms": 2.201655000021674
+      "total_ms": 8.438069000021642
      }
     }
    ]
@@ -2000,13 +2000,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.825892999955613,
-     "tts_first_ms": 1651.1136099999248,
-     "tts_total_ms": 1651.1136099999248,
-     "ttfa_any_ms": 0.6578060000492769,
-     "ttfa_answer_ms": 1654.1904110000587,
-     "total_ms": 1654.8819600000115,
-     "audio_ms_sent": 15216.0,
+     "tool_ms": 0.7723670000814309,
+     "tts_first_ms": 1402.1834410000338,
+     "tts_total_ms": 1402.1834410000338,
+     "ttfa_any_ms": 0.5580259999078407,
+     "ttfa_answer_ms": 1413.489127000048,
+     "total_ms": 1414.1506799999206,
+     "audio_ms_sent": 14768.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Pizza Margherita has no verified record for sesame. (Sesame not assessed: shares the oven with the sesame focaccia) I can't confirm that part; a staff member can check with the kitchen.",
      "result": {
@@ -2061,7 +2061,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.96966300004442
+      "total_ms": 11.141322000185028
      }
     }
    ]
@@ -2106,13 +2106,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 7.418555999947785,
-     "tts_first_ms": 1124.0489109999316,
-     "tts_total_ms": 1124.0489109999316,
-     "ttfa_any_ms": 0.5662989999564161,
-     "ttfa_answer_ms": 1133.661353999969,
-     "total_ms": 1134.1581919999726,
-     "audio_ms_sent": 11536.0,
+     "tool_ms": 7.9527020000114135,
+     "tts_first_ms": 1066.0342500000297,
+     "tts_total_ms": 1066.0342500000297,
+     "ttfa_any_ms": 0.5628020001040568,
+     "ttfa_answer_ms": 1076.1123100000987,
+     "total_ms": 1076.6033869999774,
+     "audio_ms_sent": 11488.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Panna Cotta al Pistacchio may contain traces of peanuts. (Pistachio crumble made in a kitchen that handles peanuts)",
      "result": {
@@ -2143,7 +2143,7 @@
          },
          "answer": "Our verified allergen record says the Panna Cotta al Pistacchio may contain traces of peanuts. (Pistachio crumble made in a kitchen that handles peanuts)"
         },
-        "ms": 7.4,
+        "ms": 8.0,
         "attempts": 1
        }
       ],
@@ -2166,7 +2166,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 9.504785999979504
+      "total_ms": 9.986271000116176
      }
     }
    ]
@@ -2210,13 +2210,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.9327569999632033,
-     "tts_first_ms": 803.900418000012,
-     "tts_total_ms": 2875.4205760000104,
-     "ttfa_any_ms": 0.49593900007494085,
-     "ttfa_answer_ms": 809.2542000000549,
-     "total_ms": 2881.168391000074,
-     "audio_ms_sent": 24176.0,
+     "tool_ms": 6.792804000042452,
+     "tts_first_ms": 714.9821030000112,
+     "tts_total_ms": 2650.9184259996346,
+     "ttfa_any_ms": 0.5138470000929374,
+     "ttfa_answer_ms": 731.2681319999683,
+     "total_ms": 2661.5046310000707,
+     "audio_ms_sent": 24240.0,
      "interrupted": false,
      "spoken_text": "I can't confirm the allergens in the Pesto Rosso Bruschetta: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen. Our verified allergen record says the Bruschetta al Pomodoro is verified free of tree nuts. Our verified allergen record says the Trofie al Pesto Genovese contains tree nuts. (Pesto made in-house with pine nuts)",
      "result": {
@@ -2270,7 +2270,7 @@
           }
          ]
         },
-        "ms": 1.9,
+        "ms": 6.8,
         "attempts": 1
        }
       ],
@@ -2293,7 +2293,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 5.213241999967977
+      "total_ms": 10.004249000076015
      }
     }
    ]
@@ -2347,12 +2347,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 255.63614800000778,
-     "tts_total_ms": 255.63614800000778,
-     "ttfa_any_ms": 256.68745199993737,
-     "ttfa_answer_ms": 256.68745199993737,
-     "total_ms": 256.82372899996153,
-     "audio_ms_sent": 2064.0,
+     "tts_first_ms": 268.4223250000741,
+     "tts_total_ms": 268.4223250000741,
+     "ttfa_any_ms": 269.53875200001676,
+     "ttfa_answer_ms": 269.53875200001676,
+     "total_ms": 269.68634399986513,
+     "audio_ms_sent": 1984.0,
      "interrupted": false,
      "spoken_text": "Which dish would you like me to check?",
      "result": {
@@ -2375,7 +2375,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 0.9704939999437556
+      "total_ms": 1.0254209998947772
      }
     },
     {
@@ -2387,13 +2387,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3.2780779999939114,
-     "tts_first_ms": 631.0607929999605,
-     "tts_total_ms": 631.0607929999605,
-     "ttfa_any_ms": 0.8485660000587814,
-     "ttfa_answer_ms": 636.7397400000527,
-     "total_ms": 637.054691000003,
-     "audio_ms_sent": 7760.0,
+     "tool_ms": 4.73809799996161,
+     "tts_first_ms": 642.6506749999135,
+     "tts_total_ms": 642.6506749999135,
+     "ttfa_any_ms": 0.7929329999569745,
+     "ttfa_answer_ms": 649.6294649998617,
+     "total_ms": 649.9921780000477,
+     "audio_ms_sent": 7920.0,
      "interrupted": false,
      "spoken_text": "We have Minestrone, Trofie al Pesto Genovese, Spaghetti Carbonara, Penne Arrabbiata.",
      "result": {
@@ -2458,7 +2458,7 @@
           }
          ]
         },
-        "ms": 3.3,
+        "ms": 4.7,
         "attempts": 1
        }
       ],
@@ -2481,7 +2481,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 5.593687999976282
+      "total_ms": 6.902382999896872
      }
     }
    ]
@@ -2526,13 +2526,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.7172759999320988,
-     "tts_first_ms": 1085.1888990000589,
-     "tts_total_ms": 1085.1888990000589,
-     "ttfa_any_ms": 0.5854930000168679,
-     "ttfa_answer_ms": 1088.0023820000133,
-     "total_ms": 1088.454765999927,
-     "audio_ms_sent": 9968.0,
+     "tool_ms": 0.6698239999423095,
+     "tts_first_ms": 914.0771259999383,
+     "tts_total_ms": 914.0771259999383,
+     "ttfa_any_ms": 0.5887800000436982,
+     "ttfa_answer_ms": 916.8335169999864,
+     "total_ms": 917.2987309998462,
+     "audio_ms_sent": 10064.0,
      "interrupted": false,
      "spoken_text": "Our verified allergen record says the Calamari Fritti may contain traces of crustaceans and contains molluscs. (Shared fryer with prawns)",
      "result": {
@@ -2588,7 +2588,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.732118999915656
+      "total_ms": 2.6664399999845045
      }
     }
    ]
@@ -2648,12 +2648,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 269.4064980000803,
-     "tts_total_ms": 269.4064980000803,
-     "ttfa_any_ms": 270.4694550000113,
-     "ttfa_answer_ms": 270.4694550000113,
-     "total_ms": 270.6317429999672,
-     "audio_ms_sent": 1904.0,
+     "tts_first_ms": 298.9280219999273,
+     "tts_total_ms": 298.9280219999273,
+     "ttfa_any_ms": 299.99517999999625,
+     "ttfa_answer_ms": 299.99517999999625,
+     "total_ms": 300.1277210000808,
+     "audio_ms_sent": 2000.0,
      "interrupted": false,
      "spoken_text": "Which dish would you like me to check?",
      "result": {
@@ -2676,7 +2676,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 0.9853299999349474
+      "total_ms": 0.9838999999374209
      }
     }
    ]
@@ -2720,13 +2720,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.5706370000098104,
-     "tts_first_ms": 801.3323189999255,
-     "tts_total_ms": 801.3323189999255,
-     "ttfa_any_ms": 0.999786000079439,
-     "ttfa_answer_ms": 803.7929330000679,
-     "total_ms": 804.1390500000034,
-     "audio_ms_sent": 8656.0,
+     "tool_ms": 0.4943590001857956,
+     "tts_first_ms": 649.5842520000679,
+     "tts_total_ms": 649.5842520000679,
+     "ttfa_any_ms": 0.9684090000519063,
+     "ttfa_answer_ms": 655.8622860000014,
+     "total_ms": 656.21576500007,
+     "audio_ms_sent": 8528.0,
      "interrupted": false,
      "spoken_text": "We have Minestrone, Trofie al Pesto Genovese, Penne Arrabbiata, Gnocchi Gorgonzola e Noci.",
      "result": {
@@ -2776,7 +2776,7 @@
           }
          ]
         },
-        "ms": 0.6,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -2799,7 +2799,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.303189000031125
+      "total_ms": 2.25091699985569
      }
     }
    ]
@@ -2843,13 +2843,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.46897100003207015,
-     "tts_first_ms": 694.2108279999957,
-     "tts_total_ms": 694.2108279999957,
-     "ttfa_any_ms": 0.9819309999556936,
-     "ttfa_answer_ms": 696.3473079999858,
-     "total_ms": 696.7480529999648,
-     "audio_ms_sent": 7552.0,
+     "tool_ms": 0.7556499999736843,
+     "tts_first_ms": 635.9875180000927,
+     "tts_total_ms": 635.9875180000927,
+     "ttfa_any_ms": 1.265955999997459,
+     "ttfa_answer_ms": 638.3539979999568,
+     "total_ms": 639.1347379999388,
+     "audio_ms_sent": 7456.0,
      "interrupted": false,
      "spoken_text": "On Tuesday 17 November we're open 12 PM to 3 PM and 6 PM to 10:30 PM.",
      "result": {
@@ -2878,7 +2878,7 @@
           }
          ]
         },
-        "ms": 0.5,
+        "ms": 0.8,
         "attempts": 1
        }
       ],
@@ -2901,7 +2901,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.929067999981271
+      "total_ms": 2.2166529997775797
      }
     }
    ]
@@ -2935,13 +2935,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.3823810000085359,
-     "tts_first_ms": 298.02951099998154,
-     "tts_total_ms": 298.02951099998154,
-     "ttfa_any_ms": 0.9119409999129857,
-     "ttfa_answer_ms": 301.2081939999689,
-     "total_ms": 301.35902799997893,
-     "audio_ms_sent": 4416.0,
+     "tool_ms": 0.5469610000545799,
+     "tts_first_ms": 370.46213600001465,
+     "tts_total_ms": 370.46213600001465,
+     "ttfa_any_ms": 1.0117480001099466,
+     "ttfa_answer_ms": 372.49815800009856,
+     "total_ms": 372.6490400001694,
+     "audio_ms_sent": 4272.0,
      "interrupted": false,
      "spoken_text": "We're closed on Monday 16 November.",
      "result": {
@@ -2958,7 +2958,7 @@
          "weekday": "Monday 16 November",
          "closed": true
         },
-        "ms": 0.4,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -2981,7 +2981,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.5958319999972446
+      "total_ms": 1.8714210000325693
      }
     }
    ]
@@ -3021,12 +3021,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 685.8472590000702,
-     "tts_total_ms": 851.8229000001156,
-     "ttfa_any_ms": 687.271227999986,
-     "ttfa_answer_ms": 687.271227999986,
-     "total_ms": 853.3158089999233,
-     "audio_ms_sent": 6320.0,
+     "tts_first_ms": 547.4163429998953,
+     "tts_total_ms": 723.8941619998513,
+     "ttfa_any_ms": 555.1216999999724,
+     "ttfa_answer_ms": 555.1216999999724,
+     "total_ms": 728.8794030000645,
+     "audio_ms_sent": 6096.0,
      "interrupted": false,
      "spoken_text": "I can help with table bookings, our menu, opening hours and allergen questions. What would you like to do?",
      "result": {
@@ -3049,7 +3049,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.2856770000553297
+      "total_ms": 4.109929000151169
      }
     }
    ]
@@ -3093,13 +3093,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.7955009999704998,
-     "tts_first_ms": 882.6753560000498,
-     "tts_total_ms": 882.6753560000498,
-     "ttfa_any_ms": 0.9940259999439149,
-     "ttfa_answer_ms": 884.9600669999518,
-     "total_ms": 885.3996240000015,
-     "audio_ms_sent": 9984.0,
+     "tool_ms": 0.5633889998080122,
+     "tts_first_ms": 895.1458020001155,
+     "tts_total_ms": 895.1458020001155,
+     "ttfa_any_ms": 0.8885740001005615,
+     "ttfa_answer_ms": 897.1535030000268,
+     "total_ms": 897.6028420001967,
+     "audio_ms_sent": 10416.0,
      "interrupted": false,
      "spoken_text": "Done, I've cancelled a table for 4 under Daniel Fernandes on Friday 13 November at 9 PM, confirmation code T V D 4 F 8.",
      "result": {
@@ -3116,7 +3116,7 @@
          "code": "TV-D4F8",
          "readback": "a table for 4 under Daniel Fernandes on Friday 13 November at 9 PM, confirmation code T V D 4 F 8"
         },
-        "ms": 0.8,
+        "ms": 0.6,
         "attempts": 1
        }
       ],
@@ -3139,7 +3139,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.126823000025979
+      "total_ms": 1.8355539998538006
      }
     }
    ]
@@ -3183,13 +3183,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.3614490000009027,
-     "tts_first_ms": 913.427716000001,
-     "tts_total_ms": 913.427716000001,
-     "ttfa_any_ms": 0.35555400006614946,
-     "ttfa_answer_ms": 916.026966000004,
-     "total_ms": 916.4804279999998,
-     "audio_ms_sent": 10256.0,
+     "tool_ms": 5.487492999918686,
+     "tts_first_ms": 878.5920029999943,
+     "tts_total_ms": 878.5920029999943,
+     "ttfa_any_ms": 0.34326099989812064,
+     "ttfa_answer_ms": 885.4437780000808,
+     "total_ms": 885.8823049999955,
+     "audio_ms_sent": 10224.0,
      "interrupted": false,
      "spoken_text": "Done, I've cancelled a table for 2 under Ananya Rao on Friday 13 November at 7 PM, confirmation code T V A 7 K 2.",
      "result": {
@@ -3206,7 +3206,7 @@
          "code": "TV-A7K2",
          "readback": "a table for 2 under Ananya Rao on Friday 13 November at 7 PM, confirmation code T V A 7 K 2"
         },
-        "ms": 1.4,
+        "ms": 5.5,
         "attempts": 1
        }
       ],
@@ -3229,7 +3229,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.5252000000364205
+      "total_ms": 6.758603999969637
      }
     }
    ]
@@ -3263,13 +3263,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 1.2482230000614436,
-     "tts_first_ms": 272.67753000000994,
-     "tts_total_ms": 514.9659749999955,
-     "ttfa_any_ms": 0.3507220000074085,
-     "ttfa_answer_ms": 275.4472680001072,
-     "total_ms": 517.943004000017,
-     "audio_ms_sent": 5984.0,
+     "tool_ms": 1.9225380001444137,
+     "tts_first_ms": 273.1780780000008,
+     "tts_total_ms": 536.995012000034,
+     "ttfa_any_ms": 0.9198959999139333,
+     "ttfa_answer_ms": 276.56680499990216,
+     "total_ms": 540.5023050000182,
+     "audio_ms_sent": 6032.0,
      "interrupted": false,
      "spoken_text": "This phone number doesn't match the booking. Ask for the confirmation code.",
      "result": {
@@ -3285,7 +3285,7 @@
          "error": "verification_required",
          "message": "This phone number doesn't match the booking. Ask for the confirmation code."
         },
-        "ms": 1.2,
+        "ms": 1.9,
         "attempts": 1
        }
       ],
@@ -3308,7 +3308,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.647199999955774
+      "total_ms": 3.227318999961426
      }
     }
    ]
@@ -3353,13 +3353,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.7893279999962033,
-     "tts_first_ms": 859.915706000038,
-     "tts_total_ms": 859.915706000038,
-     "ttfa_any_ms": 0.4276359999266788,
-     "ttfa_answer_ms": 862.0295839999699,
-     "total_ms": 862.4503159999222,
-     "audio_ms_sent": 9472.0,
+     "tool_ms": 4.071836999855805,
+     "tts_first_ms": 950.2353360001052,
+     "tts_total_ms": 950.2353360001052,
+     "ttfa_any_ms": 3.5841760000039358,
+     "ttfa_answer_ms": 955.7639270001346,
+     "total_ms": 956.285581000202,
+     "audio_ms_sent": 9872.0,
      "interrupted": false,
      "spoken_text": "Done, it's now a table for 6 under Vikram Mehta on Sunday 15 November at 2 PM, confirmation code T V V 3 M 9.",
      "result": {
@@ -3378,7 +3378,7 @@
          "code": "TV-V3M9",
          "readback": "a table for 6 under Vikram Mehta on Sunday 15 November at 2 PM, confirmation code T V V 3 M 9"
         },
-        "ms": 0.8,
+        "ms": 4.1,
         "attempts": 1
        }
       ],
@@ -3401,7 +3401,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.03015299996423
+      "total_ms": 5.404171000009228
      }
     }
    ]
@@ -3446,13 +3446,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 4.090602000019317,
-     "tts_first_ms": 1073.2375850000153,
-     "tts_total_ms": 1073.2375850000153,
-     "ttfa_any_ms": 7.073541000067962,
-     "ttfa_answer_ms": 1081.8705380000893,
-     "total_ms": 1082.3751760000277,
-     "audio_ms_sent": 10032.0,
+     "tool_ms": 0.7291459999123617,
+     "tts_first_ms": 1041.206013999954,
+     "tts_total_ms": 1041.206013999954,
+     "ttfa_any_ms": 1.0519130000830046,
+     "ttfa_answer_ms": 1043.4296639998593,
+     "total_ms": 1043.8871260000724,
+     "audio_ms_sent": 10016.0,
      "interrupted": false,
      "spoken_text": "Done, it's now a table for 4 under Ananya Rao on Friday 13 November at 7 PM, confirmation code T V A 7 K 2.",
      "result": {
@@ -3470,7 +3470,7 @@
          "code": "TV-A7K2",
          "readback": "a table for 4 under Ananya Rao on Friday 13 November at 7 PM, confirmation code T V A 7 K 2"
         },
-        "ms": 4.1,
+        "ms": 0.7,
         "attempts": 1
        }
       ],
@@ -3493,7 +3493,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 8.3615280000231
+      "total_ms": 2.013782000176434
      }
     }
    ]
@@ -3535,13 +3535,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.8115220000490808,
-     "tts_first_ms": 461.85083000000304,
-     "tts_total_ms": 461.85083000000304,
-     "ttfa_any_ms": 0.45853300002818287,
-     "ttfa_answer_ms": 463.8791109999829,
-     "total_ms": 464.0581950000069,
-     "audio_ms_sent": 4864.0,
+     "tool_ms": 0.8135779999065562,
+     "tts_first_ms": 439.22469100016315,
+     "tts_total_ms": 439.22469100016315,
+     "ttfa_any_ms": 0.41487600014988857,
+     "ttfa_answer_ms": 441.2226819999887,
+     "total_ms": 441.405087000021,
+     "audio_ms_sent": 5104.0,
      "interrupted": false,
      "spoken_text": "A member of staff will call you back as soon as we open.",
      "result": {
@@ -3556,7 +3556,7 @@
         },
         "result": {
          "status": "handoff_created",
-         "ticket": "H-BDC4C",
+         "ticket": "H-04978",
          "message": "A member of staff will call you back as soon as we open."
         },
         "ms": 0.8,
@@ -3582,7 +3582,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": true,
-      "total_ms": 1.947878999999375
+      "total_ms": 1.9123100000797422
      }
     }
    ]
@@ -3624,12 +3624,12 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 2.137564999998176,
-     "tts_first_ms": 475.8620830000382,
-     "tts_total_ms": 475.8620830000382,
-     "ttfa_any_ms": 1.9756410000582036,
-     "ttfa_answer_ms": 479.2553440000802,
-     "total_ms": 479.4439320000947,
+     "tool_ms": 0.49770000009630166,
+     "tts_first_ms": 443.9096039998276,
+     "tts_total_ms": 443.9096039998276,
+     "ttfa_any_ms": 0.7571379999262717,
+     "ttfa_answer_ms": 445.7538139999997,
+     "total_ms": 446.03329899996425,
      "audio_ms_sent": 4992.0,
      "interrupted": false,
      "spoken_text": "A member of staff will call you back as soon as we open.",
@@ -3645,10 +3645,10 @@
         },
         "result": {
          "status": "handoff_created",
-         "ticket": "H-1E754",
+         "ticket": "H-E3108",
          "message": "A member of staff will call you back as soon as we open."
         },
-        "ms": 2.1,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -3671,7 +3671,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": true,
-      "total_ms": 3.2998109999198277
+      "total_ms": 1.6850869999416318
      }
     }
    ]
@@ -3713,13 +3713,13 @@
      "llm_ms": 0.0,
      "llm_calls": 3,
      "llm_cached_calls": 0,
-     "tool_ms": 2.172758000028807,
-     "tts_first_ms": 507.14835899998434,
-     "tts_total_ms": 507.14835899998434,
-     "ttfa_any_ms": 2.357511000013801,
-     "ttfa_answer_ms": 511.27895199999784,
-     "total_ms": 511.4759470000081,
-     "audio_ms_sent": 5152.0,
+     "tool_ms": 0.7120650000160822,
+     "tts_first_ms": 415.93928099996447,
+     "tts_total_ms": 415.93928099996447,
+     "ttfa_any_ms": 0.8005210002011154,
+     "ttfa_answer_ms": 418.5018160001164,
+     "total_ms": 418.6749850000524,
+     "audio_ms_sent": 4960.0,
      "interrupted": false,
      "spoken_text": "A member of staff will call you back as soon as we open.",
      "result": {
@@ -3740,7 +3740,7 @@
          "message": "Parties over 8 are handled by our events team.",
          "suggest": "handoff_to_human"
         },
-        "ms": 1.8,
+        "ms": 0.3,
         "attempts": 1
        },
        {
@@ -3750,7 +3750,7 @@
         },
         "result": {
          "status": "handoff_created",
-         "ticket": "H-FF23B",
+         "ticket": "H-16EDC",
          "message": "A member of staff will call you back as soon as we open."
         },
         "ms": 0.4,
@@ -3779,7 +3779,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": true,
-      "total_ms": 4.053958999975293
+      "total_ms": 2.478743999972721
      }
     }
    ]
@@ -3826,13 +3826,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 204.63573999995788,
-     "tts_first_ms": 1138.0506680000053,
-     "tts_total_ms": 1138.0506680000053,
-     "ttfa_any_ms": 4.909805000011147,
-     "ttfa_answer_ms": 1348.6932400001024,
-     "total_ms": 1349.129279000067,
-     "audio_ms_sent": 10176.0,
+     "tool_ms": 201.79253800006336,
+     "tts_first_ms": 962.6233589999629,
+     "tts_total_ms": 962.6233589999629,
+     "ttfa_any_ms": 0.7543189999523747,
+     "ttfa_answer_ms": 1166.1498290000054,
+     "total_ms": 1166.5826949999882,
+     "audio_ms_sent": 10272.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 2 under Asha Kumar on Saturday 14 November at 1:30 PM, confirmation code T V Q 6 A Y.",
      "result": {
@@ -3856,7 +3856,7 @@
          "name": "Asha Kumar",
          "readback": "a table for 2 under Asha Kumar on Saturday 14 November at 1:30 PM, confirmation code T V Q 6 A Y"
         },
-        "ms": 204.6,
+        "ms": 201.8,
         "attempts": 2
        }
       ],
@@ -3879,7 +3879,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 210.55103000003328
+      "total_ms": 203.41163300008702
      }
     }
    ]
@@ -3926,13 +3926,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 606.5228180000304,
-     "tts_first_ms": 382.2973119999915,
-     "tts_total_ms": 934.759854000049,
-     "ttfa_any_ms": 0.6580189999567665,
-     "ttfa_answer_ms": 993.541596,
-     "total_ms": 1546.2238540000044,
-     "audio_ms_sent": 8912.0,
+     "tool_ms": 605.066005000026,
+     "tts_first_ms": 300.1129710000896,
+     "tts_total_ms": 840.9672469999805,
+     "ttfa_any_ms": 0.7122740000795602,
+     "ttfa_answer_ms": 907.1620839999923,
+     "total_ms": 1448.2492649999585,
+     "audio_ms_sent": 9040.0,
      "interrupted": false,
      "spoken_text": "Sorry, our booking system isn't responding. I've opened a callback request so a staff member can finish it and call you back.",
      "result": {
@@ -3952,9 +3952,9 @@
          "retryable": false,
          "message": "The create reservation system is not responding (create_reservation: backend unavailable (injected)). A callback ticket was opened for staff to complete it.",
          "handoff_created": true,
-         "ticket": "H-3C000"
+         "ticket": "H-FC49F"
         },
-        "ms": 606.5,
+        "ms": 605.1,
         "attempts": 3
        }
       ],
@@ -3977,7 +3977,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": true,
-      "total_ms": 611.0651540000163
+      "total_ms": 606.9084109999494
      }
     }
    ]
@@ -4021,13 +4021,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3610.36259399998,
-     "tts_first_ms": 470.64816700003576,
-     "tts_total_ms": 815.9065259999352,
-     "ttfa_any_ms": 0.5932440000151473,
-     "ttfa_answer_ms": 4082.903201000022,
-     "total_ms": 4428.206424000109,
-     "audio_ms_sent": 7536.0,
+     "tool_ms": 3605.087560000129,
+     "tts_first_ms": 369.1467119999743,
+     "tts_total_ms": 802.1813709999606,
+     "ttfa_any_ms": 0.5884340000648081,
+     "ttfa_answer_ms": 3976.214368000001,
+     "total_ms": 4409.370539000065,
+     "audio_ms_sent": 7488.0,
      "interrupted": false,
      "spoken_text": "Sorry, that system isn't responding right now. I can connect you with a staff member if you like.",
      "result": {
@@ -4046,7 +4046,7 @@
          "message": "The get allergens system is not responding (TimeoutError).",
          "suggest": "apologise; offer handoff_to_human"
         },
-        "ms": 3610.4,
+        "ms": 3605.1,
         "attempts": 3
        }
       ],
@@ -4069,7 +4069,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 3612.0392080000556
+      "total_ms": 3606.8868980000843
      }
     }
    ]
@@ -4104,12 +4104,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 169.32754300000852,
-     "tts_total_ms": 406.754363999994,
-     "ttfa_any_ms": 170.77435700002752,
-     "ttfa_answer_ms": 170.77435700002752,
-     "total_ms": 408.2744700000376,
-     "audio_ms_sent": 2784.0,
+     "tts_first_ms": 255.9392860000571,
+     "tts_total_ms": 606.2878060001822,
+     "ttfa_any_ms": 261.66640600013125,
+     "ttfa_answer_ms": 261.66640600013125,
+     "total_ms": 612.0650510001724,
+     "audio_ms_sent": 2800.0,
      "interrupted": false,
      "spoken_text": "Happy to book that. Could you tell me how many people?",
      "result": {
@@ -4132,7 +4132,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.3052329999254653
+      "total_ms": 1.300372000059724
      }
     },
     {
@@ -4144,12 +4144,12 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 2.9242850000628096,
-     "tts_first_ms": 953.3483640000213,
-     "tts_total_ms": 953.3483640000213,
-     "ttfa_any_ms": 0.729501000023447,
-     "ttfa_answer_ms": 957.9946830000381,
-     "total_ms": 958.4352750000562,
+     "tool_ms": 4.5158949999404285,
+     "tts_first_ms": 1167.4034349998692,
+     "tts_total_ms": 1167.4034349998692,
+     "ttfa_any_ms": 0.8453549999103416,
+     "ttfa_answer_ms": 1174.2150649999985,
+     "total_ms": 1174.677081000027,
      "audio_ms_sent": 10336.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 4 under Rohan Kapoor on Friday 13 November at 7:30 PM, confirmation code T V Q 3 U 2.",
@@ -4174,7 +4174,7 @@
          "name": "Rohan Kapoor",
          "readback": "a table for 4 under Rohan Kapoor on Friday 13 November at 7:30 PM, confirmation code T V Q 3 U 2"
         },
-        "ms": 2.9,
+        "ms": 4.5,
         "attempts": 1
        }
       ],
@@ -4197,7 +4197,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 4.569946999936292
+      "total_ms": 6.631033000076059
      }
     }
    ]
@@ -4232,12 +4232,12 @@
      "llm_calls": 0,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 192.14331200009838,
-     "tts_total_ms": 324.39973700013525,
-     "ttfa_any_ms": 192.31124700002056,
-     "ttfa_answer_ms": 192.31124700002056,
-     "total_ms": 324.6068590000277,
-     "audio_ms_sent": 2896.0,
+     "tts_first_ms": 239.42273500006195,
+     "tts_total_ms": 398.42404400019404,
+     "ttfa_any_ms": 247.22770200014565,
+     "ttfa_answer_ms": 247.22770200014565,
+     "total_ms": 398.72756900012973,
+     "audio_ms_sent": 2960.0,
      "interrupted": false,
      "spoken_text": "Sorry, I didn't catch that. Could you say it again?",
      "result": {
@@ -4254,7 +4254,7 @@
       "clarified": true,
       "degraded": false,
       "handoff": false,
-      "total_ms": 0.00720399998499488
+      "total_ms": 0.006140999857962015
      }
     }
    ]
@@ -4301,13 +4301,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3.316016999974636,
-     "tts_first_ms": 843.5054469999841,
-     "tts_total_ms": 843.5054469999841,
-     "ttfa_any_ms": 0.637657000083891,
-     "ttfa_answer_ms": 848.895207000055,
-     "total_ms": 849.0303849999918,
-     "audio_ms_sent": 3312.0,
+     "tool_ms": 4.871323999850574,
+     "tts_first_ms": 805.891728000006,
+     "tts_total_ms": 805.891728000006,
+     "ttfa_any_ms": 4.881260000047405,
+     "ttfa_answer_ms": 812.9623150000498,
+     "total_ms": 813.1280549998792,
+     "audio_ms_sent": 3232.0,
      "interrupted": true,
      "spoken_text": "We have ...",
      "result": {
@@ -4372,7 +4372,7 @@
           }
          ]
         },
-        "ms": 3.3,
+        "ms": 4.9,
         "attempts": 1
        }
       ],
@@ -4395,7 +4395,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 5.316449000019929
+      "total_ms": 6.979388999980074
      }
     },
     {
@@ -4407,13 +4407,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.8010980000108248,
-     "tts_first_ms": 985.0262939999084,
-     "tts_total_ms": 985.0262939999084,
-     "ttfa_any_ms": 0.7667090000040844,
-     "ttfa_answer_ms": 987.5735829999712,
-     "total_ms": 988.0264509999961,
-     "audio_ms_sent": 10256.0,
+     "tool_ms": 0.9115989998917939,
+     "tts_first_ms": 885.7279169999401,
+     "tts_total_ms": 885.7279169999401,
+     "ttfa_any_ms": 1.64283100002649,
+     "ttfa_answer_ms": 888.6722669999472,
+     "total_ms": 889.1437219999716,
+     "audio_ms_sent": 10352.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 2 under Kavya Iyer on Sunday 15 November at 7 PM, confirmation code T V M Y M J.",
      "result": {
@@ -4437,7 +4437,7 @@
          "name": "Kavya Iyer",
          "readback": "a table for 2 under Kavya Iyer on Sunday 15 November at 7 PM, confirmation code T V M Y M J"
         },
-        "ms": 0.8,
+        "ms": 0.9,
         "attempts": 1
        }
       ],
@@ -4460,7 +4460,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.4817060000259517
+      "total_ms": 2.780325999992783
      }
     }
    ]
@@ -4494,13 +4494,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 3.7359369999876435,
-     "tts_first_ms": 902.6156869999795,
-     "tts_total_ms": 902.6156869999795,
-     "ttfa_any_ms": 0.673161000008804,
-     "ttfa_answer_ms": 907.9554950000102,
-     "total_ms": 908.4107150000591,
-     "audio_ms_sent": 9984.0,
+     "tool_ms": 0.882444999888321,
+     "tts_first_ms": 878.8030149999031,
+     "tts_total_ms": 878.8030149999031,
+     "ttfa_any_ms": 0.735338000140473,
+     "ttfa_answer_ms": 881.3272280001456,
+     "total_ms": 882.3612210001102,
+     "audio_ms_sent": 9792.0,
      "interrupted": false,
      "spoken_text": "You're booked: a table for 2 under Nikhil Jain on Sunday 15 November at 8 PM, confirmation code T V B N E 2.",
      "result": {
@@ -4524,7 +4524,7 @@
          "name": "Nikhil Jain",
          "readback": "a table for 2 under Nikhil Jain on Sunday 15 November at 8 PM, confirmation code T V B N E 2"
         },
-        "ms": 3.7,
+        "ms": 0.9,
         "attempts": 1
        }
       ],
@@ -4547,7 +4547,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 5.265255999916008
+      "total_ms": 2.4391500001001987
      }
     },
     {
@@ -4560,12 +4560,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 572.8535240000383,
-     "tts_total_ms": 794.809874000066,
-     "ttfa_any_ms": 574.5659330000308,
-     "ttfa_answer_ms": 574.5659330000308,
-     "total_ms": 796.5235499999608,
-     "audio_ms_sent": 6496.0,
+     "tts_first_ms": 591.7432010000994,
+     "tts_total_ms": 829.9733400001514,
+     "ttfa_any_ms": 594.9016980000579,
+     "ttfa_answer_ms": 594.9016980000579,
+     "total_ms": 833.2261040000049,
+     "audio_ms_sent": 6800.0,
      "interrupted": false,
      "spoken_text": "I can help with table bookings, our menu, opening hours and allergen questions. What would you like to do?",
      "result": {
@@ -4588,7 +4588,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.488596000058351
+      "total_ms": 2.903786999922886
      }
     }
    ]
@@ -4622,13 +4622,13 @@
      "llm_ms": 0.0,
      "llm_calls": 1,
      "llm_cached_calls": 0,
-     "tool_ms": 5.667125000059059,
-     "tts_first_ms": 248.62873000006402,
-     "tts_total_ms": 612.8429080000615,
-     "ttfa_any_ms": 254.65977099997872,
-     "ttfa_answer_ms": 254.65977099997872,
-     "total_ms": 619.0524490000371,
-     "audio_ms_sent": 5200.0,
+     "tool_ms": 0.5077030000393279,
+     "tts_first_ms": 259.92606799991336,
+     "tts_total_ms": 623.548178999954,
+     "ttfa_any_ms": 260.7358039999781,
+     "ttfa_answer_ms": 260.7358039999781,
+     "total_ms": 624.5201809999799,
+     "audio_ms_sent": 5440.0,
      "interrupted": false,
      "spoken_text": "Sorry, I'm having technical trouble. I've asked a member of our staff to call you back shortly.",
      "result": {
@@ -4643,10 +4643,10 @@
         },
         "result": {
          "status": "handoff_created",
-         "ticket": "H-46760",
+         "ticket": "H-D052A",
          "message": "A member of staff will call you back as soon as we open."
         },
-        "ms": 5.7,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -4664,7 +4664,7 @@
       "clarified": false,
       "degraded": true,
       "handoff": true,
-      "total_ms": 5.841426999950272
+      "total_ms": 0.6631989999732468
      }
     }
    ]
@@ -4698,13 +4698,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.7068490000392558,
-     "tts_first_ms": 680.8678290000216,
-     "tts_total_ms": 1137.2883420000335,
-     "ttfa_any_ms": 0.7525480000367679,
-     "ttfa_answer_ms": 683.7062500000002,
-     "total_ms": 1140.3003960000433,
-     "audio_ms_sent": 11232.0,
+     "tool_ms": 0.905547000002116,
+     "tts_first_ms": 695.653239999956,
+     "tts_total_ms": 1049.6139609999773,
+     "ttfa_any_ms": 1.338848999921538,
+     "ttfa_answer_ms": 698.5421839999617,
+     "total_ms": 1052.6776920000884,
+     "audio_ms_sent": 11024.0,
      "interrupted": false,
      "spoken_text": "I can't confirm the allergens in the Risotto del Giorno: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
      "result": {
@@ -4724,7 +4724,7 @@
          "answer": "I can't confirm the allergens in the Risotto del Giorno: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
          "policy": "DO NOT GUESS. Say you can't confirm and offer a staff handoff."
         },
-        "ms": 0.7,
+        "ms": 0.9,
         "attempts": 1
        }
       ],
@@ -4747,7 +4747,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 2.703390000078798
+      "total_ms": 2.679073000081189
      }
     }
    ]
@@ -4791,13 +4791,13 @@
      "llm_ms": 0.0,
      "llm_calls": 2,
      "llm_cached_calls": 0,
-     "tool_ms": 0.8841850000180784,
-     "tts_first_ms": 748.1858730000113,
-     "tts_total_ms": 1190.9680270000536,
-     "ttfa_any_ms": 0.7443189999776223,
-     "ttfa_answer_ms": 751.3257099999464,
-     "total_ms": 1194.380285999955,
-     "audio_ms_sent": 11088.0,
+     "tool_ms": 0.45516499994846527,
+     "tts_first_ms": 642.9193600001781,
+     "tts_total_ms": 1046.268140000393,
+     "ttfa_any_ms": 1.0564870001417148,
+     "ttfa_answer_ms": 650.9935970000242,
+     "total_ms": 1049.0655759999754,
+     "audio_ms_sent": 11152.0,
      "interrupted": false,
      "spoken_text": "I can't confirm the allergens in the Sorbetto al Limone: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
      "result": {
@@ -4817,7 +4817,7 @@
          "answer": "I can't confirm the allergens in the Sorbetto al Limone: we don't have a verified allergen record for it. I can connect you with a staff member to check with the kitchen.",
          "policy": "DO NOT GUESS. Say you can't confirm and offer a staff handoff."
         },
-        "ms": 0.9,
+        "ms": 0.5,
         "attempts": 1
        }
       ],
@@ -4840,7 +4840,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 3.000108999913209
+      "total_ms": 2.4253929998394597
      }
     }
    ]
@@ -4875,12 +4875,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 629.1652410000097,
-     "tts_total_ms": 813.6509130000604,
-     "ttfa_any_ms": 630.5289429999448,
-     "ttfa_answer_ms": 630.5289429999448,
-     "total_ms": 815.079030999982,
-     "audio_ms_sent": 6352.0,
+     "tts_first_ms": 571.8377000000601,
+     "tts_total_ms": 775.5268690000321,
+     "ttfa_any_ms": 573.2126350001181,
+     "ttfa_answer_ms": 573.2126350001181,
+     "total_ms": 776.9867430001796,
+     "audio_ms_sent": 6496.0,
      "interrupted": false,
      "spoken_text": "I can help with table bookings, our menu, opening hours and allergen questions. What would you like to do?",
      "result": {
@@ -4903,7 +4903,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.2222780000001876
+      "total_ms": 1.2463560001378937
      }
     }
    ]
@@ -4938,12 +4938,12 @@
      "llm_calls": 1,
      "llm_cached_calls": 0,
      "tool_ms": 0,
-     "tts_first_ms": 155.54095799996048,
-     "tts_total_ms": 362.7762339999663,
-     "ttfa_any_ms": 156.95022199997766,
-     "ttfa_answer_ms": 156.95022199997766,
-     "total_ms": 364.26496699994004,
-     "audio_ms_sent": 2848.0,
+     "tts_first_ms": 180.87652999997772,
+     "tts_total_ms": 449.84654400013824,
+     "ttfa_any_ms": 182.23906699995496,
+     "ttfa_answer_ms": 182.23906699995496,
+     "total_ms": 451.2824839998757,
+     "audio_ms_sent": 2720.0,
      "interrupted": false,
      "spoken_text": "Happy to book that. Could you tell me how many people?",
      "result": {
@@ -4966,7 +4966,7 @@
       "clarified": false,
       "degraded": false,
       "handoff": false,
-      "total_ms": 1.2705870000218056
+      "total_ms": 1.2235789999976987
      }
     }
    ]
