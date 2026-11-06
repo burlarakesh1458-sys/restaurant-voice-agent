@@ -1,0 +1,26 @@
+id,name,aliases,category,description,price_inr,vegetarian,vegan,ingredients,allergen_info_status,allergen_note
+1,Bruschetta al Pomodoro,bruschetta|tomato bruschetta,antipasti,"Grilled sourdough with tomato, garlic and basil",320,1,1,sourdough bread|tomato|garlic|basil|olive oil,verified,
+2,Pesto Rosso Bruschetta,pesto rosso|red pesto bruschetta|pesto bruschetta,antipasti,Toast with sun-dried tomato pesto and ricotta,360,1,0,sourdough bread|sun-dried tomato pesto|ricotta,unverified,New pesto supplier since November; allergen sheet not yet received
+3,Burrata e Pomodorini,burrata,antipasti,Fresh burrata with cherry tomatoes and basil oil,520,1,0,burrata|cherry tomato|basil oil,verified,
+4,Calamari Fritti,calamari|fried calamari|fried squid,antipasti,Crispy fried squid with lemon aioli,560,0,0,squid|flour|egg|lemon aioli,verified,Shared fryer with prawns
+5,Arancini ai Funghi,arancini|mushroom arancini|rice balls,antipasti,Fried risotto balls with mushroom and mozzarella,420,1,0,arborio rice|mushroom|mozzarella|breadcrumbs|egg,verified,
+6,Minestrone,minestrone soup|vegetable soup,zuppe,Vegetable soup with ditalini pasta,300,1,1,celery|carrot|beans|ditalini pasta|tomato,verified,
+7,Insalata Caprese,caprese|caprese salad,insalate,"Tomato, mozzarella, basil",450,1,0,tomato|mozzarella|basil|olive oil,verified,
+8,Caesar Salad,caesar,insalate,"Romaine, anchovy dressing, parmesan, croutons",480,0,0,romaine|anchovy|egg yolk|parmesan|croutons|dijon mustard,verified,
+9,Trofie al Pesto Genovese,pesto|pesto pasta|trofie|pesto genovese|basil pesto,pasta,"Hand-rolled trofie with basil pesto, pine nuts and pecorino",640,1,0,trofie pasta|basil|pine nuts|parmigiano|pecorino|garlic|olive oil,verified,Pesto made in-house with pine nuts
+10,Spaghetti Carbonara,carbonara,pasta,"Spaghetti, egg yolk, pecorino, guanciale",620,0,0,spaghetti|egg yolk|pecorino|guanciale|black pepper,verified,
+11,Penne Arrabbiata,arrabbiata|penne,pasta,Penne in spicy tomato sauce,520,1,1,penne|tomato|chilli|garlic|olive oil,verified,
+12,Linguine ai Frutti di Mare,seafood linguine|frutti di mare|seafood pasta,pasta,"Linguine with prawns, mussels, clams and white wine",880,0,0,linguine|prawns|mussels|clams|white wine|garlic,verified,
+13,Lasagna della Nonna,lasagna|lasagne,pasta,Baked lasagna with chicken ragu and bechamel,720,0,0,pasta sheets|chicken ragu|bechamel|parmigiano|celery|egg,verified,
+14,Gnocchi Gorgonzola e Noci,gnocchi|gorgonzola gnocchi,pasta,Potato gnocchi with gorgonzola cream and walnuts,690,1,0,potato gnocchi|gorgonzola|cream|walnuts|egg|flour,verified,
+15,Pizza Margherita,margherita|margherita pizza|cheese pizza,pizza,"Tomato, fior di latte, basil",560,1,0,pizza dough|tomato|fior di latte|basil,verified,Sesame not assessed: shares the oven with the sesame focaccia
+16,Pizza Diavola,diavola|pepperoni pizza|spicy pizza,pizza,"Tomato, mozzarella, spicy chicken salami",660,0,0,pizza dough|tomato|mozzarella|chicken salami|chilli,verified,
+17,Pollo alla Cacciatora,chicken cacciatora|cacciatora|hunter's chicken,secondi,"Braised chicken with tomato, olives and white wine",780,0,0,chicken|tomato|olives|white wine|celery|rosemary,verified,
+18,Branzino al Forno,branzino|sea bass|baked fish,secondi,Oven-baked sea bass with lemon and herbs,950,0,0,sea bass|lemon|herbs|olive oil,verified,
+19,Risotto del Giorno,risotto|risotto of the day|chef's risotto|special risotto,secondi,Chef's risotto of the day; ingredients change daily,740,1,0,arborio rice|seasonal ingredients,missing,Changes daily; no allergen sheet
+20,Melanzane alla Parmigiana,parmigiana|eggplant parmigiana|aubergine parmigiana,secondi,"Baked aubergine, tomato and mozzarella",640,1,0,aubergine|tomato|mozzarella|parmigiana|flour|egg,verified,
+21,Tiramisu,tiramisu,dolci,"Mascarpone, coffee-soaked savoiardi, cocoa",420,1,0,mascarpone|egg|savoiardi|coffee|marsala|cocoa,verified,
+22,Panna Cotta al Pistacchio,panna cotta|pistachio panna cotta,dolci,Vanilla panna cotta with pistachio crumble,400,1,0,cream|gelatin|vanilla|pistachio,verified,Pistachio crumble made in a kitchen that handles peanuts
+23,Torta Caprese,chocolate almond cake|torta caprese|chocolate cake,dolci,Flourless chocolate and almond cake,380,1,0,dark chocolate|almonds|eggs|butter|sugar,verified,
+24,Sorbetto al Limone,lemon sorbet|sorbet|sorbetto,dolci,Lemon sorbet from an outside supplier,300,1,1,lemon|sugar|water,unverified,Supplier allergen declaration expired; awaiting renewal
+25,Focaccia della Casa,focaccia|house bread|bread,pane,Rosemary focaccia with sesame crust,250,1,1,flour|olive oil|rosemary|sesame seeds|salt,verified,
