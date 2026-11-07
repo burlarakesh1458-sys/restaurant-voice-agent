@@ -25,18 +25,30 @@ from .tools import ALLERGEN_WORDS, RestaurantTools, label
 HEDGES = re.compile(
     r"(can't|cannot|can not|unable to|not able to|couldn't|won't) (confirm|guarantee|verify|say|be sure)|"
     r"(don't|do not) (have|hold) (a )?verified|no verified|not (been )?verified|isn't verified|unverified|"
-    r"not (been )?assessed|no (allergen )?record|not sure|don't know|do not know|check with the kitchen", re.I)
+    r"not (been )?assessed|no (allergen )?record|not sure|don't know|do not know|check with the kitchen",
+    re.I,
+)
 _A = "|".join(sorted((re.escape(k) for k in ALLERGEN_WORDS), key=len, reverse=True)) + "|dairy|allergens?"
-POSITIVE = re.compile(r"\b(contain|contains|containing|has|have|made with|includes?|including|uses?|with|"
-                      r"topped|cooked in|traces|may)\b", re.I)
+POSITIVE = re.compile(
+    r"\b(contain|contains|containing|has|have|made with|includes?|including|uses?|with|"
+    r"topped|cooked in|traces|may)\b",
+    re.I,
+)
 NEGATIVE = re.compile(
     r"\b(no|zero|without|none of)\s+(?:\w+\s+){0,2}?(?:" + _A + r")\b|(?:" + _A + r")[- ]free\b|\bfree (?:of|from)\b|"
     r"\b(?:doesn't|does not|don't|do not|isn't|is not|aren't|are not|won't|never|didn't)\s+(?:\w+\s+){0,2}?"
-    r"(?:contain|have|include|use|made)|(?<!not )(?<!n't )\bsafe (?:for|to)\b|\bnothing\b", re.I)
+    r"(?:contain|have|include|use|made)|(?<!not )(?<!n't )\bsafe (?:for|to)\b|\bnothing\b",
+    re.I,
+)
 UNSAFE = re.compile(r"\b(not|isn't|aren't|wouldn't|is not)\s+(?:be\s+)?safe\b|\bunsafe\b", re.I)
 _ALLERGEN_RE = re.compile(
-    r"\b(" + "|".join(sorted((re.escape(k) for k in ALLERGEN_WORDS if k not in {"cheese", "milk", "fish"}),
-                             key=len, reverse=True)) + r")\b", re.I)
+    r"\b("
+    + "|".join(
+        sorted((re.escape(k) for k in ALLERGEN_WORDS if k not in {"cheese", "milk", "fish"}), key=len, reverse=True)
+    )
+    + r")\b",
+    re.I,
+)
 
 
 @dataclass
@@ -44,7 +56,7 @@ class Claim:
     dish: str
     allergen: str
     polarity: str  # "free" | "contains"
-    truth: str     # contains | may_contain | free | unknown
+    truth: str  # contains | may_contain | free | unknown
     clause: str
 
     @property
@@ -101,8 +113,12 @@ class AllergenGuard:
             mentions = [(m.start(), m.end(), m.group(1).lower()) for m in _ALLERGEN_RE.finditer(clause)]
             # "fish"/"milk"/"dairy" only count when used as an allergen word, e.g. "contains milk"
             for w in ("milk", "fish", "dairy", "cheese"):
-                for m in re.finditer(rf"\b(?:contain|contains|free of|no|traces of|may contain|without)\s+(?:any\s+)?"
-                                     rf"(?:\w+\s+and\s+)?({w})\b|\b({w})[- ]free\b", clause, re.I):
+                for m in re.finditer(
+                    rf"\b(?:contain|contains|free of|no|traces of|may contain|without)\s+(?:any\s+)?"
+                    rf"(?:\w+\s+and\s+)?({w})\b|\b({w})[- ]free\b",
+                    clause,
+                    re.I,
+                ):
                     g = 1 if m.group(1) else 2
                     if not any(st <= m.start(g) < en for st, en, _ in mentions):
                         mentions.append((m.start(g), m.end(g), w))
@@ -112,7 +128,7 @@ class AllergenGuard:
                 continue
             prev_end, polarity = 0, None
             for _st, en, word in mentions:
-                seg = clause[prev_end:min(len(clause), en + 6)]
+                seg = clause[prev_end : min(len(clause), en + 6)]
                 if UNSAFE.search(clause[prev_end:]) and not NEGATIVE.search(seg.replace("not safe", "")):
                     pol = "contains"
                 elif NEGATIVE.search(seg):
@@ -131,11 +147,15 @@ class AllergenGuard:
                     if not statuses:
                         continue
                     if pol == "free":
-                        truth = "free" if all(x == "free" for x in statuses) else (
-                            "unknown" if "unknown" in statuses else next(x for x in statuses if x != "free"))
+                        truth = (
+                            "free"
+                            if all(x == "free" for x in statuses)
+                            else ("unknown" if "unknown" in statuses else next(x for x in statuses if x != "free"))
+                        )
                     else:
                         truth = next((x for x in statuses if x in ("contains", "may_contain")), None) or (
-                            "unknown" if "unknown" in statuses else "free")
+                            "unknown" if "unknown" in statuses else "free"
+                        )
                     out.append(Claim(d["name"], word, pol, truth, clause))
         return out
 
@@ -146,10 +166,18 @@ class AllergenGuard:
         row = self.tools.conn.execute("SELECT * FROM dishes WHERE name=?", (v.dish,)).fetchone()
         sts = {a: self.tools.allergen_status(row, a) for a in ALLERGEN_WORDS.get(v.allergen, [])}
         if not sts or any(s == "unknown" for s in sts.values()):
-            return (f"I can't confirm whether the {v.dish} contains {v.allergen}: we don't have a verified "
-                    "allergen record for that. I can connect you with a staff member to check.")
-        desc = " and ".join({"contains": f"contains {label(a)}", "may_contain": f"may contain traces of {label(a)}",
-                             "free": f"is verified free of {label(a)}"}[s] for a, s in sts.items())
+            return (
+                f"I can't confirm whether the {v.dish} contains {v.allergen}: we don't have a verified "
+                "allergen record for that. I can connect you with a staff member to check."
+            )
+        desc = " and ".join(
+            {
+                "contains": f"contains {label(a)}",
+                "may_contain": f"may contain traces of {label(a)}",
+                "free": f"is verified free of {label(a)}",
+            }[s]
+            for a, s in sts.items()
+        )
         return f"Our verified allergen record says the {v.dish} {desc}."
 
     def safe_rewrite(self, text: str, violations: list[Claim]) -> str:

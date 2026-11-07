@@ -52,9 +52,10 @@ class LLMResponse:
     def assistant_message(self) -> dict:
         msg: dict = {"role": "assistant", "content": self.content or ""}
         if self.tool_calls:
-            msg["tool_calls"] = [{"id": tc.id, "type": "function",
-                                  "function": {"name": tc.name, "arguments": json.dumps(tc.arguments)}}
-                                 for tc in self.tool_calls]
+            msg["tool_calls"] = [
+                {"id": tc.id, "type": "function", "function": {"name": tc.name, "arguments": json.dumps(tc.arguments)}}
+                for tc in self.tool_calls
+            ]
         return msg
 
 
@@ -91,10 +92,18 @@ class ResponseCache:
 
 
 class GroqLLM:
-    def __init__(self, model: str = "openai/gpt-oss-20b", api_key: str | None = None,
-                 base_url: str = "https://api.groq.com/openai/v1", cache: ResponseCache | None = None,
-                 timeout_s: float = 30.0, max_retries: int = 6, max_wait_s: float = 90.0,
-                 temperature: float = 0.0, max_tokens: int = 700):
+    def __init__(
+        self,
+        model: str = "openai/gpt-oss-20b",
+        api_key: str | None = None,
+        base_url: str = "https://api.groq.com/openai/v1",
+        cache: ResponseCache | None = None,
+        timeout_s: float = 30.0,
+        max_retries: int = 6,
+        max_wait_s: float = 90.0,
+        temperature: float = 0.0,
+        max_tokens: int = 700,
+    ):
         self.model = model
         self.name = f"{'ollama' if '11434' in base_url else 'groq'}:{model}"
         self.api_key = api_key or os.environ.get("GROQ_API_KEY", "")
@@ -110,8 +119,12 @@ class GroqLLM:
         self._client = httpx.AsyncClient(timeout=timeout_s, trust_env=not local)  # no proxy for local servers
 
     def _payload(self, messages: list[dict], tools: list[dict] | None, tool_choice: str) -> dict:
-        p = {"model": self.model, "messages": messages, "temperature": self.temperature,
-             "max_completion_tokens": self.max_tokens}
+        p = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+            "max_completion_tokens": self.max_tokens,
+        }
         if tools:
             p["tools"] = tools
             p["tool_choice"] = tool_choice
@@ -124,8 +137,9 @@ class GroqLLM:
             p["reasoning_effort"] = "none"
         return p
 
-    async def complete(self, messages: list[dict], tools: list[dict] | None = None,
-                       tool_choice: str = "auto") -> LLMResponse:
+    async def complete(
+        self, messages: list[dict], tools: list[dict] | None = None, tool_choice: str = "auto"
+    ) -> LLMResponse:
         payload = self._payload(messages, tools, tool_choice)
         key = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         if self.cache and (hit := self.cache.get(key)):
@@ -135,11 +149,14 @@ class GroqLLM:
         for attempt in range(self.max_retries + 1):
             t0 = time.perf_counter()
             try:
-                r = await self._client.post(f"{self.base_url}/chat/completions", json=payload,
-                                            headers={"Authorization": f"Bearer {self.api_key}"})
+                r = await self._client.post(
+                    f"{self.base_url}/chat/completions",
+                    json=payload,
+                    headers={"Authorization": f"Bearer {self.api_key}"},
+                )
             except httpx.HTTPError as e:
                 last = LLMError(f"transport: {type(e).__name__}")
-                await asyncio.sleep(min(2 ** attempt, 8))
+                await asyncio.sleep(min(2**attempt, 8))
                 self.usage["retries"] += 1
                 continue
             ms = (time.perf_counter() - t0) * 1000
@@ -149,17 +166,21 @@ class GroqLLM:
                 u = data.get("usage") or {}
                 self.usage["prompt_tokens"] += u.get("prompt_tokens", 0)
                 self.usage["completion_tokens"] += u.get("completion_tokens", 0)
-                self.usage["cached_prompt_tokens"] = self.usage.get("cached_prompt_tokens", 0) + \
-                    ((u.get("prompt_tokens_details") or {}).get("cached_tokens") or 0)
+                self.usage["cached_prompt_tokens"] = self.usage.get("cached_prompt_tokens", 0) + (
+                    (u.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
+                )
                 if self.cache:
                     self.cache.put(key, data)
                 return self._parse(data, ms)
             body = r.text
             if r.status_code == 429 or r.status_code >= 500:
-                wait = _retry_after(r.headers, body) or min(2 ** attempt, 20)
+                wait = _retry_after(r.headers, body) or min(2**attempt, 20)
                 if "tokens per day" in body or "requests per day" in body or wait > self.max_wait_s:
-                    raise LLMError(f"{self.name} daily quota exhausted; Please try again in {wait:.1f}s",
-                                   retryable=False, retry_after=wait)
+                    raise LLMError(
+                        f"{self.name} daily quota exhausted; Please try again in {wait:.1f}s",
+                        retryable=False,
+                        retry_after=wait,
+                    )
                 last = LLMError(f"HTTP {r.status_code}", retry_after=wait)
                 self.usage["retries"] += 1
                 await asyncio.sleep(wait + 0.25)
@@ -183,8 +204,15 @@ class GroqLLM:
                 args = {"_raw": tc["function"].get("arguments")}
             calls.append(ToolCall(tc.get("id") or f"call_{i}", tc["function"]["name"], args))
         u = data.get("usage") or {}
-        return LLMResponse(msg.get("content") or "", calls, self.model, ms, u.get("prompt_tokens", 0),
-                           u.get("completion_tokens", 0), cached)
+        return LLMResponse(
+            msg.get("content") or "",
+            calls,
+            self.model,
+            ms,
+            u.get("prompt_tokens", 0),
+            u.get("completion_tokens", 0),
+            cached,
+        )
 
 
 class FallbackLLM:
@@ -209,8 +237,11 @@ class FallbackLLM:
                     self.cooldown_until[p.name] = time.monotonic() + (e.retry_after or 300)
         if err is None:  # everyone is cooling down
             wait = min(self.cooldown_until.values()) - now
-            err = LLMError(f"all providers quota exhausted; Please try again in {max(1.0, wait):.1f}s",
-                           retryable=False, retry_after=wait)
+            err = LLMError(
+                f"all providers quota exhausted; Please try again in {max(1.0, wait):.1f}s",
+                retryable=False,
+                retry_after=wait,
+            )
         raise err
 
 
@@ -233,17 +264,24 @@ class FaultyLLM:
 # ==============================================================================================
 # Rule-based policy (no LLM). Same protocol as GroqLLM.
 # ==============================================================================================
-_YES = re.compile(r"^\s*(yes|yeah|yep|yup|correct|that's right|that is right|right|sure|please do|go ahead|"
-                  r"confirm|perfect|ok|okay|sounds good|book it)\b", re.I)
+_YES = re.compile(
+    r"^\s*(yes|yeah|yep|yup|correct|that's right|that is right|right|sure|please do|go ahead|"
+    r"confirm|perfect|ok|okay|sounds good|book it)\b",
+    re.I,
+)
 _NO = re.compile(r"^\s*(no|nope|not quite|wrong|that's wrong)\b", re.I)
 _HUMAN = re.compile(r"\b(human|real person|a person|manager|staff member|someone|speak to|talk to|transfer)\b", re.I)
 _COMPLAINT = re.compile(
-    r"\b(complain|complaint|terrible|awful|food poisoning|sick after|rude|refund|disgusting)\b", re.I)
+    r"\b(complain|complaint|terrible|awful|food poisoning|sick after|rude|refund|disgusting)\b", re.I
+)
 _CANCEL = re.compile(r"\bcancel\b", re.I)
 _MODIFY = re.compile(r"\b(change|move|modify|push|reschedule|instead|make it)\b", re.I)
 _BOOK = re.compile(r"\b(book|reserve|reservation|table for|a table|booking)\b", re.I)
-_MENU = re.compile(r"\b(menu|vegetarian|vegan|dessert|desserts|pasta|pizza|what do you (have|serve)|recommend|"
-                   r"dishes|options|starters?)\b", re.I)
+_MENU = re.compile(
+    r"\b(menu|vegetarian|vegan|dessert|desserts|pasta|pizza|what do you (have|serve)|recommend|"
+    r"dishes|options|starters?)\b",
+    re.I,
+)
 _HOURS = re.compile(r"\b(open|close|closing|hours|opening)\b", re.I)
 
 
@@ -280,8 +318,16 @@ class RuleBasedLLM:
 
     def _state(self, messages: list[dict]) -> dict:
         now = self.now_fn()
-        st = {"party": None, "date": None, "time": None, "name": None, "code": None, "booking": False,
-              "booked": False, "pending_confirm": None}
+        st = {
+            "party": None,
+            "date": None,
+            "time": None,
+            "name": None,
+            "code": None,
+            "booking": False,
+            "booked": False,
+            "pending_confirm": None,
+        }
         for m in messages:
             if m["role"] == "user":
                 text = re.sub(r"^\[[^\]]*\]\s*", "", m["content"] or "")
@@ -321,8 +367,10 @@ class RuleBasedLLM:
     def _plan(self, messages) -> LLMResponse:
         user = re.sub(r"^\[[^\]]*\]\s*", "", messages[-1]["content"] or "")
         st = self._state(messages)
-        prev_assistant = next((m.get("content") or "" for m in reversed(messages[:-1])
-                               if m["role"] == "assistant" and m.get("content")), "")
+        prev_assistant = next(
+            (m.get("content") or "" for m in reversed(messages[:-1]) if m["role"] == "assistant" and m.get("content")),
+            "",
+        )
         calls: list[ToolCall] = []
 
         def call(tool_name, **args):
@@ -330,15 +378,23 @@ class RuleBasedLLM:
 
         if _COMPLAINT.search(user):
             call("handoff_to_human", reason="complaint", summary=user[:200])
-        elif _HUMAN.search(user) and re.search(r"\b(speak|talk|transfer|connect|get me|want|need)\b", user, re.I) \
-                or (_YES.search(user) and re.search(r"staff member|connect you", prev_assistant, re.I)):
+        elif (
+            _HUMAN.search(user)
+            and re.search(r"\b(speak|talk|transfer|connect|get me|want|need)\b", user, re.I)
+            or (_YES.search(user) and re.search(r"staff member|connect you", prev_assistant, re.I))
+        ):
             call("handoff_to_human", reason="caller requested staff", summary=user[:200])
         elif _CANCEL.search(user):
             call("cancel_reservation", code=st["code"], name=None if st["code"] else st["name"])
         elif _MODIFY.search(user) and (st["code"] or re.search(r"\b(my|the) (booking|reservation)\b", user, re.I)):
-            call("modify_reservation", code=st["code"], name=None if st["code"] else st["name"],
-                 new_time=nlu.find_time(user), new_party_size=nlu.find_party_size(user),
-                 new_date=nlu.find_date(user, self.now_fn()))
+            call(
+                "modify_reservation",
+                code=st["code"],
+                name=None if st["code"] else st["name"],
+                new_time=nlu.find_time(user),
+                new_party_size=nlu.find_party_size(user),
+                new_date=nlu.find_date(user, self.now_fn()),
+            )
         else:
             allergen = self._find_allergen(user)
             dish = self._find_dish(user)
@@ -349,36 +405,51 @@ class RuleBasedLLM:
                     return LLMResponse("Which dish would you like me to check?", model=self.name)
             elif dish and re.search(r"\b(did you mean|yes|i meant)\b", user, re.I):
                 pass
-            booking_now = _BOOK.search(user) or (st["booking"] and (
-                nlu.find_time(user) or nlu.find_party_size(user) or nlu.find_date(user, self.now_fn())
-                or nlu.find_name(user) or _YES.search(user) or
-                re.fullmatch(r"\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\.?\s*", user)))
+            booking_now = _BOOK.search(user) or (
+                st["booking"]
+                and (
+                    nlu.find_time(user)
+                    or nlu.find_party_size(user)
+                    or nlu.find_date(user, self.now_fn())
+                    or nlu.find_name(user)
+                    or _YES.search(user)
+                    or re.fullmatch(r"\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\.?\s*", user)
+                )
+            )
             if booking_now and not st["booked"]:
                 date = st["date"] or ("today" if st["time"] else None)
                 if st["party"] and date and st["time"]:
                     if st["name"]:
-                        call("create_reservation", name=st["name"], party_size=st["party"], date=date,
-                             time=st["time"])
+                        call("create_reservation", name=st["name"], party_size=st["party"], date=date, time=st["time"])
                     else:
                         call("check_availability", date=date, time=st["time"], party_size=st["party"])
                 elif not calls:
-                    missing = [k for k, v in (("how many people", st["party"]), ("what day", date),
-                                              ("what time", st["time"])) if not v]
-                    return LLMResponse(f"Happy to book that. Could you tell me {' and '.join(missing)}?",
-                                       model=self.name)
+                    missing = [
+                        k
+                        for k, v in (("how many people", st["party"]), ("what day", date), ("what time", st["time"]))
+                        if not v
+                    ]
+                    return LLMResponse(
+                        f"Happy to book that. Could you tell me {' and '.join(missing)}?", model=self.name
+                    )
             if not calls:
                 if _HOURS.search(user):
                     call("get_opening_hours", date=nlu.find_date(user, self.now_fn()))
                 elif _MENU.search(user):
                     veg = bool(re.search(r"\bvegetarian\b", user, re.I)) or None
                     vegan = bool(re.search(r"\bvegan\b", user, re.I)) or None
-                    q = next((w for w in ("dessert", "pasta", "pizza", "antipasti", "salad", "soup")
-                              if w in user.lower()), None)
+                    q = next(
+                        (w for w in ("dessert", "pasta", "pizza", "antipasti", "salad", "soup") if w in user.lower()),
+                        None,
+                    )
                     call("search_menu", query=q, vegetarian=veg, vegan=vegan)
         if calls:
             return LLMResponse("", calls, model=self.name)
-        return LLMResponse("I can help with table bookings, our menu, opening hours and allergen questions. "
-                           "What would you like to do?", model=self.name)
+        return LLMResponse(
+            "I can help with table bookings, our menu, opening hours and allergen questions. "
+            "What would you like to do?",
+            model=self.name,
+        )
 
     def _compose(self, messages) -> LLMResponse:
         results = []
@@ -392,16 +463,19 @@ class RuleBasedLLM:
         follow: list[ToolCall] = []
         for name, r in results:
             if r.get("error") == "large_party":
-                follow.append(ToolCall(self._id(), "handoff_to_human",
-                                       {"reason": f"party of {r.get('party_size')}"}))
+                follow.append(ToolCall(self._id(), "handoff_to_human", {"reason": f"party of {r.get('party_size')}"}))
                 continue
             if r.get("error") == "service_unavailable":
                 if r.get("handoff_created"):
-                    parts.append("Sorry, our booking system isn't responding. I've opened a callback request so a "
-                                 "staff member can finish it and call you back.")
+                    parts.append(
+                        "Sorry, our booking system isn't responding. I've opened a callback request so a "
+                        "staff member can finish it and call you back."
+                    )
                 else:
-                    parts.append("Sorry, that system isn't responding right now. I can connect you with a "
-                                 "staff member if you like.")
+                    parts.append(
+                        "Sorry, that system isn't responding right now. I can connect you with a "
+                        "staff member if you like."
+                    )
                 continue
             if "error" in r:
                 parts.append(r.get("message", "Sorry, something went wrong."))
@@ -412,8 +486,10 @@ class RuleBasedLLM:
                     if st["booking"] and not st["name"]:
                         parts.append("May I have a name for the booking?")
                 elif r.get("reason") == "fully_booked":
-                    parts.append(f"Sorry, that time is fully booked. I can offer "
-                                 f"{', '.join(r.get('alternatives_spoken') or []) or 'another day'}.")
+                    parts.append(
+                        f"Sorry, that time is fully booked. I can offer "
+                        f"{', '.join(r.get('alternatives_spoken') or []) or 'another day'}."
+                    )
                 else:
                     parts.append(r.get("message", "Sorry, we can't seat you then."))
             elif name == "create_reservation":
@@ -422,8 +498,10 @@ class RuleBasedLLM:
                 elif r.get("status") == "needs_confirmation":
                     parts.append(f"Just to confirm, {r['readback']}. Is that right?")
                 elif r.get("reason") == "fully_booked":
-                    parts.append(f"Sorry, that time is fully booked. I can offer "
-                                 f"{', '.join(r.get('alternatives_spoken') or []) or 'another day'}.")
+                    parts.append(
+                        f"Sorry, that time is fully booked. I can offer "
+                        f"{', '.join(r.get('alternatives_spoken') or []) or 'another day'}."
+                    )
                 else:
                     parts.append(r.get("message", "Sorry, I couldn't book that."))
             elif name == "get_allergens":
@@ -444,8 +522,11 @@ class RuleBasedLLM:
                 if r.get("closed"):
                     parts.append(f"We're closed on {r['weekday']}.")
                 elif "services" in r:
-                    parts.append(f"On {r['weekday']} we're open " + " and ".join(
-                        f"{s['open']} to {s['close']}" for s in r["services"]) + ".")
+                    parts.append(
+                        f"On {r['weekday']} we're open "
+                        + " and ".join(f"{s['open']} to {s['close']}" for s in r["services"])
+                        + "."
+                    )
                 else:
                     parts.append("We're open Tuesday to Sunday for lunch and dinner, and closed on Mondays.")
             elif name in ("cancel_reservation", "modify_reservation"):

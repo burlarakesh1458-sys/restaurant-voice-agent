@@ -47,11 +47,11 @@ def resample_pcm16(pcm: bytes, sr_in: int, sr_out: int) -> bytes:
 @dataclass
 class Transcript:
     text: str
-    confidence: float      # 0..1, exp(mean segment avg_logprob)
+    confidence: float  # 0..1, exp(mean segment avg_logprob)
     no_speech_prob: float
-    ms: float               # latency of the request that succeeded
+    ms: float  # latency of the request that succeeded
     provider: str
-    total_ms: float = 0.0   # including retries / rate-limit waits
+    total_ms: float = 0.0  # including retries / rate-limit waits
     attempts: int = 1
 
 
@@ -60,8 +60,14 @@ class ASRError(Exception):
 
 
 class GroqWhisperASR:
-    def __init__(self, model: str = "whisper-large-v3-turbo", api_key: str | None = None,
-                 base_url: str = "https://api.groq.com/openai/v1", timeout_s: float = 20.0, retries: int = 3):
+    def __init__(
+        self,
+        model: str = "whisper-large-v3-turbo",
+        api_key: str | None = None,
+        base_url: str = "https://api.groq.com/openai/v1",
+        timeout_s: float = 20.0,
+        retries: int = 3,
+    ):
         self.model = model
         self.name = f"groq:{model}"
         self.api_key = api_key or os.environ.get("GROQ_API_KEY", "")
@@ -79,12 +85,15 @@ class GroqWhisperASR:
         for attempt in range(self.retries + 1):
             ta = time.perf_counter()
             try:
-                r = await self._client.post(f"{self.base_url}/audio/transcriptions",
-                                            headers={"Authorization": f"Bearer {self.api_key}"},
-                                            files={"file": ("turn.wav", wav, "audio/wav")}, data=data)
+                r = await self._client.post(
+                    f"{self.base_url}/audio/transcriptions",
+                    headers={"Authorization": f"Bearer {self.api_key}"},
+                    files={"file": ("turn.wav", wav, "audio/wav")},
+                    data=data,
+                )
             except httpx.HTTPError as e:
                 last = type(e).__name__
-                await asyncio.sleep(0.5 * (2 ** attempt))
+                await asyncio.sleep(0.5 * (2**attempt))
                 continue
             if r.status_code == 200:
                 j = r.json()
@@ -96,11 +105,18 @@ class GroqWhisperASR:
                 else:
                     lp, nsp = (0.0 if j.get("text") else -5.0), 0.0
                 now = time.perf_counter()
-                return Transcript(j.get("text", "").strip(), round(math.exp(lp), 3), round(nsp, 3),
-                                  (now - ta) * 1000, self.name, (now - t0) * 1000, attempt + 1)
+                return Transcript(
+                    j.get("text", "").strip(),
+                    round(math.exp(lp), 3),
+                    round(nsp, 3),
+                    (now - ta) * 1000,
+                    self.name,
+                    (now - t0) * 1000,
+                    attempt + 1,
+                )
             last = f"HTTP {r.status_code}: {r.text[:120]}"
             if r.status_code == 429 or r.status_code >= 500:
-                await asyncio.sleep(min(20, 1.0 * (2 ** attempt)))
+                await asyncio.sleep(min(20, 1.0 * (2**attempt)))
                 continue
             break
         raise ASRError(last)
@@ -134,6 +150,7 @@ class PiperTTS:
             if self._voice is None:
                 os.environ.setdefault("OMP_NUM_THREADS", str(self.threads))
                 from piper import PiperVoice
+
                 self._voice = PiperVoice.load(self.model_path)
         return self._voice
 

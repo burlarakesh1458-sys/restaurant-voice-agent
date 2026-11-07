@@ -37,11 +37,24 @@ def test_websocket_text_turn():
 
 def test_eval_harness_offline(monkeypatch, tmp_path):
     import asyncio
-    sys.argv = ["run_eval", "--llm", "rules", "--tts", "fake", "--only", "B03,A03,R02,R06,R07,C03",
-                "--tag", "pytest_dev", "--fresh"]
+
+    sys.argv = [
+        "run_eval",
+        "--llm",
+        "rules",
+        "--tts",
+        "fake",
+        "--only",
+        "B03,A03,R02,R06,R07,C03",
+        "--tag",
+        "pytest_dev",
+        "--fresh",
+    ]
     from scripts import run_eval
+
     asyncio.run(run_eval.main())
     import json
+
     out = run_eval.ROOT / "reports" / "results_pytest_dev.json"
     s = json.loads(out.read_text())["summary"]
     out.unlink()
@@ -51,10 +64,15 @@ def test_eval_harness_offline(monkeypatch, tmp_path):
 
 def test_arg_matching_normalises(tools, clock):
     from scripts.run_eval import call_matches
-    exp = {"tool": "create_reservation", "args": {"name": "Priya Sharma", "party_size": 4, "date": "2026-11-13",
-                                                  "time": "19:30"}}
-    act = {"name": "create_reservation", "args": {"name": "priya sharma", "party_size": "four", "date": "tonight",
-                                                  "time": "7:30 PM"}}
+
+    exp = {
+        "tool": "create_reservation",
+        "args": {"name": "Priya Sharma", "party_size": 4, "date": "2026-11-13", "time": "19:30"},
+    }
+    act = {
+        "name": "create_reservation",
+        "args": {"name": "priya sharma", "party_size": "four", "date": "tonight", "time": "7:30 PM"},
+    }
     assert call_matches(tools, clock.now(), exp, act)
     act["args"]["time"] = "8 PM"
     assert not call_matches(tools, clock.now(), exp, act)

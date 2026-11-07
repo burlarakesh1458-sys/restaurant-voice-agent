@@ -11,8 +11,9 @@ def test_available_slot(tools, ctx):
 def test_fully_booked_offers_alternatives(tools, ctx):
     r = tools.check_availability(ctx, "tonight", "8 pm", 4)
     assert not r["available"] and r["reason"] == "fully_booked"
-    assert r["alternatives"] and all(tools.check_availability(ctx, "tonight", a, 4)["available"]
-                                     for a in r["alternatives"])
+    assert r["alternatives"] and all(
+        tools.check_availability(ctx, "tonight", a, 4)["available"] for a in r["alternatives"]
+    )
 
 
 def test_closed_monday_and_outside_hours(tools, ctx):
@@ -45,7 +46,10 @@ def test_low_confidence_gates_writes(tools):
 
 def test_cancel_requires_code_or_matching_phone(tools, ctx):
     assert tools.cancel_reservation(ctx, name="Daniel Fernandes")["error"] == "verification_required"
-    assert tools.cancel_reservation(CallContext(caller_phone="+919800000101"), name="Daniel Fernandes")["status"] == "cancelled"
+    assert (
+        tools.cancel_reservation(CallContext(caller_phone="+919800000101"), name="Daniel Fernandes")["status"]
+        == "cancelled"
+    )
     assert tools.cancel_reservation(ctx, code="TV-D4F8")["error"] == "already_cancelled"
 
 
@@ -88,14 +92,17 @@ def test_executor_retries_transient_failure(tools, ctx):
 
 def test_executor_persistent_write_failure_opens_ticket(tools, ctx):
     ex = ToolExecutor(tools, timeout_s=0.5, backoff_s=0.01, faults=FaultPlan({"create_reservation": ("error", 99)}))
-    rec = asyncio.run(ex.execute("create_reservation",
-                                 {"name": "M", "party_size": 2, "date": "sunday", "time": "1 pm"}, ctx))
+    rec = asyncio.run(
+        ex.execute("create_reservation", {"name": "M", "party_size": 2, "date": "sunday", "time": "1 pm"}, ctx)
+    )
     assert rec.result["error"] == "service_unavailable" and rec.result["handoff_created"]
     assert tools.conn.execute("SELECT COUNT(*) FROM handoffs").fetchone()[0] == 1
 
 
 def test_executor_timeout_and_bad_args(tools, ctx):
-    ex = ToolExecutor(tools, timeout_s=0.2, retries=1, backoff_s=0.01, faults=FaultPlan({"get_allergens": ("timeout", 9)}))
+    ex = ToolExecutor(
+        tools, timeout_s=0.2, retries=1, backoff_s=0.01, faults=FaultPlan({"get_allergens": ("timeout", 9)})
+    )
     rec = asyncio.run(ex.execute("get_allergens", {"dish": "tiramisu"}, ctx))
     assert rec.result["error"] == "service_unavailable" and rec.attempts == 2
     assert asyncio.run(ex.execute("search_menu", {"colour": "red"}, ctx)).result["error"] == "bad_arguments"

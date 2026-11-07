@@ -63,16 +63,30 @@ def seed(path: str | Path, base_date: date) -> sqlite3.Connection:
     for r in _rows("menu.csv"):
         conn.execute(
             "INSERT INTO dishes VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            (int(r["id"]), r["name"], r["aliases"], r["category"], r["description"], int(r["price_inr"]),
-             int(r["vegetarian"]), int(r["vegan"]), r["ingredients"], r["allergen_info_status"],
-             r["allergen_note"] or None),
+            (
+                int(r["id"]),
+                r["name"],
+                r["aliases"],
+                r["category"],
+                r["description"],
+                int(r["price_inr"]),
+                int(r["vegetarian"]),
+                int(r["vegan"]),
+                r["ingredients"],
+                r["allergen_info_status"],
+                r["allergen_note"] or None,
+            ),
         )
     for r in _rows("allergens.csv"):
-        conn.execute("INSERT INTO dish_allergens VALUES (?,?,?,?,?)",
-                     (int(r["dish_id"]), r["allergen"], r["status"], r["source"], r["verified_on"]))
+        conn.execute(
+            "INSERT INTO dish_allergens VALUES (?,?,?,?,?)",
+            (int(r["dish_id"]), r["allergen"], r["status"], r["source"], r["verified_on"]),
+        )
     for r in _rows("hours.csv"):
-        conn.execute("INSERT INTO opening_hours VALUES (?,?,?,?)",
-                     (int(r["weekday"]), r["open"] or None, r["close"] or None, r["last_seating"] or None))
+        conn.execute(
+            "INSERT INTO opening_hours VALUES (?,?,?,?)",
+            (int(r["weekday"]), r["open"] or None, r["close"] or None, r["last_seating"] or None),
+        )
     for r in _rows("tables.csv"):
         conn.execute("INSERT INTO tables VALUES (?,?,?)", (r["id"], int(r["seats"]), r["area"]))
     for r in _rows("reservations.csv"):
@@ -80,8 +94,7 @@ def seed(path: str | Path, base_date: date) -> sqlite3.Connection:
         conn.execute(
             "INSERT INTO reservations (code,name,phone,party_size,date,time,table_id,idempotency_key)"
             " VALUES (?,?,?,?,?,?,?,?)",
-            (r["code"], r["name"], r["phone"], int(r["party_size"]), d, r["time"], r["table_id"],
-             f"seed:{r['code']}"),
+            (r["code"], r["name"], r["phone"], int(r["party_size"]), d, r["time"], r["table_id"], f"seed:{r['code']}"),
         )
     conn.execute("COMMIT")
     return conn

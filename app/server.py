@@ -89,9 +89,14 @@ async def ws(websocket: WebSocket):
             msg = json.loads(await websocket.receive_text())
             kind = msg.get("type")
             if kind == "start":
-                agent = build_agent(LLM_KIND, CLOCK, DB_PATH if DB_PATH != ":memory:" else ":memory:",
-                                    caller_phone=msg.get("caller_phone") or "+919811111111", hybrid=HYBRID,
-                                    cache_path=None)
+                agent = build_agent(
+                    LLM_KIND,
+                    CLOCK,
+                    DB_PATH if DB_PATH != ":memory:" else ":memory:",
+                    caller_phone=msg.get("caller_phone") or "+919811111111",
+                    hybrid=HYBRID,
+                    cache_path=None,
+                )
                 agent.session_id = uuid.uuid4().hex[:8]
                 session = VoiceSession(agent, get_asr(), get_tts(), emit, realtime=True, asr_prompt=MENU_PROMPT)
                 await session.warmup()

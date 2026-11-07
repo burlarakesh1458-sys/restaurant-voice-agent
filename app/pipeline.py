@@ -18,10 +18,12 @@ from .agent import Agent, TurnResult
 Emit = Callable[[dict], Awaitable[None]]
 FILLER = "One moment, let me check that."
 # Whisper vocabulary hint: dish names it would otherwise mishear ("gnocchi" -> "nokai").
-MENU_PROMPT = ("Trattoria Verde, Hyderabad. Bruschetta, burrata, calamari, arancini, minestrone, caprese, Caesar, "
-               "trofie al pesto, carbonara, arrabbiata, linguine frutti di mare, lasagna, gnocchi gorgonzola, "
-               "margherita, diavola, cacciatora, branzino, risotto, parmigiana, tiramisu, panna cotta, torta caprese, "
-               "sorbetto, focaccia. Booking code TV-D4F8.")
+MENU_PROMPT = (
+    "Trattoria Verde, Hyderabad. Bruschetta, burrata, calamari, arancini, minestrone, caprese, Caesar, "
+    "trofie al pesto, carbonara, arrabbiata, linguine frutti di mare, lasagna, gnocchi gorgonzola, "
+    "margherita, diavola, cacciatora, branzino, risotto, parmigiana, tiramisu, panna cotta, torta caprese, "
+    "sorbetto, focaccia. Booking code TV-D4F8."
+)
 
 
 def split_sentences(text: str) -> list[str]:
@@ -41,8 +43,8 @@ class TurnMetrics:
     tool_ms: float = 0.0
     tts_first_ms: float | None = None
     tts_total_ms: float = 0.0
-    ttfa_any_ms: float | None = None      # first audio of any kind (incl. "one moment" filler)
-    ttfa_answer_ms: float | None = None   # first audio of the actual answer
+    ttfa_any_ms: float | None = None  # first audio of any kind (incl. "one moment" filler)
+    ttfa_answer_ms: float | None = None  # first audio of the actual answer
     total_ms: float = 0.0
     audio_ms_sent: float = 0.0
     interrupted: bool = False
@@ -54,8 +56,17 @@ class TurnMetrics:
 
 
 class VoiceSession:
-    def __init__(self, agent: Agent, asr, tts, emit: Emit, frame_ms: int = 200, realtime: bool = False,
-                 filler: bool = True, asr_prompt: str | None = None):
+    def __init__(
+        self,
+        agent: Agent,
+        asr,
+        tts,
+        emit: Emit,
+        frame_ms: int = 200,
+        realtime: bool = False,
+        filler: bool = True,
+        asr_prompt: str | None = None,
+    ):
         self.agent = agent
         self.asr = asr
         self.tts = tts
@@ -75,8 +86,7 @@ class VoiceSession:
     def interrupt(self) -> None:
         self._interrupt.set()
 
-    async def _send_audio(self, pcm: bytes, sr: int, sentence: str, m: TurnMetrics, t0: float,
-                          answer: bool) -> bool:
+    async def _send_audio(self, pcm: bytes, sr: int, sentence: str, m: TurnMetrics, t0: float, answer: bool) -> bool:
         """Stream one sentence as frames. Returns False if interrupted part-way."""
         step = int(sr * self.frame_ms / 1000) * 2
         for i in range(0, len(pcm), step):
@@ -87,9 +97,16 @@ class VoiceSession:
                 m.ttfa_any_ms = now_ms
             if answer and m.ttfa_answer_ms is None:
                 m.ttfa_answer_ms = now_ms
-            frame = pcm[i:i + step]
-            await self.emit({"type": "audio", "data": base64.b64encode(frame).decode(), "sample_rate": sr,
-                             "sentence": sentence, "filler": not answer})
+            frame = pcm[i : i + step]
+            await self.emit(
+                {
+                    "type": "audio",
+                    "data": base64.b64encode(frame).decode(),
+                    "sample_rate": sr,
+                    "sentence": sentence,
+                    "filler": not answer,
+                }
+            )
             m.audio_ms_sent += len(frame) / 2 / sr * 1000
             if answer:
                 self._answer_ms_sent = getattr(self, "_answer_ms_sent", 0.0) + len(frame) / 2 / sr * 1000
@@ -102,10 +119,15 @@ class VoiceSession:
                 await asyncio.sleep(0)
         return True
 
-    async def run_turn(self, audio: bytes | None = None, sample_rate: int = 16000, text: str | None = None,
-                       asr_confidence: float | None = None,
-                       barge_in_after_sentences: int | None = None,
-                       barge_in_after_ms: float | None = None) -> TurnMetrics:
+    async def run_turn(
+        self,
+        audio: bytes | None = None,
+        sample_rate: int = 16000,
+        text: str | None = None,
+        asr_confidence: float | None = None,
+        barge_in_after_sentences: int | None = None,
+        barge_in_after_ms: float | None = None,
+    ) -> TurnMetrics:
         self.turns += 1
         self._interrupt.clear()
         self._barge_in_after_ms = barge_in_after_ms
@@ -144,8 +166,9 @@ class VoiceSession:
         m.tool_ms = sum(c.ms for c in result.tool_calls)
         for c in result.tool_calls:
             await self.emit({"type": "tool_call", "name": c.name, "args": c.args, "result": c.result})
-        await self.emit({"type": "reply", "text": result.text, "guard_rewrote": result.guard_rewrote,
-                         "handoff": result.handoff})
+        await self.emit(
+            {"type": "reply", "text": result.text, "guard_rewrote": result.guard_rewrote, "handoff": result.handoff}
+        )
 
         sentences = split_sentences(result.text)
         q: asyncio.Queue = asyncio.Queue(maxsize=2)
@@ -189,7 +212,7 @@ class VoiceSession:
                 heard = " ".join(spoken)
                 if self._partial and self._partial[0] not in spoken:
                     words = self._partial[0].split()
-                    heard += " " + " ".join(words[:max(1, int(len(words) * self._partial[1]))]) + " ..."
+                    heard += " " + " ".join(words[: max(1, int(len(words) * self._partial[1]))]) + " ..."
                 self.agent.mark_interrupted(heard.strip())
                 spoken = [heard.strip()]
             else:

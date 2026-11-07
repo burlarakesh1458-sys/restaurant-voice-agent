@@ -1,5 +1,8 @@
 # Trattoria Verde: a voice agent that takes bookings and won't guess about allergens
 
+<!-- links -->
+[![CI](https://github.com/burlarakesh1458-sys/restaurant-voice-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/burlarakesh1458-sys/restaurant-voice-agent/actions/workflows/ci.yml) **Live demo:** <http://rakeshburla.dpdns.org/restaurant-voice-agent/> · **Code:** <https://github.com/burlarakesh1458-sys/restaurant-voice-agent> · **Resume bullets:** [RESUME_BULLETS.md](RESUME_BULLETS.md) · **License:** MIT
+
 **Caller audio → Groq Whisper → LLM with tool calling → SQLite tools → Piper TTS → caller.**
 It books, changes and cancels tables, answers menu and opening-hours questions, and answers allergen
 questions **only from verified records**. It also handles interruptions, bad transcriptions, full time
@@ -180,14 +183,14 @@ on a fresh seeded database, with the clock fixed so "tonight" is always the same
   (`ttfa_any` counts the "one moment" filler; `ttfa_answer` is the first audio of the real answer). Turns
   served from the response cache are excluded.
 
-Model labels: `rules` = no LLM; `openai/gpt-oss-safeguard-20b` = Groq API; `ollama:qwen2.5:3b` = local Ollama on the 2-vCPU CPU box (shared with other jobs, so its latencies are CPU-bound, not representative of a GPU deployment). Audio runs use Groq `whisper-large-v3-turbo` for ASR. A run marked partial reports n.
+Model labels: `rules` = no LLM; `openai/gpt-oss-safeguard-20b` = Groq API; `ollama:qwen2.5:3b` = local Ollama on the 2-vCPU CPU box (shared with other jobs, so its latencies are CPU-bound, not representative of a GPU deployment). Audio runs use Groq `whisper-large-v3-turbo` for ASR. Text runs cover all 44 scenarios; audio runs cover the 11 scenarios that have synthesised caller audio.
 
 ### Scenario suite
 
 | run | LLM | scenarios | task completion | tool-call accuracy (right tool + args) | unexpected writes | allergen violations heard (guard audit / scenario regex) | drafts rewritten by guard | handoff accuracy (P / R) |
 |---|---|---|---|---|---|---|---|---|
 | `rules_text` | rules (no LLM) | 44 | 40/44 = 90.9% | 33/36 = 91.7% (wrong args 0, missing 3) | 0 | 0 / 0 | 0 | 100.0% (1.0 / 1.0) |
-| `gpt-oss-safeguard-20b_text` | openai/gpt-oss-safeguard-20b | 37 of 44 (partial) | 31/37 = 83.8% | 31/34 = 91.2% (wrong args 0, missing 3) | 3 | 0 / 0 | 1 | 91.9% (0.667 / 0.8) |
+| `gpt-oss-safeguard-20b_text` | openai/gpt-oss-safeguard-20b | 44 | 38/44 = 86.4% | 33/36 = 91.7% (wrong args 0, missing 3) | 3 | 0 / 0 | 1 | 93.2% (0.714 / 0.833) |
 | `qwen2.5-3b-ollama_text` | ollama:qwen2.5:3b | 44 | 33/44 = 75.0% | 29/36 = 80.6% (wrong args 1, missing 6) | 2 | 0 / 1 | 3 | 93.2% (0.714 / 0.833) |
 | `qwen2.5-3b-ollama_hybrid_text` | ollama:qwen2.5:3b (hybrid: LLM plans, templates speak) | 44 | 36/44 = 81.8% | 30/36 = 83.3% (wrong args 1, missing 5) | 0 | 0 / 0 | 1 | 100.0% (1.0 / 1.0) |
 | `qwen2.5-3b-ollama_audio` | ollama:qwen2.5:3b | 11 | 9/11 = 81.8% | 12/13 = 92.3% (wrong args 1, missing 0) | 1 | 0 / 0 | 0 | 90.9% (0.75 / 1.0) |
@@ -195,30 +198,21 @@ Model labels: `rules` = no LLM; `openai/gpt-oss-safeguard-20b` = Groq API; `olla
 | `rules_audio` | rules (no LLM) | 11 | 11/11 = 100.0% | 13/13 = 100.0% (wrong args 0, missing 0) | 0 | 0 / 0 | 0 | 100.0% (1.0 / 1.0) |
 | `rules_audio_noisy` | rules (no LLM) | 11 | 9/11 = 81.8% | 11/13 = 84.6% (wrong args 0, missing 2) | 0 | 0 / 0 | 0 | 100.0% (1.0 / 1.0) |
 
-Same-subset comparison: the 37 scenarios the `openai/gpt-oss-safeguard-20b` run completed (B01..R05, suite order), so all runs are compared on identical inputs.
-
-| run | passed | tool calls correct |
-|---|---|---|
-| `rules_text` | 33/37 | 31/34 |
-| `gpt-oss-safeguard-20b_text` | 31/37 | 31/34 |
-| `qwen2.5-3b-ollama_text` | 26/37 | 27/34 |
-| `qwen2.5-3b-ollama_hybrid_text` | 29/37 | 28/34 |
-
 ### By category
 
 | category | `rules_text` | `gpt-oss-safeguard-20b_text` | `qwen2.5-3b-ollama_text` | `qwen2.5-3b-ollama_hybrid_text` | `qwen2.5-3b-ollama_audio` | `qwen2.5-3b-ollama_audio_noisy` | `rules_audio` | `rules_audio_noisy` |
 |---|---|---|---|---|---|---|---|---|
-| adversarial | 5/5 | 1/1 | 5/5 | 4/5 | 1/1 | 1/1 | 1/1 | 1/1 |
+| adversarial | 5/5 | 5/5 | 5/5 | 4/5 | 1/1 | 1/1 | 1/1 | 1/1 |
 | allergen | 8/9 | 9/9 | 4/9 | 6/9 | 2/3 | 2/3 | 3/3 | 2/3 |
 | asr_error | 2/3 | 2/3 | 2/3 | 3/3 | – | – | – | – |
-| barge_in | 1/1 | – | 1/1 | 1/1 | – | – | – | – |
+| barge_in | 1/1 | 1/1 | 1/1 | 1/1 | – | – | – | – |
 | booking | 2/2 | 2/2 | 2/2 | 2/2 | 1/1 | 1/1 | 1/1 | 1/1 |
 | cancel | 2/2 | 2/2 | 1/2 | 1/2 | 1/1 | 1/1 | 1/1 | 1/1 |
 | handoff | 3/3 | 2/3 | 2/3 | 3/3 | 2/2 | 1/2 | 2/2 | 2/2 |
 | hours | 2/2 | 2/2 | 2/2 | 2/2 | 1/1 | 1/1 | 1/1 | 1/1 |
-| idempotency | 1/1 | – | 1/1 | 1/1 | – | – | – | – |
+| idempotency | 1/1 | 1/1 | 1/1 | 1/1 | – | – | – | – |
 | info | 0/1 | 0/1 | 1/1 | 1/1 | – | – | – | – |
-| llm_failure | 1/1 | – | 1/1 | 1/1 | – | – | – | – |
+| llm_failure | 1/1 | 1/1 | 1/1 | 1/1 | – | – | – | – |
 | menu | 1/1 | 1/1 | 1/1 | 1/1 | – | – | – | – |
 | modify | 2/2 | 2/2 | 2/2 | 2/2 | – | – | – | – |
 | multi_intent | 2/3 | 1/3 | 0/3 | 0/3 | 0/1 | 0/1 | 1/1 | 0/1 |
@@ -230,7 +224,7 @@ Same-subset comparison: the 37 scenarios the `openai/gpt-oss-safeguard-20b` run 
 | run | turns measured | LLM calls/turn | LLM per call p50 / p95 | LLM per turn p50 / p95 | tools p50 / p95 | TTS 1st sentence p50 / p95 | ASR p50 / p95 | first audio (filler) p50 / p95 | first answer audio p50 / p95 |
 |---|---|---|---|---|---|---|---|---|---|
 | `rules_text` | 52 | 1.85 | 0.0 / 0.0 | 0.0 / 0.0 | 0.9 / 95 | 643 / 1,308 | – | 1.0 / 419 | 667 / 1,363 |
-| `gpt-oss-safeguard-20b_text` | 41 | 2.12 | 309 / 435 | 663 / 1,101 | 1.7 / 15 | 300 / 892 | – | 20,722 / 41,232 | 41,813 / 83,464 |
+| `gpt-oss-safeguard-20b_text` | 48 | 2.08 | 314 / 448 | 662 / 1,200 | 1.6 / 14 | 318 / 1,141 | – | 20,726 / 41,199 | 41,803 / 83,272 |
 | `qwen2.5-3b-ollama_text` | 42 | 1.95 | 11,609 / 33,846 | 23,924 / 52,005 | 1.3 / 195 | 425 / 706 | – | 8,879 / 34,805 | 24,359 / 52,522 |
 | `qwen2.5-3b-ollama_hybrid_text` | 8 | 1.0 | 11,445 / 90,499 | 11,445 / 90,499 | 2.3 / 3.7 | 453 / 989 | – | 11,468 / 90,565 | 11,951 / 91,373 |
 | `qwen2.5-3b-ollama_audio` | 10 | 2.3 | 5,439 / 24,437 | 14,326 / 57,185 | 2.3 / 4.9 | 145 / 382 | 323 / 367 | 5,343 / 18,034 | 14,950 / 57,815 |
@@ -270,7 +264,7 @@ No. Here is how the work splits in this repo:
 The comparison is measured. The same 44 scenarios run several ways:
 
 * `rules_text`: no LLM at all (regex intents + `nlu` + templates)
-* `gpt-oss-safeguard-20b_text`: Groq `openai/gpt-oss-safeguard-20b` plans the tool calls and writes the reply (partial: 37 of 44)
+* `gpt-oss-safeguard-20b_text`: Groq `openai/gpt-oss-safeguard-20b` plans the tool calls and writes the reply (all 44)
 * `qwen2.5-3b-ollama_text`: the same with a 3B model running locally on CPU via Ollama
 * `qwen2.5-3b-ollama_hybrid_text`: the LLM only plans the tool calls, and deterministic templates speak the results (one LLM call per tool turn instead of two)
 * `*_audio` / `*_audio_noisy`: the 11 scenarios that have caller audio, run as Piper-synthesised speech → Whisper → agent, clean and with 5 dB noise
@@ -369,9 +363,9 @@ policy, all offline, plus a Docker build.
   and hand-written regexes, which can be stricter or looser than a human judge.
 * **One run per configuration.** LLM results are single runs (temperature 0 for Groq, but not repeated), so a
   difference of one or two scenarios between models is within noise.
-* **The headline LLM run is partial.** It completed 37 of 44 scenarios (B01..R05) before the shared rate limit
-  made finishing impractical; R06-R08 and X01-X04 were not run on that model. The same-subset table compares all
-  runs on those 37.
+* **The headline LLM run was finished in two sessions.** B01..R05 ran first; R06-R08 and X01-X04 were run
+  later on the same model and code with rate-limit-aware retries (resumable results file, on-disk response
+  cache), so its latency numbers mix two days of shared free-tier quota.
 * **Which model produced which number.** The headline LLM run uses Groq `openai/gpt-oss-safeguard-20b`
   (the general-purpose gpt-oss models were rate-capped on the day of the run). It is a safety-tuned variant,
   not the model you would pick for production tool calling. Hybrid and audio runs used local

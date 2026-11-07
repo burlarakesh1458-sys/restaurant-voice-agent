@@ -25,23 +25,77 @@ MUTATING = {"create_reservation", "modify_reservation", "cancel_reservation"}
 
 ALLERGEN_WORDS = {
     # spoken word -> canonical allergen(s)
-    "nut": ["tree_nuts", "peanuts"], "nuts": ["tree_nuts", "peanuts"], "tree nut": ["tree_nuts"],
-    "tree nuts": ["tree_nuts"], "tree_nuts": ["tree_nuts"], "pine nut": ["tree_nuts"], "pine nuts": ["tree_nuts"],
-    "walnut": ["tree_nuts"], "walnuts": ["tree_nuts"], "almond": ["tree_nuts"], "almonds": ["tree_nuts"],
-    "pistachio": ["tree_nuts"], "pistachios": ["tree_nuts"], "cashew": ["tree_nuts"], "cashews": ["tree_nuts"],
-    "hazelnut": ["tree_nuts"], "hazelnuts": ["tree_nuts"], "peanut": ["peanuts"], "peanuts": ["peanuts"],
-    "groundnut": ["peanuts"], "gluten": ["gluten"], "wheat": ["gluten"], "dairy": ["milk"], "milk": ["milk"],
-    "lactose": ["milk"], "cheese": ["milk"], "egg": ["eggs"], "eggs": ["eggs"], "fish": ["fish"],
-    "shellfish": ["crustaceans", "molluscs"], "crustacean": ["crustaceans"], "crustaceans": ["crustaceans"],
-    "prawn": ["crustaceans"], "prawns": ["crustaceans"], "shrimp": ["crustaceans"], "molluscs": ["molluscs"],
-    "mollusc": ["molluscs"], "soy": ["soy"], "soya": ["soy"], "sesame": ["sesame"], "celery": ["celery"],
-    "mustard": ["mustard"], "sulphites": ["sulphites"], "sulfites": ["sulphites"], "sulphite": ["sulphites"],
-    "sulfite": ["sulphites"], "lupin": ["lupin"],
+    "nut": ["tree_nuts", "peanuts"],
+    "nuts": ["tree_nuts", "peanuts"],
+    "tree nut": ["tree_nuts"],
+    "tree nuts": ["tree_nuts"],
+    "tree_nuts": ["tree_nuts"],
+    "pine nut": ["tree_nuts"],
+    "pine nuts": ["tree_nuts"],
+    "walnut": ["tree_nuts"],
+    "walnuts": ["tree_nuts"],
+    "almond": ["tree_nuts"],
+    "almonds": ["tree_nuts"],
+    "pistachio": ["tree_nuts"],
+    "pistachios": ["tree_nuts"],
+    "cashew": ["tree_nuts"],
+    "cashews": ["tree_nuts"],
+    "hazelnut": ["tree_nuts"],
+    "hazelnuts": ["tree_nuts"],
+    "peanut": ["peanuts"],
+    "peanuts": ["peanuts"],
+    "groundnut": ["peanuts"],
+    "gluten": ["gluten"],
+    "wheat": ["gluten"],
+    "dairy": ["milk"],
+    "milk": ["milk"],
+    "lactose": ["milk"],
+    "cheese": ["milk"],
+    "egg": ["eggs"],
+    "eggs": ["eggs"],
+    "fish": ["fish"],
+    "shellfish": ["crustaceans", "molluscs"],
+    "crustacean": ["crustaceans"],
+    "crustaceans": ["crustaceans"],
+    "prawn": ["crustaceans"],
+    "prawns": ["crustaceans"],
+    "shrimp": ["crustaceans"],
+    "molluscs": ["molluscs"],
+    "mollusc": ["molluscs"],
+    "soy": ["soy"],
+    "soya": ["soy"],
+    "sesame": ["sesame"],
+    "celery": ["celery"],
+    "mustard": ["mustard"],
+    "sulphites": ["sulphites"],
+    "sulfites": ["sulphites"],
+    "sulphite": ["sulphites"],
+    "sulfite": ["sulphites"],
+    "lupin": ["lupin"],
 }
-ALL_ALLERGENS = ["gluten", "crustaceans", "eggs", "fish", "peanuts", "tree_nuts", "soy", "milk", "celery",
-                 "mustard", "sesame", "sulphites", "lupin", "molluscs"]
-ALLERGEN_LABEL = {"tree_nuts": "tree nuts", "peanuts": "peanuts", "crustaceans": "crustaceans",
-                  "molluscs": "molluscs", "sulphites": "sulphites"}
+ALL_ALLERGENS = [
+    "gluten",
+    "crustaceans",
+    "eggs",
+    "fish",
+    "peanuts",
+    "tree_nuts",
+    "soy",
+    "milk",
+    "celery",
+    "mustard",
+    "sesame",
+    "sulphites",
+    "lupin",
+    "molluscs",
+]
+ALLERGEN_LABEL = {
+    "tree_nuts": "tree nuts",
+    "peanuts": "peanuts",
+    "crustaceans": "crustaceans",
+    "molluscs": "molluscs",
+    "sulphites": "sulphites",
+}
 
 
 def label(a: str) -> str:
@@ -85,13 +139,14 @@ class ToolError(Exception):
 @dataclass
 class CallContext:
     caller_phone: str | None = None
-    low_confidence: bool = False   # ASR confidence below threshold this turn -> confirm before writing
+    low_confidence: bool = False  # ASR confidence below threshold this turn -> confirm before writing
     session_id: str = "local"
 
 
 @dataclass
 class FaultPlan:
     """Fault injection for tests and the eval suite: {tool: (mode, n_failures)}; mode = timeout|error."""
+
     faults: dict[str, tuple[str, int]] = field(default_factory=dict)
     seen: dict[str, int] = field(default_factory=dict)
 
@@ -107,10 +162,23 @@ class FaultPlan:
 # ----------------------------------------------------------------------------------------------
 # Tool schemas (OpenAI function-calling format). Descriptions are kept short to save tokens.
 # ----------------------------------------------------------------------------------------------
-CATEGORY_WORDS = {"dessert": "dolci", "desserts": "dolci", "sweet": "dolci", "sweets": "dolci",
-                  "starter": "antipasti", "starters": "antipasti", "appetizer": "antipasti", "appetizers": "antipasti",
-                  "main": "secondi", "mains": "secondi", "soup": "zuppe", "soups": "zuppe", "salad": "insalate",
-                  "salads": "insalate", "bread": "pane"}
+CATEGORY_WORDS = {
+    "dessert": "dolci",
+    "desserts": "dolci",
+    "sweet": "dolci",
+    "sweets": "dolci",
+    "starter": "antipasti",
+    "starters": "antipasti",
+    "appetizer": "antipasti",
+    "appetizers": "antipasti",
+    "main": "secondi",
+    "mains": "secondi",
+    "soup": "zuppe",
+    "soups": "zuppe",
+    "salad": "insalate",
+    "salads": "insalate",
+    "bread": "pane",
+}
 DATE_DESC = "as the caller said it, e.g. 'tonight', 'saturday'"
 
 
@@ -124,17 +192,35 @@ def _fn(name: str, desc: str, props: dict, required: list[str] | None = None) ->
 _S, _I, _B = {"type": "string"}, {"type": "integer"}, {"type": "boolean"}
 _D = {"type": "string", "description": DATE_DESC}
 TOOL_SCHEMAS = [
-    _fn("check_availability", "Is a table free? Returns alternatives if not.",
-        {"date": _D, "time": _S, "party_size": _I}, ["date", "time", "party_size"]),
-    _fn("search_menu", "Find dishes by keyword/diet. free_of returns only VERIFIED allergen-free dishes.",
-        {"query": _S, "vegetarian": _B, "vegan": _B, "free_of": _S, "max_price_inr": _I}),
-    _fn("get_allergens", "Verified allergen record of a dish. Sole source for allergen answers.",
-        {"dish": _S, "allergen": _S}, ["dish"]),
+    _fn(
+        "check_availability",
+        "Is a table free? Returns alternatives if not.",
+        {"date": _D, "time": _S, "party_size": _I},
+        ["date", "time", "party_size"],
+    ),
+    _fn(
+        "search_menu",
+        "Find dishes by keyword/diet. free_of returns only VERIFIED allergen-free dishes.",
+        {"query": _S, "vegetarian": _B, "vegan": _B, "free_of": _S, "max_price_inr": _I},
+    ),
+    _fn(
+        "get_allergens",
+        "Verified allergen record of a dish. Sole source for allergen answers.",
+        {"dish": _S, "allergen": _S},
+        ["dish"],
+    ),
     _fn("get_opening_hours", "Opening hours for a date, or the week.", {"date": _D}),
-    _fn("create_reservation", "Book a table (idempotent).",
-        {"name": _S, "party_size": _I, "date": _D, "time": _S, "notes": _S}, ["name", "party_size", "date", "time"]),
-    _fn("modify_reservation", "Change an existing booking.",
-        {"code": _S, "name": _S, "new_date": _D, "new_time": _S, "new_party_size": _I}),
+    _fn(
+        "create_reservation",
+        "Book a table (idempotent).",
+        {"name": _S, "party_size": _I, "date": _D, "time": _S, "notes": _S},
+        ["name", "party_size", "date", "time"],
+    ),
+    _fn(
+        "modify_reservation",
+        "Change an existing booking.",
+        {"code": _S, "name": _S, "new_date": _D, "new_time": _S, "new_party_size": _I},
+    ),
     _fn("cancel_reservation", "Cancel a booking by code, or by name from the booking phone.", {"code": _S, "name": _S}),
     _fn("handoff_to_human", "Transfer the caller to staff.", {"reason": _S, "summary": _S}, ["reason"]),
 ]
@@ -149,8 +235,12 @@ class RestaurantTools:
     # ------------------------------------------------------------------ helpers
     def _services(self, d: str) -> list[sqlite3.Row]:
         wd = date.fromisoformat(d).weekday()
-        return [r for r in self.conn.execute(
-            "SELECT * FROM opening_hours WHERE weekday=? AND open IS NOT NULL ORDER BY open", (wd,))]
+        return [
+            r
+            for r in self.conn.execute(
+                "SELECT * FROM opening_hours WHERE weekday=? AND open IS NOT NULL ORDER BY open", (wd,)
+            )
+        ]
 
     def _norm_date(self, raw) -> str | None:
         return nlu.parse_date(raw, self.clock.now())
@@ -166,17 +256,26 @@ class RestaurantTools:
         if p is None or p < 1:
             return {"error": "invalid_party_size", "message": "Party size must be at least 1."}, None
         if p > MAX_ONLINE_PARTY:
-            return {"error": "large_party", "party_size": p,
-                    "message": f"Parties over {MAX_ONLINE_PARTY} are handled by our events team.",
-                    "suggest": "handoff_to_human"}, None
+            return {
+                "error": "large_party",
+                "party_size": p,
+                "message": f"Parties over {MAX_ONLINE_PARTY} are handled by our events team.",
+                "suggest": "handoff_to_human",
+            }, None
         now = self.clock.now()
         slot_dt = datetime.fromisoformat(f"{d}T{t}").replace(tzinfo=now.tzinfo)
         if slot_dt < now + timedelta(minutes=15):
-            return {"error": "time_in_past", "date": d, "time": t,
-                    "message": "That time has already passed or is too soon."}, None
+            return {
+                "error": "time_in_past",
+                "date": d,
+                "time": t,
+                "message": "That time has already passed or is too soon.",
+            }, None
         if slot_dt > now + timedelta(days=BOOKING_HORIZON_DAYS):
-            return {"error": "too_far_ahead",
-                    "message": f"We take bookings up to {BOOKING_HORIZON_DAYS} days ahead."}, None
+            return {
+                "error": "too_far_ahead",
+                "message": f"We take bookings up to {BOOKING_HORIZON_DAYS} days ahead.",
+            }, None
         return None, (d, t, p)
 
     def _in_service(self, d: str, t: str) -> bool:
@@ -185,9 +284,14 @@ class RestaurantTools:
 
     def _free_table(self, d: str, t: str, p: int, exclude_code: str | None = None) -> str | None:
         m = _hm(t)
-        busy = {r["table_id"] for r in self.conn.execute(
-            "SELECT table_id, time FROM reservations WHERE date=? AND status='confirmed' AND code IS NOT ?",
-            (d, exclude_code)) if abs(_hm(r["time"]) - m) < SEATING_MINUTES}
+        busy = {
+            r["table_id"]
+            for r in self.conn.execute(
+                "SELECT table_id, time FROM reservations WHERE date=? AND status='confirmed' AND code IS NOT ?",
+                (d, exclude_code),
+            )
+            if abs(_hm(r["time"]) - m) < SEATING_MINUTES
+        }
         for r in self.conn.execute("SELECT id, seats FROM tables WHERE seats>=? ORDER BY seats, id", (p,)):
             if r["id"] not in busy:
                 return r["id"]
@@ -201,8 +305,7 @@ class RestaurantTools:
             while m <= _hm(s["last_seating"]):
                 hhmm = f"{m // 60:02d}:{m % 60:02d}"
                 slot_dt = datetime.fromisoformat(f"{d}T{hhmm}").replace(tzinfo=now.tzinfo)
-                if hhmm != t and slot_dt >= now + timedelta(minutes=15) and \
-                        self._free_table(d, hhmm, p, exclude_code):
+                if hhmm != t and slot_dt >= now + timedelta(minutes=15) and self._free_table(d, hhmm, p, exclude_code):
                     cands.append(hhmm)
                 m += 15
         cands.sort(key=lambda x: (abs(_hm(x) - _hm(t)), _hm(x)))
@@ -218,11 +321,20 @@ class RestaurantTools:
     def _closed_reason(self, d: str, t: str) -> dict:
         services = self._services(d)
         if not services:
-            return {"available": False, "reason": "closed", "date": d,
-                    "message": f"We're closed on {date.fromisoformat(d).strftime('%A')}s."}
+            return {
+                "available": False,
+                "reason": "closed",
+                "date": d,
+                "message": f"We're closed on {date.fromisoformat(d).strftime('%A')}s.",
+            }
         hours = ", ".join(f"{_fmt_time(s['open'])} to {_fmt_time(s['close'])}" for s in services)
-        return {"available": False, "reason": "outside_hours", "date": d, "time": t,
-                "message": f"On {_fmt_date(d)} we're open {hours}; last seating is an hour before closing."}
+        return {
+            "available": False,
+            "reason": "outside_hours",
+            "date": d,
+            "time": t,
+            "message": f"On {_fmt_date(d)} we're open {hours}; last seating is an hour before closing.",
+        }
 
     # ------------------------------------------------------------------ tools
     def check_availability(self, ctx: CallContext, date=None, time=None, party_size=None) -> dict:
@@ -235,18 +347,49 @@ class RestaurantTools:
             out["alternatives"] = self._alternatives(d, t, p) if out["reason"] == "outside_hours" else []
             return out
         if self._free_table(d, t, p):
-            return {"available": True, "date": d, "time": t, "party_size": p,
-                    "spoken": f"{_fmt_date(d)} at {_fmt_time(t)} for {p}"}
+            return {
+                "available": True,
+                "date": d,
+                "time": t,
+                "party_size": p,
+                "spoken": f"{_fmt_date(d)} at {_fmt_time(t)} for {p}",
+            }
         alts = self._alternatives(d, t, p)
-        return {"available": False, "reason": "fully_booked", "date": d, "time": t, "party_size": p,
-                "alternatives": alts, "alternatives_spoken": [_fmt_time(a) for a in alts]}
+        return {
+            "available": False,
+            "reason": "fully_booked",
+            "date": d,
+            "time": t,
+            "party_size": p,
+            "alternatives": alts,
+            "alternatives_spoken": [_fmt_time(a) for a in alts],
+        }
 
-    def search_menu(self, ctx: CallContext, query=None, vegetarian=None, vegan=None, free_of=None,
-                    max_price_inr=None, category=None) -> dict:
+    def search_menu(
+        self, ctx: CallContext, query=None, vegetarian=None, vegan=None, free_of=None, max_price_inr=None, category=None
+    ) -> dict:
         rows = list(self.conn.execute("SELECT * FROM dishes ORDER BY id"))
         q = (query or category or "").strip().lower()
-        stop = {"menu", "dishes", "dish", "food", "options", "something", "anything", "what", "the", "a",
-                "do", "you", "have", "any", "your", "on", "items", "item"}
+        stop = {
+            "menu",
+            "dishes",
+            "dish",
+            "food",
+            "options",
+            "something",
+            "anything",
+            "what",
+            "the",
+            "a",
+            "do",
+            "you",
+            "have",
+            "any",
+            "your",
+            "on",
+            "items",
+            "item",
+        }
         terms = [CATEGORY_WORDS.get(w, w) for w in nlu.tokens(q) if w not in stop and len(w) > 2]
         out = []
         for r in rows:
@@ -265,16 +408,30 @@ class RestaurantTools:
                     return {"error": "unknown_allergen", "message": f"Unknown allergen '{free_of}'."}
                 if r["allergen_info_status"] != "verified":
                     continue
-                st = {a["allergen"]: a["status"] for a in self.conn.execute(
-                    "SELECT allergen, status FROM dish_allergens WHERE dish_id=?", (r["id"],))}
+                st = {
+                    a["allergen"]: a["status"]
+                    for a in self.conn.execute(
+                        "SELECT allergen, status FROM dish_allergens WHERE dish_id=?", (r["id"],)
+                    )
+                }
                 if any(st.get(a) != "free" for a in wanted):
                     continue
-            out.append({"name": r["name"], "category": r["category"], "description": r["description"],
-                        "price_inr": r["price_inr"], "vegetarian": bool(r["vegetarian"]), "vegan": bool(r["vegan"])})
+            out.append(
+                {
+                    "name": r["name"],
+                    "category": r["category"],
+                    "description": r["description"],
+                    "price_inr": r["price_inr"],
+                    "vegetarian": bool(r["vegetarian"]),
+                    "vegan": bool(r["vegan"]),
+                }
+            )
         res = {"count": len(out), "dishes": out[:6]}
         if free_of:
-            res["note"] = ("Only dishes with a VERIFIED 'free' record are listed; dishes with missing "
-                           "allergen data are excluded, not assumed safe.")
+            res["note"] = (
+                "Only dishes with a VERIFIED 'free' record are listed; dishes with missing "
+                "allergen data are excluded, not assumed safe."
+            )
         return res
 
     def _resolve_dish(self, raw: str) -> dict:
@@ -305,10 +462,15 @@ class RestaurantTools:
         return {"not_found": True}
 
     def allergen_record(self, dish_row: sqlite3.Row) -> dict:
-        rows = {r["allergen"]: r for r in self.conn.execute(
-            "SELECT * FROM dish_allergens WHERE dish_id=?", (dish_row["id"],))}
-        return {"status": dish_row["allergen_info_status"], "rows": {a: r["status"] for a, r in rows.items()},
-                "verified_on": next(iter(rows.values()))["verified_on"] if rows else None}
+        rows = {
+            r["allergen"]: r
+            for r in self.conn.execute("SELECT * FROM dish_allergens WHERE dish_id=?", (dish_row["id"],))
+        }
+        return {
+            "status": dish_row["allergen_info_status"],
+            "rows": {a: r["status"] for a, r in rows.items()},
+            "verified_on": next(iter(rows.values()))["verified_on"] if rows else None,
+        }
 
     def allergen_status(self, dish_row: sqlite3.Row, allergen: str) -> str:
         """contains | may_contain | free | unknown  -- unknown unless a verified row exists."""
@@ -322,12 +484,17 @@ class RestaurantTools:
             return {"error": "missing_dish", "message": "Which dish?"}
         res = self._resolve_dish(str(dish))
         if "ambiguous" in res:
-            return {"ambiguous": True, "candidates": res["ambiguous"],
-                    "message": "Several dishes match; ask which one."}
+            return {
+                "ambiguous": True,
+                "candidates": res["ambiguous"],
+                "message": "Several dishes match; ask which one.",
+            }
         if "did_you_mean" in res:
-            return {"did_you_mean": res["did_you_mean"],
-                    "message": f"No dish called '{dish}'. Confirm the caller meant {res['did_you_mean']} "
-                               "before giving any allergen information."}
+            return {
+                "did_you_mean": res["did_you_mean"],
+                "message": f"No dish called '{dish}'. Confirm the caller meant {res['did_you_mean']} "
+                "before giving any allergen information.",
+            }
         if "not_found" in res:
             return {"not_found": True, "message": f"'{dish}' is not on our menu."}
         row = res["dish"]
@@ -342,8 +509,10 @@ class RestaurantTools:
         out: dict = {"dish": name, "allergen_info_status": rec["status"]}
         if rec["status"] != "verified":
             out["verified"] = False
-            out["answer"] = (f"I can't confirm the allergens in the {name}: we don't have a verified allergen "
-                             f"record for it. I can connect you with a staff member to check with the kitchen.")
+            out["answer"] = (
+                f"I can't confirm the allergens in the {name}: we don't have a verified allergen "
+                f"record for it. I can connect you with a staff member to check with the kitchen."
+            )
             out["policy"] = "DO NOT GUESS. Say you can't confirm and offer a staff handoff."
             return out
         out["verified"] = True
@@ -376,9 +545,11 @@ class RestaurantTools:
                 out["answer"] += " I can't confirm that part; a staff member can check with the kitchen."
                 out["policy"] = "Unknown part: say you can't confirm and offer a staff handoff."
         else:
-            out["answer"] = (f"The {name} contains {', '.join(out['contains']) or 'none of the 14 major allergens'}"
-                             + (f", and may contain {', '.join(out['may_contain'])}" if out["may_contain"] else "")
-                             + ".")
+            out["answer"] = (
+                f"The {name} contains {', '.join(out['contains']) or 'none of the 14 major allergens'}"
+                + (f", and may contain {', '.join(out['may_contain'])}" if out["may_contain"] else "")
+                + "."
+            )
         return out
 
     def get_opening_hours(self, ctx: CallContext, date=None) -> dict:
@@ -389,22 +560,36 @@ class RestaurantTools:
             s = self._services(d)
             if not s:
                 return {"date": d, "weekday": _fmt_date(d), "closed": True}
-            return {"date": d, "weekday": _fmt_date(d), "closed": False,
-                    "services": [{"open": _fmt_time(r["open"]), "close": _fmt_time(r["close"]),
-                                  "last_seating": _fmt_time(r["last_seating"])} for r in s]}
+            return {
+                "date": d,
+                "weekday": _fmt_date(d),
+                "closed": False,
+                "services": [
+                    {
+                        "open": _fmt_time(r["open"]),
+                        "close": _fmt_time(r["close"]),
+                        "last_seating": _fmt_time(r["last_seating"]),
+                    }
+                    for r in s
+                ],
+            }
         week = {}
         for wd, name in enumerate(nlu.WEEKDAYS):
             rows = list(self.conn.execute("SELECT * FROM opening_hours WHERE weekday=? AND open IS NOT NULL", (wd,)))
-            week[name] = "closed" if not rows else ", ".join(
-                f"{_fmt_time(r['open'])}-{_fmt_time(r['close'])}" for r in rows)
+            week[name] = (
+                "closed" if not rows else ", ".join(f"{_fmt_time(r['open'])}-{_fmt_time(r['close'])}" for r in rows)
+            )
         return {"week": week}
 
     def _readback(self, r: dict | sqlite3.Row) -> str:
-        return (f"a table for {r['party_size']} under {r['name']} on {_fmt_date(r['date'])} at {_fmt_time(r['time'])}"
-                f", confirmation code {spell_code(r['code'])}")
+        return (
+            f"a table for {r['party_size']} under {r['name']} on {_fmt_date(r['date'])} at {_fmt_time(r['time'])}"
+            f", confirmation code {spell_code(r['code'])}"
+        )
 
-    def create_reservation(self, ctx: CallContext, name=None, party_size=None, date=None, time=None,
-                           notes=None, phone=None) -> dict:
+    def create_reservation(
+        self, ctx: CallContext, name=None, party_size=None, date=None, time=None, notes=None, phone=None
+    ) -> dict:
         name = (name or "").strip()
         if not name or name.lower() in {"unknown", "guest", "customer", "caller", "n/a", "none", "user"}:
             return {"error": "missing_name", "message": "Ask the caller for a name for the booking."}
@@ -415,11 +600,16 @@ class RestaurantTools:
         phone = nlu.normalize_phone(phone) or ctx.caller_phone
         key = f"{name.lower()}|{d}|{t}|{p}"
         existing = self.conn.execute(
-            "SELECT * FROM reservations WHERE idempotency_key=? AND status='confirmed'", (key,)).fetchone()
+            "SELECT * FROM reservations WHERE idempotency_key=? AND status='confirmed'", (key,)
+        ).fetchone()
         if existing:
-            return {"status": "confirmed", "duplicate": True, "code": existing["code"],
-                    "readback": self._readback(existing),
-                    "message": "This booking already exists; no second booking was made."}
+            return {
+                "status": "confirmed",
+                "duplicate": True,
+                "code": existing["code"],
+                "readback": self._readback(existing),
+                "message": "This booking already exists; no second booking was made.",
+            }
         if not self._in_service(d, t):
             out = self._closed_reason(d, t)
             out["status"] = "not_booked"
@@ -428,20 +618,35 @@ class RestaurantTools:
         table = self._free_table(d, t, p)
         if not table:
             alts = self._alternatives(d, t, p)
-            return {"status": "not_booked", "reason": "fully_booked", "alternatives": alts,
-                    "alternatives_spoken": [_fmt_time(a) for a in alts]}
+            return {
+                "status": "not_booked",
+                "reason": "fully_booked",
+                "alternatives": alts,
+                "alternatives_spoken": [_fmt_time(a) for a in alts],
+            }
         if ctx.low_confidence:
-            return {"status": "needs_confirmation",
-                    "readback": f"a table for {p} under {name} on {_fmt_date(d)} at {_fmt_time(t)}",
-                    "message": "Speech recognition was uncertain. Read this back and ask the caller to confirm "
-                               "before booking."}
+            return {
+                "status": "needs_confirmation",
+                "readback": f"a table for {p} under {name} on {_fmt_date(d)} at {_fmt_time(t)}",
+                "message": "Speech recognition was uncertain. Read this back and ask the caller to confirm "
+                "before booking.",
+            }
         code = self._new_code(key)
         self.conn.execute(
             "INSERT INTO reservations (code,name,phone,party_size,date,time,table_id,notes,idempotency_key)"
-            " VALUES (?,?,?,?,?,?,?,?,?)", (code, name, phone, p, d, t, table, notes, key))
+            " VALUES (?,?,?,?,?,?,?,?,?)",
+            (code, name, phone, p, d, t, table, notes, key),
+        )
         row = {"code": code, "name": name, "party_size": p, "date": d, "time": t}
-        return {"status": "confirmed", "code": code, "date": d, "time": t, "party_size": p, "name": name,
-                "readback": self._readback(row)}
+        return {
+            "status": "confirmed",
+            "code": code,
+            "date": d,
+            "time": t,
+            "party_size": p,
+            "name": name,
+            "readback": self._readback(row),
+        }
 
     def _new_code(self, key: str) -> str:
         salt = 0
@@ -463,18 +668,27 @@ class RestaurantTools:
                 return {"error": "already_cancelled", "message": "That booking is already cancelled."}, None
             return None, r
         if name:
-            rows = [r for r in self.conn.execute(
-                "SELECT * FROM reservations WHERE status='confirmed' AND date>=? ORDER BY date, time", (today,))
-                if nlu.similarity(r["name"], name) >= 0.85]
+            rows = [
+                r
+                for r in self.conn.execute(
+                    "SELECT * FROM reservations WHERE status='confirmed' AND date>=? ORDER BY date, time", (today,)
+                )
+                if nlu.similarity(r["name"], name) >= 0.85
+            ]
             if not rows:
                 return {"error": "not_found", "message": f"No upcoming booking under {name}."}, None
             mine = [r for r in rows if ctx.caller_phone and r["phone"] == ctx.caller_phone]
             if not mine:
-                return {"error": "verification_required",
-                        "message": "This phone number doesn't match the booking. Ask for the confirmation code."}, None
+                return {
+                    "error": "verification_required",
+                    "message": "This phone number doesn't match the booking. Ask for the confirmation code.",
+                }, None
             if len(mine) > 1:
-                return {"error": "multiple_bookings", "message": "Several bookings match; ask for the code.",
-                        "bookings": [self._readback(r) for r in mine]}, None
+                return {
+                    "error": "multiple_bookings",
+                    "message": "Several bookings match; ask for the code.",
+                    "bookings": [self._readback(r) for r in mine],
+                }, None
             return None, mine[0]
         return {"error": "missing_identifier", "message": "Ask for the confirmation code."}, None
 
@@ -483,21 +697,29 @@ class RestaurantTools:
         if err:
             return err
         if ctx.low_confidence:
-            return {"status": "needs_confirmation", "readback": self._readback(r),
-                    "message": "Speech recognition was uncertain. Confirm before cancelling."}
-        self.conn.execute("UPDATE reservations SET status='cancelled', updated_at=CURRENT_TIMESTAMP WHERE code=?",
-                          (r["code"],))
+            return {
+                "status": "needs_confirmation",
+                "readback": self._readback(r),
+                "message": "Speech recognition was uncertain. Confirm before cancelling.",
+            }
+        self.conn.execute(
+            "UPDATE reservations SET status='cancelled', updated_at=CURRENT_TIMESTAMP WHERE code=?", (r["code"],)
+        )
         return {"status": "cancelled", "code": r["code"], "readback": self._readback(r)}
 
-    def modify_reservation(self, ctx: CallContext, code=None, name=None, new_date=None, new_time=None,
-                           new_party_size=None) -> dict:
+    def modify_reservation(
+        self, ctx: CallContext, code=None, name=None, new_date=None, new_time=None, new_party_size=None
+    ) -> dict:
         err, r = self._lookup(ctx, code, name)
         if err:
             return err
         if not (new_date or new_time or new_party_size):
             return {"error": "nothing_to_change", "message": "Ask what should change."}
-        err, slot = self._validate_slot(new_date or r["date"], new_time or r["time"],
-                                        new_party_size if new_party_size is not None else r["party_size"])
+        err, slot = self._validate_slot(
+            new_date or r["date"],
+            new_time or r["time"],
+            new_party_size if new_party_size is not None else r["party_size"],
+        )
         if err:
             return err
         d, t, p = slot
@@ -508,30 +730,44 @@ class RestaurantTools:
         table = self._free_table(d, t, p, exclude_code=r["code"])
         if not table:
             alts = self._alternatives(d, t, p, exclude_code=r["code"])
-            return {"status": "not_changed", "reason": "fully_booked", "alternatives": alts,
-                    "alternatives_spoken": [_fmt_time(a) for a in alts]}
+            return {
+                "status": "not_changed",
+                "reason": "fully_booked",
+                "alternatives": alts,
+                "alternatives_spoken": [_fmt_time(a) for a in alts],
+            }
         if ctx.low_confidence:
-            return {"status": "needs_confirmation",
-                    "readback": f"move to {p} people on {_fmt_date(d)} at {_fmt_time(t)}",
-                    "message": "Speech recognition was uncertain. Confirm before changing."}
+            return {
+                "status": "needs_confirmation",
+                "readback": f"move to {p} people on {_fmt_date(d)} at {_fmt_time(t)}",
+                "message": "Speech recognition was uncertain. Confirm before changing.",
+            }
         key = f"{r['name'].lower()}|{d}|{t}|{p}"
         self.conn.execute(
             "UPDATE reservations SET date=?, time=?, party_size=?, table_id=?, idempotency_key=?,"
-            " updated_at=CURRENT_TIMESTAMP WHERE code=?", (d, t, p, table, key, r["code"]))
+            " updated_at=CURRENT_TIMESTAMP WHERE code=?",
+            (d, t, p, table, key, r["code"]),
+        )
         new = dict(r) | {"date": d, "time": t, "party_size": p}
         return {"status": "modified", "code": r["code"], "readback": self._readback(new)}
 
     def handoff_to_human(self, ctx: CallContext, reason=None, summary=None) -> dict:
         reason = (reason or "unspecified").strip()
         ticket = "H-" + hashlib.sha1(f"{ctx.session_id}|{reason}|{time.time_ns()}".encode()).hexdigest()[:5].upper()
-        self.conn.execute("INSERT INTO handoffs (ticket, reason, summary, phone) VALUES (?,?,?,?)",
-                          (ticket, reason, summary, ctx.caller_phone))
+        self.conn.execute(
+            "INSERT INTO handoffs (ticket, reason, summary, phone) VALUES (?,?,?,?)",
+            (ticket, reason, summary, ctx.caller_phone),
+        )
         now = self.clock.now()
-        open_now = self._in_service(now.date().isoformat(), now.strftime("%H:%M")) or \
-            any(_hm(s["open"]) - 60 <= now.hour * 60 + now.minute <= _hm(s["close"])
-                for s in self._services(now.date().isoformat()))
-        msg = ("Transferring you to a member of staff now." if open_now else
-               "A member of staff will call you back as soon as we open.")
+        open_now = self._in_service(now.date().isoformat(), now.strftime("%H:%M")) or any(
+            _hm(s["open"]) - 60 <= now.hour * 60 + now.minute <= _hm(s["close"])
+            for s in self._services(now.date().isoformat())
+        )
+        msg = (
+            "Transferring you to a member of staff now."
+            if open_now
+            else "A member of staff will call you back as soon as we open."
+        )
         return {"status": "handoff_created", "ticket": ticket, "message": msg}
 
 
@@ -548,8 +784,14 @@ class ToolCallRecord:
 
 
 class ToolExecutor:
-    def __init__(self, tools: RestaurantTools, timeout_s: float = 2.0, retries: int = 2,
-                 backoff_s: float = 0.2, faults: FaultPlan | None = None):
+    def __init__(
+        self,
+        tools: RestaurantTools,
+        timeout_s: float = 2.0,
+        retries: int = 2,
+        backoff_s: float = 0.2,
+        faults: FaultPlan | None = None,
+    ):
         self.tools = tools
         self.timeout_s = timeout_s
         self.retries = retries
@@ -578,20 +820,32 @@ class ToolExecutor:
                 result = await asyncio.wait_for(asyncio.to_thread(self._invoke, name, clean, ctx), self.timeout_s)
                 return ToolCallRecord(name, clean, result, (time.perf_counter() - t0) * 1000, attempts)
             except TypeError as e:  # bad argument names from the LLM: not retryable
-                return ToolCallRecord(name, clean, {"error": "bad_arguments", "message": str(e)[:200]},
-                                      (time.perf_counter() - t0) * 1000, attempts)
+                return ToolCallRecord(
+                    name,
+                    clean,
+                    {"error": "bad_arguments", "message": str(e)[:200]},
+                    (time.perf_counter() - t0) * 1000,
+                    attempts,
+                )
             except (TimeoutError, ToolError, sqlite3.OperationalError) as e:
                 last_err = type(e).__name__ if isinstance(e, asyncio.TimeoutError) else str(e)
                 if attempt < self.retries:
-                    await asyncio.sleep(self.backoff_s * (2 ** attempt))
-        result = {"error": "service_unavailable", "retryable": False,
-                  "message": f"The {name.replace('_', ' ')} system is not responding ({last_err[:80]})."}
+                    await asyncio.sleep(self.backoff_s * (2**attempt))
+        result = {
+            "error": "service_unavailable",
+            "retryable": False,
+            "message": f"The {name.replace('_', ' ')} system is not responding ({last_err[:80]}).",
+        }
         if name in MUTATING:
             # Never lose a write silently: open a callback ticket with everything staff need.
-            ho = self.tools.handoff_to_human(ctx, reason=f"{name} failed after retries",
-                                             summary=f"{name} {clean}")
-            result.update({"handoff_created": True, "ticket": ho["ticket"],
-                           "message": result["message"] + " A callback ticket was opened for staff to complete it."})
+            ho = self.tools.handoff_to_human(ctx, reason=f"{name} failed after retries", summary=f"{name} {clean}")
+            result.update(
+                {
+                    "handoff_created": True,
+                    "ticket": ho["ticket"],
+                    "message": result["message"] + " A callback ticket was opened for staff to complete it.",
+                }
+            )
         else:
             result["suggest"] = "apologise; offer handoff_to_human"
         return ToolCallRecord(name, clean, result, (time.perf_counter() - t0) * 1000, attempts)

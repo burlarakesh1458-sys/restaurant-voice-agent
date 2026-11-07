@@ -56,12 +56,17 @@ def wer(ref: str, hyp: str) -> tuple[int, int]:
 
 
 def slots(text: str, now) -> dict:
-    return {"party": nlu.find_party_size(text), "time": nlu.find_time(text), "date": nlu.find_date(text, now),
-            "code": nlu.normalize_code(text)}
+    return {
+        "party": nlu.find_party_size(text),
+        "time": nlu.find_time(text),
+        "date": nlu.find_date(text, now),
+        "code": nlu.normalize_code(text),
+    }
 
 
 async def main() -> None:
     import argparse
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--prompt", default="menu", choices=list(PROMPTS))
     ap.add_argument("--pace", type=float, default=3.2, help="seconds between requests")
@@ -80,29 +85,51 @@ async def main() -> None:
                 tr = await asr.transcribe(pcm, sr, prompt)
                 e, n = wer(t["user"], tr.text)
                 ref_slots, hyp_slots = slots(t["user"], now), slots(tr.text, now)
-                rows.append({"id": f"{s['id']}_t{i}", "variant": variant.strip("_") or "clean", "ref": t["user"],
-                             "hyp": tr.text, "errors": e, "words": n, "confidence": tr.confidence,
-                             "no_speech_prob": tr.no_speech_prob, "ms": round(tr.ms, 1),
-                             "ms_incl_rate_limit_waits": round(tr.total_ms, 1), "attempts": tr.attempts,
-                             "slots_ok": {k: ref_slots[k] == hyp_slots[k] for k in ref_slots if ref_slots[k]},
-                             "audio_s": round(len(pcm) / 2 / sr, 2)})
-                print(f"{rows[-1]['id']:7s} {rows[-1]['variant']:5s} conf={tr.confidence:.2f} {e}/{n}  {tr.text[:80]}",
-                      flush=True)
+                rows.append(
+                    {
+                        "id": f"{s['id']}_t{i}",
+                        "variant": variant.strip("_") or "clean",
+                        "ref": t["user"],
+                        "hyp": tr.text,
+                        "errors": e,
+                        "words": n,
+                        "confidence": tr.confidence,
+                        "no_speech_prob": tr.no_speech_prob,
+                        "ms": round(tr.ms, 1),
+                        "ms_incl_rate_limit_waits": round(tr.total_ms, 1),
+                        "attempts": tr.attempts,
+                        "slots_ok": {k: ref_slots[k] == hyp_slots[k] for k in ref_slots if ref_slots[k]},
+                        "audio_s": round(len(pcm) / 2 / sr, 2),
+                    }
+                )
+                print(
+                    f"{rows[-1]['id']:7s} {rows[-1]['variant']:5s} conf={tr.confidence:.2f} {e}/{n}  {tr.text[:80]}",
+                    flush=True,
+                )
     summary = {}
     for v in ("clean", "noisy"):
         rs = [r for r in rows if r["variant"] == v]
         slot_checks = [ok for r in rs for ok in r["slots_ok"].values()]
         summary[v] = {
-            "utterances": len(rs), "wer": round(sum(r["errors"] for r in rs) / sum(r["words"] for r in rs), 4),
-            "slot_accuracy": round(sum(slot_checks) / max(1, len(slot_checks)), 3), "slot_checks": len(slot_checks),
+            "utterances": len(rs),
+            "wer": round(sum(r["errors"] for r in rs) / sum(r["words"] for r in rs), 4),
+            "slot_accuracy": round(sum(slot_checks) / max(1, len(slot_checks)), 3),
+            "slot_checks": len(slot_checks),
             "confidence_mean": round(sum(r["confidence"] for r in rs) / len(rs), 3),
             "confidence_min": min(r["confidence"] for r in rs),
             "below_confirm_threshold_0.70": sum(r["confidence"] < 0.70 for r in rs),
             "below_reprompt_threshold_0.40": sum(r["confidence"] < 0.40 for r in rs),
-            "latency_ms": {"p50": pct([r["ms"] for r in rs], .5), "p95": pct([r["ms"] for r in rs], .95)},
+            "latency_ms": {"p50": pct([r["ms"] for r in rs], 0.5), "p95": pct([r["ms"] for r in rs], 0.95)},
         }
-    out = {"asr": asr.name, "prompt": args.prompt, "prompt_text": prompt, "caller_voice": "piper en_GB-alan-low",
-           "noise": "white noise, 5 dB SNR", "summary": summary, "rows": rows}
+    out = {
+        "asr": asr.name,
+        "prompt": args.prompt,
+        "prompt_text": prompt,
+        "caller_voice": "piper en_GB-alan-low",
+        "noise": "white noise, 5 dB SNR",
+        "summary": summary,
+        "rows": rows,
+    }
     (ROOT / "reports" / f"asr_eval_{args.prompt}.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(summary, indent=1))
 

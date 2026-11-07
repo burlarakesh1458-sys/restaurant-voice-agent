@@ -13,8 +13,8 @@ from .guardrails import AllergenGuard
 from .llm import LLMError, LLMResponse
 from .tools import TOOL_SCHEMAS, CallContext, RestaurantTools, ToolCallRecord, ToolExecutor
 
-REPROMPT_BELOW = 0.40   # ASR confidence below this: don't act at all, ask the caller to repeat
-CONFIRM_BELOW = 0.70    # below this: writes are gated behind an explicit read-back + "yes"
+REPROMPT_BELOW = 0.40  # ASR confidence below this: don't act at all, ask the caller to repeat
+CONFIRM_BELOW = 0.70  # below this: writes are gated behind an explicit read-back + "yes"
 MAX_ROUNDS = 4
 
 SYSTEM_PROMPT = """Phone agent for Trattoria Verde, Italian restaurant, Jubilee Hills, Hyderabad.
@@ -49,25 +49,30 @@ class TurnResult:
 
     def to_dict(self) -> dict:
         d = asdict(self)
-        d["tool_calls"] = [{"name": c.name, "args": c.args, "result": c.result, "ms": round(c.ms, 1),
-                            "attempts": c.attempts} for c in self.tool_calls]
+        d["tool_calls"] = [
+            {"name": c.name, "args": c.args, "result": c.result, "ms": round(c.ms, 1), "attempts": c.attempts}
+            for c in self.tool_calls
+        ]
         return d
 
 
 def _compact(result: dict) -> str:
     """Tool result as the LLM sees it: no empty fields, capped length (tokens are the scarce resource)."""
+
     def clean(v):
         if isinstance(v, dict):
             return {k: clean(x) for k, x in v.items() if x not in (None, "", [], {})}
         if isinstance(v, list):
             return [clean(x) for x in v]
         return v
+
     out = json.dumps(clean(result), separators=(",", ":"), ensure_ascii=False)
     if len(out) > 1200:  # never cut JSON mid-way: drop the bulky optional parts instead
         slim = {k: v for k, v in clean(result).items() if k not in ("not_assessed", "verified_on", "dishes")}
         if "other_matching_dishes" in slim:
-            slim["other_matching_dishes"] = [{"dish": o.get("dish"), "answer": o.get("answer")}
-                                             for o in slim["other_matching_dishes"]]
+            slim["other_matching_dishes"] = [
+                {"dish": o.get("dish"), "answer": o.get("answer")} for o in slim["other_matching_dishes"]
+            ]
         out = json.dumps(slim, separators=(",", ":"), ensure_ascii=False)
     return out
 
@@ -88,8 +93,16 @@ def _speakable(text: str) -> str:
 
 
 class Agent:
-    def __init__(self, llm, tools: RestaurantTools, executor: ToolExecutor, clock: Clock,
-                 caller_phone: str | None = None, session_id: str = "local", composer=None):
+    def __init__(
+        self,
+        llm,
+        tools: RestaurantTools,
+        executor: ToolExecutor,
+        clock: Clock,
+        caller_phone: str | None = None,
+        session_id: str = "local",
+        composer=None,
+    ):
         self.llm = llm
         self.tools = tools
         self.executor = executor
@@ -103,8 +116,12 @@ class Agent:
 
     def _system(self) -> dict:
         now = self.clock.now()
-        return {"role": "system", "content": SYSTEM_PROMPT.format(
-            now=now.strftime("%A %d %B %Y, %I:%M %p"), phone=self.caller_phone or "unknown")}
+        return {
+            "role": "system",
+            "content": SYSTEM_PROMPT.format(
+                now=now.strftime("%A %d %B %Y, %I:%M %p"), phone=self.caller_phone or "unknown"
+            ),
+        }
 
     def mark_interrupted(self, spoken: str) -> None:
         """Barge-in: the caller only heard ``spoken``; make the history say so."""
@@ -113,21 +130,26 @@ class Agent:
                 m["content"] = (spoken.strip() + " [caller interrupted; the rest was not heard]").strip()
                 return
 
-    async def handle_turn(self, text: str, asr_confidence: float | None = None,
-                          on_tool_start: Callable[[], Awaitable[None]] | None = None) -> TurnResult:
+    async def handle_turn(
+        self, text: str, asr_confidence: float | None = None, on_tool_start: Callable[[], Awaitable[None]] | None = None
+    ) -> TurnResult:
         t0 = time.perf_counter()
         text = (text or "").strip()
         if not text or (asr_confidence is not None and asr_confidence < REPROMPT_BELOW):
             reply = "Sorry, I didn't catch that. Could you say it again?"
-            self.history += [{"role": "user", "content": text or "(inaudible)"},
-                             {"role": "assistant", "content": reply}]
+            self.history += [
+                {"role": "user", "content": text or "(inaudible)"},
+                {"role": "assistant", "content": reply},
+            ]
             return TurnResult(reply, reply, clarified=True, total_ms=(time.perf_counter() - t0) * 1000)
         low = asr_confidence is not None and asr_confidence < CONFIRM_BELOW
         ctx = CallContext(caller_phone=self.caller_phone, low_confidence=low, session_id=self.session_id)
         content = text
         if low:
-            content = (f"[speech recognition uncertain, confidence {asr_confidence:.2f}: confirm names, numbers "
-                       f"and times before acting] {text}")
+            content = (
+                f"[speech recognition uncertain, confidence {asr_confidence:.2f}: confirm names, numbers "
+                f"and times before acting] {text}"
+            )
         self.history.append({"role": "user", "content": content})
         res = TurnResult(text="")
         tool_context = text
@@ -136,8 +158,11 @@ class Agent:
         for rnd in range(MAX_ROUNDS):
             last_round = rnd == MAX_ROUNDS - 1
             try:
-                resp = await self.llm.complete([self._system(), *map(_wire, self.history)], TOOL_SCHEMAS,
-                                               tool_choice="none" if last_round else "auto")
+                resp = await self.llm.complete(
+                    [self._system(), *map(_wire, self.history)],
+                    TOOL_SCHEMAS,
+                    tool_choice="none" if last_round else "auto",
+                )
             except LLMError as e:
                 self.last_error = str(e)
                 return await self._degraded(res, ctx, str(e), t0)
@@ -157,13 +182,17 @@ class Agent:
                 blocked = self._ungrounded(tc.name, tc.arguments)
                 rec = blocked or await self.executor.execute(tc.name, tc.arguments, ctx)
                 res.tool_calls.append(rec)
-                if rec.name == "handoff_to_human" and rec.result.get("status") == "handoff_created" or \
-                        rec.result.get("handoff_created"):
+                if (
+                    rec.name == "handoff_to_human"
+                    and rec.result.get("status") == "handoff_created"
+                    or rec.result.get("handoff_created")
+                ):
                     res.handoff = True
                 body = _compact(rec.result)
                 tool_context += " " + body
-                self.history.append({"role": "tool", "tool_call_id": tc.id, "name": tc.name, "content": body,
-                                     "_result": rec.result})
+                self.history.append(
+                    {"role": "tool", "tool_call_id": tc.id, "name": tc.name, "content": body, "_result": rec.result}
+                )
             if self.composer is not None:
                 comp = await self.composer.complete(self.history)
                 if comp.tool_calls:  # deterministic follow-up, e.g. party of 12 -> handoff
@@ -173,8 +202,15 @@ class Agent:
                         res.tool_calls.append(rec)
                         res.handoff = res.handoff or rec.result.get("status") == "handoff_created"
                         body = _compact(rec.result)
-                        self.history.append({"role": "tool", "tool_call_id": tc.id, "name": tc.name,
-                                             "content": body, "_result": rec.result})
+                        self.history.append(
+                            {
+                                "role": "tool",
+                                "tool_call_id": tc.id,
+                                "name": tc.name,
+                                "content": body,
+                                "_result": rec.result,
+                            }
+                        )
                     comp = await self.composer.complete(self.history)
                 final = comp
                 break
@@ -184,8 +220,10 @@ class Agent:
         res.draft = draft
         violations = self.guard.find_violations(draft, context=tool_context)
         if violations:
-            res.guard_violations_draft = [{"dish": v.dish, "allergen": v.allergen, "claim": v.polarity,
-                                           "verified": v.truth, "clause": v.clause} for v in violations]
+            res.guard_violations_draft = [
+                {"dish": v.dish, "allergen": v.allergen, "claim": v.polarity, "verified": v.truth, "clause": v.clause}
+                for v in violations
+            ]
             res.guard_rewrote = True
             draft = self.guard.safe_rewrite(draft, violations)
         res.text = draft
@@ -202,19 +240,28 @@ class Agent:
         name_tokens = [t for t in re.findall(r"[a-z]+", str(args["name"]).lower()) if len(t) > 1]
         if name_tokens and all(t in said_tokens for t in name_tokens):
             return None
-        return ToolCallRecord(name, args, {"error": "name_not_from_caller",
-                                           "message": "The caller has not said this name. Ask for their name; "
-                                                      "never invent one."}, 0.0, 0)
+        return ToolCallRecord(
+            name,
+            args,
+            {
+                "error": "name_not_from_caller",
+                "message": "The caller has not said this name. Ask for their name; " "never invent one.",
+            },
+            0.0,
+            0,
+        )
 
     async def _degraded(self, res: TurnResult, ctx: CallContext, err: str, t0: float) -> TurnResult:
         """The LLM is down: never leave the caller in silence and never improvise. Open a callback ticket."""
-        rec = await self.executor.execute("handoff_to_human", {"reason": "assistant unavailable",
-                                                               "summary": self.history[-1]["content"][:300]}, ctx)
+        rec = await self.executor.execute(
+            "handoff_to_human", {"reason": "assistant unavailable", "summary": self.history[-1]["content"][:300]}, ctx
+        )
         res.tool_calls.append(rec)
         res.handoff = rec.result.get("status") == "handoff_created"
         res.degraded = True
-        res.text = res.draft = ("Sorry, I'm having technical trouble. I've asked a member of our staff to call you "
-                                "back shortly.")
+        res.text = res.draft = (
+            "Sorry, I'm having technical trouble. I've asked a member of our staff to call you " "back shortly."
+        )
         res.llm_ms.append(0.0)
         res.llm_cached.append(False)
         self.history.append({"role": "assistant", "content": res.text})

@@ -27,7 +27,7 @@ SNR_DB = 5.0
 
 def add_noise(pcm: bytes, snr_db: float, seed: int) -> bytes:
     x = np.frombuffer(pcm, dtype=np.int16).astype(np.float32)
-    p_sig = float(np.mean(x ** 2)) or 1.0
+    p_sig = float(np.mean(x**2)) or 1.0
     noise = np.random.default_rng(seed).normal(0, np.sqrt(p_sig / 10 ** (snr_db / 10)), x.shape)
     return np.clip(x + noise, -32768, 32767).astype(np.int16).tobytes()
 

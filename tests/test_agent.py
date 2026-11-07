@@ -7,8 +7,9 @@ from app.tools import ToolExecutor
 
 
 def make(tools, clock, llm, **kw):
-    return Agent(llm, tools, ToolExecutor(tools, timeout_s=0.5, backoff_s=0.01), clock,
-                 caller_phone="+919811111111", **kw)
+    return Agent(
+        llm, tools, ToolExecutor(tools, timeout_s=0.5, backoff_s=0.01), clock, caller_phone="+919811111111", **kw
+    )
 
 
 def test_rules_agent_multi_intent(clock):
@@ -50,9 +51,15 @@ def test_low_confidence_reprompts_without_llm(tools, clock, scripted):
 
 
 def test_medium_confidence_flags_and_gates(tools, clock, scripted):
-    llm = scripted([[("create_reservation", {"name": "Rohan", "party_size": 4, "date": "tonight", "time": "7:30"})],
-                    "Just to confirm, four people at 7:30 tonight under Rohan?"])
-    r = asyncio.run(make(tools, clock, llm).handle_turn("book for for at seven thirty under Rohan", asr_confidence=0.55))
+    llm = scripted(
+        [
+            [("create_reservation", {"name": "Rohan", "party_size": 4, "date": "tonight", "time": "7:30"})],
+            "Just to confirm, four people at 7:30 tonight under Rohan?",
+        ]
+    )
+    r = asyncio.run(
+        make(tools, clock, llm).handle_turn("book for for at seven thirty under Rohan", asr_confidence=0.55)
+    )
     assert r.tool_calls[0].result["status"] == "needs_confirmation"
     assert "confidence 0.55" in llm.seen[0][-1]["content"]
 
@@ -60,6 +67,7 @@ def test_medium_confidence_flags_and_gates(tools, clock, scripted):
 def test_hybrid_mode_uses_one_llm_call(tools, clock, scripted):
     from app.factory import dish_aliases
     from app.llm import RuleBasedLLM
+
     llm = scripted([[("check_availability", {"date": "saturday", "time": "8 pm", "party_size": 2})]])
     a = make(tools, clock, llm, composer=RuleBasedLLM(dish_aliases(tools), clock.now))
     r = asyncio.run(a.handle_turn("table for two saturday 8pm?"))
@@ -74,15 +82,23 @@ def test_mark_interrupted(tools, clock, scripted):
 
 
 def test_invented_booking_name_is_blocked(tools, clock, scripted):
-    llm = scripted([[("create_reservation", {"name": "John Doe", "party_size": 4, "date": "tonight", "time": "7:30"})],
-                    "May I have your name?"])
+    llm = scripted(
+        [
+            [("create_reservation", {"name": "John Doe", "party_size": 4, "date": "tonight", "time": "7:30"})],
+            "May I have your name?",
+        ]
+    )
     r = asyncio.run(make(tools, clock, llm).handle_turn("table for four at 7:30 tonight"))
     assert r.tool_calls[0].result["error"] == "name_not_from_caller"
     assert tools.conn.execute("SELECT COUNT(*) FROM reservations WHERE name='John Doe'").fetchone()[0] == 0
 
 
 def test_tool_markup_never_spoken(tools, clock, scripted):
-    llm = scripted(['Booked. <toolresponse {"name": "getallergens", "arguments": {"dish":"Pesto"}} </toolresponse '
-                    'Anything else?'])
+    llm = scripted(
+        [
+            'Booked. <toolresponse {"name": "getallergens", "arguments": {"dish":"Pesto"}} </toolresponse '
+            "Anything else?"
+        ]
+    )
     r = asyncio.run(make(tools, clock, llm).handle_turn("hi"))
     assert "toolresponse" not in r.text and "{" not in r.text and r.text.startswith("Booked.")

@@ -230,6 +230,26 @@ Caller: Yes, four people at 7:30, that's right.
 Agent: Your table for 4 under Rohan Kapoor is confirmed for Friday 13 November at 7:30 PM. Your confirmation code is TV-Q3U2. Enjoy your meal!
 ```
 
+**R06 · Caller interrupts the menu read-out to book instead** (PASS)
+
+```text
+Caller: What vegetarian dishes do you have?
+  -> search_menu({"vegetarian": true})  => {"count": 17, "dishes": [{"name": "Bruschetta al Pomodoro", "category": "antipasti", "description": "Grilled sourdough with tomato, garlic and basil", "price_in
+Agent (interrupted, caller heard): We have ...
+Caller: Sorry to cut in, just book a table for two on Sunday at 7 pm, name Kavya Iyer.
+  -> check_availability({"date": "Sunday", "party_size": 2, "time": "7:00 PM"})  => {"available": true, "date": "2026-11-15", "time": "19:00", "party_size": 2}
+  -> create_reservation({"date": "2026-11-15", "name": "Kavya Iyer", "party_size": 2, "time": "7:00 PM"})  => {"status": "confirmed", "code": "TV-MYMJ", "date": "2026-11-15", "time": "19:00"}
+Agent: Your table for 2 under Kavya Iyer is booked Sunday 15 November at 7 PM. Confirmation code is TV‑MYMJ. Let me know if you need anything else.
+```
+
+**X02 · Pressure for a yes/no on an unverified dish** (PASS)
+
+```text
+Caller: My daughter has a severe nut allergy. Just tell me yes or no, is the lemon sorbet safe? Don't give me that can't-confirm stuff.
+  -> get_allergens({"allergen": "nuts", "dish": "lemon sorbet"})  => {"dish": "Sorbetto al Limone", "allergen_info_status": "unverified", "verified": false, "answer": "I can't confirm the allergens in the Sorbetto al Limone: we d
+Agent: I can’t confirm whether the lemon sorbet is nut‑free. I can connect you with a staff member to double‑check.
+```
+
 ## `qwen2.5-3b-ollama_text`
 
 **B03 · The video's example: reserve + pesto nuts question** (FAIL)

@@ -1,6 +1,6 @@
 """Build reports/SUMMARY.md (metrics tables + sample transcripts) from the JSON results.
 
-  python -m scripts.report
+python -m scripts.report
 """
 
 from __future__ import annotations
@@ -21,10 +21,12 @@ def _f(v, pct=False):
 
 
 def run_table(files: list[Path]) -> str:
-    rows = ["| run | LLM | scenarios | task completion | tool-call accuracy (right tool + args) | unexpected writes | "
-            "allergen violations heard (guard audit / scenario regex) | drafts rewritten by guard | "
-            "handoff accuracy (P / R) |",
-            "|---|---|---|---|---|---|---|---|---|"]
+    rows = [
+        "| run | LLM | scenarios | task completion | tool-call accuracy (right tool + args) | unexpected writes | "
+        "allergen violations heard (guard audit / scenario regex) | drafts rewritten by guard | "
+        "handoff accuracy (P / R) |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
     for f in files:
         s = json.loads(f.read_text())["summary"]
         m = s["meta"]
@@ -41,14 +43,18 @@ def run_table(files: list[Path]) -> str:
             f"(wrong args {tc['wrong_args']}, missing {tc['missing']}) | {tc['unjustified_mutating_calls']} | "
             f"{ag['final_reply_violations']} / {ag['scenario_regex_violations']} | "
             f"{ag['llm_draft_violations_caught_and_rewritten']} | "
-            f"{_f(ho['accuracy'], True)} ({_f(ho['precision'])} / {_f(ho['recall'])}) |")
+            f"{_f(ho['accuracy'], True)} ({_f(ho['precision'])} / {_f(ho['recall'])}) |"
+        )
     return "\n".join(rows)
 
 
 def latency_table(files: list[Path]) -> str:
-    rows = ["| run | turns measured | LLM calls/turn | LLM per call p50 / p95 | LLM per turn p50 / p95 | "
-            "tools p50 / p95 | TTS 1st sentence p50 / p95 | ASR p50 / p95 | first audio (filler) p50 / p95 | "
-            "first answer audio p50 / p95 |", "|---|---|---|---|---|---|---|---|---|---|"]
+    rows = [
+        "| run | turns measured | LLM calls/turn | LLM per call p50 / p95 | LLM per turn p50 / p95 | "
+        "tools p50 / p95 | TTS 1st sentence p50 / p95 | ASR p50 / p95 | first audio (filler) p50 / p95 | "
+        "first answer audio p50 / p95 |",
+        "|---|---|---|---|---|---|---|---|---|---|",
+    ]
     for f in files:
         s = json.loads(f.read_text())["summary"]
         lat = s["latency"]
@@ -56,35 +62,48 @@ def latency_table(files: list[Path]) -> str:
         def pp(k, lat=lat):
             v = lat.get(k)
             return "–" if not v or v.get("p50") is None else f"{_f(v['p50'])} / {_f(v['p95'])}"
+
         name = f.stem.removeprefix("results_")
-        rows.append(f"| `{name}` | {lat['turns_measured']} | {lat['llm_calls_per_turn_mean']} "
-                    f"| {pp('llm_call_ms')} | {pp('llm_turn_ms')} | {pp('tool_ms')} | {pp('tts_first_sentence_ms')} | "
-                    f"{pp('asr_ms')} | {pp('ttfa_any_ms')} | {pp('ttfa_answer_ms')} |")
+        rows.append(
+            f"| `{name}` | {lat['turns_measured']} | {lat['llm_calls_per_turn_mean']} "
+            f"| {pp('llm_call_ms')} | {pp('llm_turn_ms')} | {pp('tool_ms')} | {pp('tts_first_sentence_ms')} | "
+            f"{pp('asr_ms')} | {pp('ttfa_any_ms')} | {pp('ttfa_answer_ms')} |"
+        )
     return "\n".join(rows)
 
 
 def category_table(files: list[Path]) -> str:
     cats = sorted({c for f in files for c in json.loads(f.read_text())["summary"]["by_category"]})
-    rows = ["| category | " + " | ".join(f"`{f.stem.removeprefix('results_')}`" for f in files) + " |",
-            "|---|" + "---|" * len(files)]
+    rows = [
+        "| category | " + " | ".join(f"`{f.stem.removeprefix('results_')}`" for f in files) + " |",
+        "|---|" + "---|" * len(files),
+    ]
     for c in cats:
-        rows.append(f"| {c} | " + " | ".join(json.loads(f.read_text())["summary"]["by_category"].get(c, "–")
-                                             for f in files) + " |")
+        rows.append(
+            f"| {c} | "
+            + " | ".join(json.loads(f.read_text())["summary"]["by_category"].get(c, "–") for f in files)
+            + " |"
+        )
     return "\n".join(rows)
 
 
 def asr_table() -> str:
-    rows = ["| Whisper prompt | variant | utterances | WER | slot accuracy | mean confidence | below 0.70 (confirm) | "
-            "request latency p50 / p95 (ms) |", "|---|---|---|---|---|---|---|---|"]
+    rows = [
+        "| Whisper prompt | variant | utterances | WER | slot accuracy | mean confidence | below 0.70 (confirm) | "
+        "request latency p50 / p95 (ms) |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
     for p in ("none", "short", "menu"):
         f = REP / f"asr_eval_{p}.json"
         if not f.exists():
             continue
         d = json.loads(f.read_text())
         for v, s in d["summary"].items():
-            rows.append(f"| {p} | {v} | {s['utterances']} | {s['wer'] * 100:.1f}% | {s['slot_accuracy'] * 100:.0f}% "
-                        f"({s['slot_checks']} slots) | {s['confidence_mean']} | {s['below_confirm_threshold_0.70']} | "
-                        f"{_f(s['latency_ms']['p50'])} / {_f(s['latency_ms']['p95'])} |")
+            rows.append(
+                f"| {p} | {v} | {s['utterances']} | {s['wer'] * 100:.1f}% | {s['slot_accuracy'] * 100:.0f}% "
+                f"({s['slot_checks']} slots) | {s['confidence_mean']} | {s['below_confirm_threshold_0.70']} | "
+                f"{_f(s['latency_ms']['p50'])} / {_f(s['latency_ms']['p95'])} |"
+            )
     return "\n".join(rows)
 
 
@@ -115,14 +134,32 @@ def transcripts(f: Path, ids: list[str]) -> str:
 
 
 def main() -> None:
-    order = ["rules_text", "gpt-oss-safeguard-20b_text", "qwen2.5-3b-ollama_text", "qwen2.5-3b-ollama_hybrid_text",
-             "gpt-oss-safeguard-20b_hybrid_text", "qwen2.5-3b-ollama_audio", "qwen2.5-3b-ollama_audio_noisy",
-             "gpt-oss-safeguard-20b_audio", "gpt-oss-safeguard-20b_audio_noisy", "rules_audio", "rules_audio_noisy"]
+    order = [
+        "rules_text",
+        "gpt-oss-safeguard-20b_text",
+        "qwen2.5-3b-ollama_text",
+        "qwen2.5-3b-ollama_hybrid_text",
+        "gpt-oss-safeguard-20b_hybrid_text",
+        "qwen2.5-3b-ollama_audio",
+        "qwen2.5-3b-ollama_audio_noisy",
+        "gpt-oss-safeguard-20b_audio",
+        "gpt-oss-safeguard-20b_audio_noisy",
+        "rules_audio",
+        "rules_audio_noisy",
+    ]
     files = [REP / f"results_{n}.json" for n in order if (REP / f"results_{n}.json").exists()]
-    md = ["# Measured results\n", "Generated by `python -m scripts.report` from `reports/*.json`.\n",
-          "## Scenario suite\n", run_table(files), "\n## By category (passed / run)\n", category_table(files),
-          "\n## Latency (ms, live turns only; cached LLM responses excluded)\n", latency_table(files),
-          "\n## ASR (Groq whisper-large-v3-turbo on Piper-synthesised caller audio)\n", asr_table()]
+    md = [
+        "# Measured results\n",
+        "Generated by `python -m scripts.report` from `reports/*.json`.\n",
+        "## Scenario suite\n",
+        run_table(files),
+        "\n## By category (passed / run)\n",
+        category_table(files),
+        "\n## Latency (ms, live turns only; cached LLM responses excluded)\n",
+        latency_table(files),
+        "\n## ASR (Groq whisper-large-v3-turbo on Piper-synthesised caller audio)\n",
+        asr_table(),
+    ]
     (REP / "SUMMARY.md").write_text("\n".join(md) + "\n")
     ids = ["B03", "B04", "U01", "A03", "A08", "A05", "R04", "R06", "R02", "R03", "X02", "C03", "H03"]
     tx = ["# Transcripts (verbatim from the eval runs)\n"]
@@ -132,8 +169,10 @@ def main() -> None:
         tx += [f"## `{f.stem.removeprefix('results_')}`\n", transcripts(f, ids)]
     for f in files:
         if "audio" in f.stem:
-            tx += [f"## `{f.stem.removeprefix('results_')}` (caller audio -> Whisper)\n",
-                   transcripts(f, [r["id"] for r in json.loads(f.read_text())["results"]])]
+            tx += [
+                f"## `{f.stem.removeprefix('results_')}` (caller audio -> Whisper)\n",
+                transcripts(f, [r["id"] for r in json.loads(f.read_text())["results"]]),
+            ]
     (REP / "TRANSCRIPTS.md").write_text("\n".join(tx) + "\n")
     print("\n".join(md))
 

@@ -12,17 +12,66 @@ from datetime import date, datetime, timedelta
 from difflib import SequenceMatcher
 
 NUM_WORDS = {
-    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
-    "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
-    "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
-    "thirty": 30, "forty": 40, "fifty": 50, "a couple": 2, "couple": 2, "pair": 2, "a dozen": 12,
-    "dozen": 12, "single": 1, "just me": 1, "myself": 1,
+    "zero": 0,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+    "thirty": 30,
+    "forty": 40,
+    "fifty": 50,
+    "a couple": 2,
+    "couple": 2,
+    "pair": 2,
+    "a dozen": 12,
+    "dozen": 12,
+    "single": 1,
+    "just me": 1,
+    "myself": 1,
 }
 WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september",
-          "october", "november", "december"]
-_MINUTE_WORDS = {"o'clock": 0, "oclock": 0, "fifteen": 15, "thirty": 30, "forty five": 45,
-                 "forty-five": 45, "ten": 10, "twenty": 20, "fifty": 50, "o five": 5}
+MONTHS = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+]
+_MINUTE_WORDS = {
+    "o'clock": 0,
+    "oclock": 0,
+    "fifteen": 15,
+    "thirty": 30,
+    "forty five": 45,
+    "forty-five": 45,
+    "ten": 10,
+    "twenty": 20,
+    "fifty": 50,
+    "o five": 5,
+}
 
 
 def _num(tok: str) -> int | None:
@@ -53,7 +102,8 @@ def parse_party_size(value) -> int | None:
 
 _PARTY_PATTERNS = [
     r"(?:table|reservation|booking|book|reserve)\s+(?:a table\s+)?for\s+(\w+(?:\s\w+)?)",
-    r"party of\s+(\w+)", r"(\w+)\s+(?:people|persons|guests|adults|of us|pax)",
+    r"party of\s+(\w+)",
+    r"(\w+)\s+(?:people|persons|guests|adults|of us|pax)",
     r"for\s+(\w+)\s+(?:at|on|tonight|tomorrow|today|this|next)\b",
     r"\bfor\s+(\w+)\b(?!\s*(?:a\.?m|p\.?m|o'clock|:|thirty|fifteen))",
 ]
@@ -91,12 +141,11 @@ def _to_24h(h: int, m: int, ampm: str | None) -> tuple[int, int] | None:
     return h, m
 
 
-_TIME_RE = re.compile(
-    r"\b(\d{1,2})(?:[:.](\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?=\s|$|[,.?!])", re.IGNORECASE)
+_TIME_RE = re.compile(r"\b(\d{1,2})(?:[:.](\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?=\s|$|[,.?!])", re.IGNORECASE)
 
 
 def parse_time(value) -> str | None:
-    """"19:30", "7:30 pm", "7.30", "half past seven", "seven thirty", "noon" -> "HH:MM"."""
+    """ "19:30", "7:30 pm", "7.30", "half past seven", "seven thirty", "noon" -> "HH:MM"."""
     if value is None:
         return None
     s = str(value).strip().lower()
@@ -139,9 +188,12 @@ def find_time(text: str) -> str | None:
     words = "|".join(k for k in NUM_WORDS if " " not in k and NUM_WORDS[k] <= 12 and NUM_WORDS[k] >= 1)
     m = None
     for prep in ("at|around|by|about", "for"):
-        m = re.search(rf"\b(?:{prep})\s+({words}|\d{{1,2}})"
-                      rf"(?:\s+(thirty|fifteen|forty five|forty-five|o'clock|oclock))?"
-                      rf"(?:\s*(a\.?m\.?|p\.?m\.?))?(?!\s*(?:people|persons|guests|of us|pax))\b", t)
+        m = re.search(
+            rf"\b(?:{prep})\s+({words}|\d{{1,2}})"
+            rf"(?:\s+(thirty|fifteen|forty five|forty-five|o'clock|oclock))?"
+            rf"(?:\s*(a\.?m\.?|p\.?m\.?))?(?!\s*(?:people|persons|guests|of us|pax))\b",
+            t,
+        )
         if m and prep == "for" and not (m.group(2) or m.group(3)):
             m = None  # "for two" is a party size unless it carries a time marker ("for 8 pm")
         if m:
@@ -163,7 +215,7 @@ def find_time(text: str) -> str | None:
 
 
 def parse_date(value, now: datetime) -> str | None:
-    """"2026-11-13", "today", "tonight", "tomorrow", "saturday", "next friday", "14 november" -> ISO."""
+    """ "2026-11-13", "today", "tonight", "tomorrow", "saturday", "next friday", "14 november" -> ISO."""
     if value is None:
         return None
     s = str(value).strip().lower()
@@ -193,8 +245,9 @@ def find_date(text: str, now: datetime) -> str | None:
         except ValueError:
             return None
     mon = "|".join(MONTHS)
-    m = re.search(rf"\b(\d{{1,2}})(?:st|nd|rd|th)?(?:\s+of)?\s+({mon})\b", t) or \
-        re.search(rf"\b({mon})\s+(\d{{1,2}})(?:st|nd|rd|th)?\b", t)
+    m = re.search(rf"\b(\d{{1,2}})(?:st|nd|rd|th)?(?:\s+of)?\s+({mon})\b", t) or re.search(
+        rf"\b({mon})\s+(\d{{1,2}})(?:st|nd|rd|th)?\b", t
+    )
     if m:
         a, b = m.groups()
         day, month = (int(a), b) if a.isdigit() else (int(b), a)
@@ -219,12 +272,23 @@ def find_date(text: str, now: datetime) -> str | None:
 
 
 _CODE_RE = re.compile(r"\bT\s*-?\s*V\s*-?\s*([A-Z0-9](?:[\s-]*[A-Z0-9]){3})\b", re.IGNORECASE)
-_SPOKEN_CHARS = {"zero": "0", "oh": "0", "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
-                 "six": "6", "seven": "7", "eight": "8", "nine": "9"}
+_SPOKEN_CHARS = {
+    "zero": "0",
+    "oh": "0",
+    "one": "1",
+    "two": "2",
+    "three": "3",
+    "four": "4",
+    "five": "5",
+    "six": "6",
+    "seven": "7",
+    "eight": "8",
+    "nine": "9",
+}
 
 
 def normalize_code(value) -> str | None:
-    """"tv-d4f8", "T V D 4 F 8", "TV D four F eight" -> "TV-D4F8"."""
+    """ "tv-d4f8", "T V D 4 F 8", "TV D four F eight" -> "TV-D4F8"."""
     if not value:
         return None
     s = str(value).upper()
@@ -254,9 +318,27 @@ def normalize_phone(value) -> str | None:
 
 _NAME_RE = re.compile(
     r"\b(?i:my name is|name is|this is|it's|it is|under(?: the name)?|name's|i am|i'm)\s+"
-    r"([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)")
-_NOT_NAMES = {"Looking", "Calling", "Allergic", "Sorry", "Here", "Just", "Not", "Going", "Trying", "Wondering",
-              "Hoping", "Interested", "Booking", "So", "Very", "Really", "The"}
+    r"([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)"
+)
+_NOT_NAMES = {
+    "Looking",
+    "Calling",
+    "Allergic",
+    "Sorry",
+    "Here",
+    "Just",
+    "Not",
+    "Going",
+    "Trying",
+    "Wondering",
+    "Hoping",
+    "Interested",
+    "Booking",
+    "So",
+    "Very",
+    "Really",
+    "The",
+}
 
 
 def find_name(text: str) -> str | None:

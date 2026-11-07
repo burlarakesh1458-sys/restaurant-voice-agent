@@ -25,6 +25,18 @@ footer{border-top:1px solid var(--line);color:var(--mut);padding:20px 0;font-siz
 id="trattoria-verde-a-voice-agent-that-takes-bookings-and-wont-guess-about-allergens">Trattoria
 Verde: a voice agent that takes bookings and won't guess about
 allergens</h1>
+<!-- links -->
+
+<p><a
+href="https://github.com/burlarakesh1458-sys/restaurant-voice-agent/actions/workflows/ci.yml"><img
+src="https://github.com/burlarakesh1458-sys/restaurant-voice-agent/actions/workflows/ci.yml/badge.svg"
+alt="CI" /></a> <strong>Live demo:</strong> <a
+href="http://rakeshburla.dpdns.org/restaurant-voice-agent/">http://rakeshburla.dpdns.org/restaurant-voice-agent/</a>
+· <strong>Code:</strong> <a
+href="https://github.com/burlarakesh1458-sys/restaurant-voice-agent">https://github.com/burlarakesh1458-sys/restaurant-voice-agent</a>
+· <strong>Resume bullets:</strong> <a
+href="https://github.com/burlarakesh1458-sys/restaurant-voice-agent/blob/main/RESUME_BULLETS.md">RESUME_BULLETS.md</a> ·
+<strong>License:</strong> MIT</p>
 <p><strong>Caller audio → Groq Whisper → LLM with tool calling → SQLite
 tools → Piper TTS → caller.</strong> It books, changes and cancels
 tables, answers menu and opening-hours questions, and answers allergen
@@ -444,8 +456,9 @@ served from the response cache are excluded.</li>
 <code>ollama:qwen2.5:3b</code> = local Ollama on the 2-vCPU CPU box
 (shared with other jobs, so its latencies are CPU-bound, not
 representative of a GPU deployment). Audio runs use Groq
-<code>whisper-large-v3-turbo</code> for ASR. A run marked partial
-reports n.</p>
+<code>whisper-large-v3-turbo</code> for ASR. Text runs cover all 44
+scenarios; audio runs cover the 11 scenarios that have synthesised
+caller audio.</p>
 <h3 id="scenario-suite">Scenario suite</h3>
 <table>
 <thead>
@@ -476,13 +489,13 @@ reports n.</p>
 <tr class="even">
 <td><code>gpt-oss-safeguard-20b_text</code></td>
 <td>openai/gpt-oss-safeguard-20b</td>
-<td>37 of 44 (partial)</td>
-<td>31/37 = 83.8%</td>
-<td>31/34 = 91.2% (wrong args 0, missing 3)</td>
+<td>44</td>
+<td>38/44 = 86.4%</td>
+<td>33/36 = 91.7% (wrong args 0, missing 3)</td>
 <td>3</td>
 <td>0 / 0</td>
 <td>1</td>
-<td>91.9% (0.667 / 0.8)</td>
+<td>93.2% (0.714 / 0.833)</td>
 </tr>
 <tr class="odd">
 <td><code>qwen2.5-3b-ollama_text</code></td>
@@ -552,40 +565,6 @@ reports n.</p>
 </tr>
 </tbody>
 </table>
-<p>Same-subset comparison: the 37 scenarios the
-<code>openai/gpt-oss-safeguard-20b</code> run completed (B01..R05, suite
-order), so all runs are compared on identical inputs.</p>
-<table>
-<thead>
-<tr class="header">
-<th>run</th>
-<th>passed</th>
-<th>tool calls correct</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>rules_text</code></td>
-<td>33/37</td>
-<td>31/34</td>
-</tr>
-<tr class="even">
-<td><code>gpt-oss-safeguard-20b_text</code></td>
-<td>31/37</td>
-<td>31/34</td>
-</tr>
-<tr class="odd">
-<td><code>qwen2.5-3b-ollama_text</code></td>
-<td>26/37</td>
-<td>27/34</td>
-</tr>
-<tr class="even">
-<td><code>qwen2.5-3b-ollama_hybrid_text</code></td>
-<td>29/37</td>
-<td>28/34</td>
-</tr>
-</tbody>
-</table>
 <h3 id="by-category">By category</h3>
 <table>
 <thead>
@@ -605,7 +584,7 @@ order), so all runs are compared on identical inputs.</p>
 <tr class="odd">
 <td>adversarial</td>
 <td>5/5</td>
-<td>1/1</td>
+<td>5/5</td>
 <td>5/5</td>
 <td>4/5</td>
 <td>1/1</td>
@@ -638,7 +617,7 @@ order), so all runs are compared on identical inputs.</p>
 <tr class="even">
 <td>barge_in</td>
 <td>1/1</td>
-<td>–</td>
+<td>1/1</td>
 <td>1/1</td>
 <td>1/1</td>
 <td>–</td>
@@ -693,7 +672,7 @@ order), so all runs are compared on identical inputs.</p>
 <tr class="odd">
 <td>idempotency</td>
 <td>1/1</td>
-<td>–</td>
+<td>1/1</td>
 <td>1/1</td>
 <td>1/1</td>
 <td>–</td>
@@ -715,7 +694,7 @@ order), so all runs are compared on identical inputs.</p>
 <tr class="odd">
 <td>llm_failure</td>
 <td>1/1</td>
-<td>–</td>
+<td>1/1</td>
 <td>1/1</td>
 <td>1/1</td>
 <td>–</td>
@@ -814,15 +793,15 @@ excluded)</h3>
 </tr>
 <tr class="even">
 <td><code>gpt-oss-safeguard-20b_text</code></td>
-<td>41</td>
-<td>2.12</td>
-<td>309 / 435</td>
-<td>663 / 1,101</td>
-<td>1.7 / 15</td>
-<td>300 / 892</td>
+<td>48</td>
+<td>2.08</td>
+<td>314 / 448</td>
+<td>662 / 1,200</td>
+<td>1.6 / 14</td>
+<td>318 / 1,141</td>
 <td>–</td>
-<td>20,722 / 41,232</td>
-<td>41,813 / 83,464</td>
+<td>20,726 / 41,199</td>
+<td>41,803 / 83,272</td>
 </tr>
 <tr class="odd">
 <td><code>qwen2.5-3b-ollama_text</code></td>
@@ -1050,7 +1029,7 @@ ways:</p>
 <code>nlu</code> + templates)</li>
 <li><code>gpt-oss-safeguard-20b_text</code>: Groq
 <code>openai/gpt-oss-safeguard-20b</code> plans the tool calls and
-writes the reply (partial: 37 of 44)</li>
+writes the reply (all 44)</li>
 <li><code>qwen2.5-3b-ollama_text</code>: the same with a 3B model
 running locally on CPU via Ollama</li>
 <li><code>qwen2.5-3b-ollama_hybrid_text</code>: the LLM only plans the
@@ -1142,10 +1121,11 @@ judge.</li>
 <li><strong>One run per configuration.</strong> LLM results are single
 runs (temperature 0 for Groq, but not repeated), so a difference of one
 or two scenarios between models is within noise.</li>
-<li><strong>The headline LLM run is partial.</strong> It completed 37 of
-44 scenarios (B01..R05) before the shared rate limit made finishing
-impractical; R06-R08 and X01-X04 were not run on that model. The
-same-subset table compares all runs on those 37.</li>
+<li><strong>The headline LLM run was finished in two sessions.</strong>
+B01..R05 ran first; R06-R08 and X01-X04 were run later on the same model
+and code with rate-limit-aware retries (resumable results file, on-disk
+response cache), so its latency numbers mix two days of shared free-tier
+quota.</li>
 <li><strong>Which model produced which number.</strong> The headline LLM
 run uses Groq <code>openai/gpt-oss-safeguard-20b</code> (the
 general-purpose gpt-oss models were rate-capped on the day of the run).

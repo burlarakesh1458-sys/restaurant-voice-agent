@@ -1,5 +1,9 @@
 name: ci
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,6 +15,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
+      - run: ruff format --check .
       # Fully offline: rule-based fake LLM, fake ASR, fake TTS. No API keys in CI.
       - run: pytest -q
       - name: Scenario suite with the no-LLM baseline (offline)

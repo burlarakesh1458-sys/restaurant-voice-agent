@@ -14,7 +14,7 @@ from app.db import seed  # noqa: E402
 from app.llm import LLMResponse, ToolCall  # noqa: E402
 from app.tools import CallContext, RestaurantTools  # noqa: E402
 
-NOW = "2026-11-13T16:00:00+05:30"   # Friday
+NOW = "2026-11-13T16:00:00+05:30"  # Friday
 
 
 @pytest.fixture

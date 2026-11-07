@@ -12,6 +12,7 @@ def run(session, **kw):
 def make(clock, events):
     async def emit(e):
         events.append(e)
+
     s = VoiceSession(build_agent("rules", clock), FakeASR(confidence=0.95), FakeTTS(), emit)
     asyncio.run(s.warmup())
     return s
@@ -48,7 +49,7 @@ def test_barge_in_stops_audio_and_rewrites_history(clock):
     s = make(clock, ev)
     m = run(s, text="What vegetarian dishes do you have?", barge_in_after_ms=300)
     assert m.interrupted and len(m.spoken_text) < len(m.result["text"])
-    after = [e for e in ev[[e["type"] for e in ev].index("reply"):] if e["type"] == "audio" and not e["filler"]]
+    after = [e for e in ev[[e["type"] for e in ev].index("reply") :] if e["type"] == "audio" and not e["filler"]]
     assert sum(len(e["data"]) for e in after) > 0
     assert "interrupted" in s.agent.history[-1]["content"]
     m2 = run(s, text="Actually book a table for two on Sunday at 7 pm, name Kavya Iyer.")

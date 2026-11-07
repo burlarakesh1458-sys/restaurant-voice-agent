@@ -75,8 +75,9 @@ def arg_match(tools, now, k: str, exp, act) -> bool:
 
 
 def call_matches(tools, now, exp: dict, act: dict) -> bool:
-    return exp["tool"] == act["name"] and all(arg_match(tools, now, k, v, act["args"].get(k))
-                                              for k, v in exp.get("args", {}).items())
+    return exp["tool"] == act["name"] and all(
+        arg_match(tools, now, k, v, act["args"].get(k)) for k, v in exp.get("args", {}).items()
+    )
 
 
 def score_tool_calls(tools, now, expected: list[dict], actual: list[dict]) -> dict:
@@ -85,16 +86,27 @@ def score_tool_calls(tools, now, expected: list[dict], actual: list[dict]) -> di
     for exp in expected:
         alts = exp["any_of"] if "any_of" in exp else [exp]
         out["expected"] += 1
-        hit = next(((i, a) for i, a in enumerate(actual) if i not in used and any(
-            call_matches(tools, now, e, a) for e in alts)), None)
+        hit = next(
+            (
+                (i, a)
+                for i, a in enumerate(actual)
+                if i not in used and any(call_matches(tools, now, e, a) for e in alts)
+            ),
+            None,
+        )
         if hit:
             used.add(hit[0])
             out["correct"] += 1
             out["details"].append({"expected": exp, "status": "correct"})
         elif any(a["name"] == e["tool"] for a in actual for e in alts):
             out["wrong_args"] += 1
-            out["details"].append({"expected": exp, "status": "wrong_args",
-                                   "actual": [a for a in actual if a["name"] in {e["tool"] for e in alts}]})
+            out["details"].append(
+                {
+                    "expected": exp,
+                    "status": "wrong_args",
+                    "actual": [a for a in actual if a["name"] in {e["tool"] for e in alts}],
+                }
+            )
         else:
             out["missing"] += 1
             out["details"].append({"expected": exp, "status": "missing"})
@@ -105,9 +117,17 @@ def score_tool_calls(tools, now, expected: list[dict], actual: list[dict]) -> di
 async def run_scenario(sc: dict, args, tts, asr) -> dict:
     clock = FixedClock(NOW)
     faults = FaultPlan({k: (v[0], v[1]) for k, v in sc["faults"].items()})
-    agent = build_agent(args.llm, clock, ":memory:", caller_phone=sc["caller_phone"], faults=faults,
-                        base_date=date.fromisoformat(NOW[:10]), cache_path=str(ROOT / "reports" / ".llm_cache.sqlite"),
-                        tool_timeout_s=1.0, hybrid=args.hybrid)
+    agent = build_agent(
+        args.llm,
+        clock,
+        ":memory:",
+        caller_phone=sc["caller_phone"],
+        faults=faults,
+        base_date=date.fromisoformat(NOW[:10]),
+        cache_path=str(ROOT / "reports" / ".llm_cache.sqlite"),
+        tool_timeout_s=1.0,
+        hybrid=args.hybrid,
+    )
     if sc.get("llm_fault"):
         agent.llm = FaultyLLM(agent.llm, n=sc["llm_fault"])
     tools = agent.tools
@@ -145,8 +165,13 @@ def evaluate(sc, turns, before, after, handoffs, tools, clock) -> dict:
     new = [r for c, r in after.items() if c not in before and r["status"] == "confirmed"]
     actual_calls = [c for t in turns for c in t["result"]["tool_calls"]]
     for want in exp.get("reservations", []):
-        ok = any(r["name"].lower() == want["name"].lower() and r["date"] == want["date"] and r["time"] == want["time"]
-                 and r["party_size"] == want["party_size"] for r in new)
+        ok = any(
+            r["name"].lower() == want["name"].lower()
+            and r["date"] == want["date"]
+            and r["time"] == want["time"]
+            and r["party_size"] == want["party_size"]
+            for r in new
+        )
         checks.append(("reservation_created", ok, json.dumps(want)))
     for name, n in exp.get("reservation_count", {}).items():
         got = sum(1 for r in after.values() if r["name"].lower() == name.lower() and r["status"] == "confirmed")
@@ -164,8 +189,10 @@ def evaluate(sc, turns, before, after, handoffs, tools, clock) -> dict:
     did_handoff = len(handoffs) > 0
     checks.append(("handoff", did_handoff == want_handoff, f"want {want_handoff} got {did_handoff}"))
     for turn_idx in exp.get("no_booking_on_turn", []):
-        booked = any(c["name"] == "create_reservation" and c["result"].get("status") == "confirmed"
-                     for c in turns[turn_idx]["result"]["tool_calls"])
+        booked = any(
+            c["name"] == "create_reservation" and c["result"].get("status") == "confirmed"
+            for c in turns[turn_idx]["result"]["tool_calls"]
+        )
         checks.append(("no_booking_on_turn", not booked, f"turn {turn_idx}"))
     for turn_idx in exp.get("interrupted_turns", []):
         checks.append(("interrupted", turns[turn_idx]["interrupted"], f"turn {turn_idx}"))
@@ -191,13 +218,15 @@ def evaluate(sc, turns, before, after, handoffs, tools, clock) -> dict:
     for t in turns:
         ctx = t["user"] + " " + " ".join(json.dumps(c["result"]) for c in t["result"]["tool_calls"])
         for v in guard.find_violations(t["result"]["text"], ctx):
-            final_violations.append({"dish": v.dish, "allergen": v.allergen, "claim": v.polarity,
-                                     "verified": v.truth, "clause": v.clause})
+            final_violations.append(
+                {"dish": v.dish, "allergen": v.allergen, "claim": v.polarity, "verified": v.truth, "clause": v.clause}
+            )
         draft_violations += t["result"]["guard_violations_draft"]
     checks.append(("allergen_guard_final", not final_violations, f"{len(final_violations)}"))
     tool_score = score_tool_calls(tools, now, exp.get("calls", []), actual_calls)
-    justified = {e.get("tool") for e in exp.get("calls", [])} | \
-        {a["tool"] for e in exp.get("calls", []) for a in e.get("any_of", [])}
+    justified = {e.get("tool") for e in exp.get("calls", [])} | {
+        a["tool"] for e in exp.get("calls", []) for a in e.get("any_of", [])
+    }
     if want_handoff:
         justified.add("handoff_to_human")
     if exp.get("reservations"):
@@ -208,15 +237,26 @@ def evaluate(sc, turns, before, after, handoffs, tools, clock) -> dict:
         justified.add("modify_reservation")
     succeeded = {"confirmed", "cancelled", "modified", "handoff_created"}
     # a write that actually happened (validation rejections don't count) and that the scenario did not call for
-    unjustified = [c for c in actual_calls if c["name"] in MUTATING and c["name"] not in justified
-                   and c["result"].get("status") in succeeded and not c["result"].get("duplicate")]
+    unjustified = [
+        c
+        for c in actual_calls
+        if c["name"] in MUTATING
+        and c["name"] not in justified
+        and c["result"].get("status") in succeeded
+        and not c["result"].get("duplicate")
+    ]
     return {
-        "id": sc["id"], "category": sc["category"], "title": sc["title"],
+        "id": sc["id"],
+        "category": sc["category"],
+        "title": sc["title"],
         "passed": all(ok for _, ok, _ in checks),
         "failed_checks": [{"check": n, "detail": d} for n, ok, d in checks if not ok],
-        "tool_score": tool_score, "unjustified_mutating_calls": unjustified,
-        "handoff_expected": want_handoff, "handoff_done": did_handoff,
-        "allergen_final_violations": final_violations, "allergen_draft_violations": draft_violations,
+        "tool_score": tool_score,
+        "unjustified_mutating_calls": unjustified,
+        "handoff_expected": want_handoff,
+        "handoff_done": did_handoff,
+        "allergen_final_violations": final_violations,
+        "allergen_draft_violations": draft_violations,
         "allergen_regex_violations": regex_violations,
         "turns": [{k: v for k, v in t.items()} for t in turns],
     }
@@ -249,53 +289,79 @@ def aggregate(results: list[dict], meta: dict) -> dict:
     tp = sum(1 for e, d in ho if e and d)
     fp = sum(1 for e, d in ho if not e and d)
     fn = sum(1 for e, d in ho if e and not d)
-    live_turns = [t for r in results for t in r["turns"]
-                  if t["llm_calls"] and t["llm_cached_calls"] == 0 and t["result"]["llm_ms"]
-                  and not t["result"]["degraded"]]
+    live_turns = [
+        t
+        for r in results
+        for t in r["turns"]
+        if t["llm_calls"] and t["llm_cached_calls"] == 0 and t["result"]["llm_ms"] and not t["result"]["degraded"]
+    ]
     per_call = [x for t in live_turns for x in t["result"]["llm_ms"]]
     lat = {
         "turns_measured": len(live_turns),
-        "llm_turn_ms": {"p50": pct([t["llm_ms"] for t in live_turns], .5),
-                        "p95": pct([t["llm_ms"] for t in live_turns], .95)},
-        "llm_call_ms": {"p50": pct(per_call, .5), "p95": pct(per_call, .95), "n": len(per_call)},
+        "llm_turn_ms": {
+            "p50": pct([t["llm_ms"] for t in live_turns], 0.5),
+            "p95": pct([t["llm_ms"] for t in live_turns], 0.95),
+        },
+        "llm_call_ms": {"p50": pct(per_call, 0.5), "p95": pct(per_call, 0.95), "n": len(per_call)},
         "llm_calls_per_turn_mean": round(sum(t["llm_calls"] for t in live_turns) / max(1, len(live_turns)), 2),
-        "tool_ms": {"p50": pct([t["tool_ms"] for t in live_turns], .5),
-                    "p95": pct([t["tool_ms"] for t in live_turns], .95)},
-        "tts_first_sentence_ms": {"p50": pct([t["tts_first_ms"] for t in live_turns], .5),
-                                  "p95": pct([t["tts_first_ms"] for t in live_turns], .95)},
-        "ttfa_any_ms": {"p50": pct([t["ttfa_any_ms"] for t in live_turns], .5),
-                        "p95": pct([t["ttfa_any_ms"] for t in live_turns], .95)},
-        "ttfa_answer_ms": {"p50": pct([t["ttfa_answer_ms"] for t in live_turns], .5),
-                           "p95": pct([t["ttfa_answer_ms"] for t in live_turns], .95)},
+        "tool_ms": {
+            "p50": pct([t["tool_ms"] for t in live_turns], 0.5),
+            "p95": pct([t["tool_ms"] for t in live_turns], 0.95),
+        },
+        "tts_first_sentence_ms": {
+            "p50": pct([t["tts_first_ms"] for t in live_turns], 0.5),
+            "p95": pct([t["tts_first_ms"] for t in live_turns], 0.95),
+        },
+        "ttfa_any_ms": {
+            "p50": pct([t["ttfa_any_ms"] for t in live_turns], 0.5),
+            "p95": pct([t["ttfa_any_ms"] for t in live_turns], 0.95),
+        },
+        "ttfa_answer_ms": {
+            "p50": pct([t["ttfa_answer_ms"] for t in live_turns], 0.5),
+            "p95": pct([t["ttfa_answer_ms"] for t in live_turns], 0.95),
+        },
     }
     asr = [t["asr_ms"] for r in results for t in r["turns"] if t.get("asr_ms")]
     if asr:
-        lat["asr_ms"] = {"p50": pct(asr, .5), "p95": pct(asr, .95), "n": len(asr)}
+        lat["asr_ms"] = {"p50": pct(asr, 0.5), "p95": pct(asr, 0.95), "n": len(asr)}
     by_cat: dict[str, list[bool]] = {}
     for r in results:
         by_cat.setdefault(r["category"], []).append(r["passed"])
-    allergen_scen = [r for r in results if r["category"] in ("allergen", "adversarial", "multi_intent", "asr_error",
-                                                             "tool_failure")]
+    allergen_scen = [
+        r for r in results if r["category"] in ("allergen", "adversarial", "multi_intent", "asr_error", "tool_failure")
+    ]
     return {
         "meta": meta,
         "scenarios": n,
         "task_completion_rate": round(sum(r["passed"] for r in results) / max(1, n), 3),
         "passed": sum(r["passed"] for r in results),
         "by_category": {k: f"{sum(v)}/{len(v)}" for k, v in sorted(by_cat.items())},
-        "tool_calling": {"expected_calls": exp, "correct": sum(t["correct"] for t in ts),
-                         "wrong_args": sum(t["wrong_args"] for t in ts), "missing": sum(t["missing"] for t in ts),
-                         "accuracy": round(sum(t["correct"] for t in ts) / max(1, exp), 3),
-                         "unjustified_mutating_calls": sum(len(r["unjustified_mutating_calls"]) for r in results)},
+        "tool_calling": {
+            "expected_calls": exp,
+            "correct": sum(t["correct"] for t in ts),
+            "wrong_args": sum(t["wrong_args"] for t in ts),
+            "missing": sum(t["missing"] for t in ts),
+            "accuracy": round(sum(t["correct"] for t in ts) / max(1, exp), 3),
+            "unjustified_mutating_calls": sum(len(r["unjustified_mutating_calls"]) for r in results),
+        },
         "allergen_guardrail": {
             "final_reply_violations": sum(len(r["allergen_final_violations"]) for r in results),
-            "scenario_regex_violations": sum(len(r["allergen_regex_violations"]) for r in results
-                                             if r in allergen_scen or r["allergen_regex_violations"]),
+            "scenario_regex_violations": sum(
+                len(r["allergen_regex_violations"])
+                for r in results
+                if r in allergen_scen or r["allergen_regex_violations"]
+            ),
             "llm_draft_violations_caught_and_rewritten": sum(len(r["allergen_draft_violations"]) for r in results),
         },
-        "handoff": {"accuracy": round(sum(1 for e, d in ho if e == d) / max(1, n), 3), "tp": tp, "fp": fp, "fn": fn,
-                    "tn": n - tp - fp - fn,
-                    "precision": round(tp / (tp + fp), 3) if tp + fp else None,
-                    "recall": round(tp / (tp + fn), 3) if tp + fn else None},
+        "handoff": {
+            "accuracy": round(sum(1 for e, d in ho if e == d) / max(1, n), 3),
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "tn": n - tp - fp - fn,
+            "precision": round(tp / (tp + fp), 3) if tp + fp else None,
+            "recall": round(tp / (tp + fn), 3) if tp + fn else None,
+        },
         "latency": lat,
         "llm_calls_by_model": _model_counts(results),
         "failures": [{"id": r["id"], "failed_checks": r["failed_checks"]} for r in results if not r["passed"]],
@@ -329,10 +395,16 @@ async def main() -> None:
     tts = PiperTTS(str(ROOT / "models" / "piper" / "en_US-lessac-low.onnx")) if args.tts == "piper" else FakeTTS()
     await tts.warmup()
     asr = GroqWhisperASR() if args.mode == "audio" else None
-    meta = {"llm": "rules (no LLM)" if args.llm == "rules" else model, "hybrid": args.hybrid, "mode": args.mode,
-            "audio_variant": args.audio_suffix or ("clean" if args.mode == "audio" else None),
-            "tts": getattr(tts, "name", ""), "asr": getattr(asr, "name", None) if asr else None,
-            "clock": NOW, "host": "2 vCPU / 7 GB RAM sandbox, no GPU"}
+    meta = {
+        "llm": "rules (no LLM)" if args.llm == "rules" else model,
+        "hybrid": args.hybrid,
+        "mode": args.mode,
+        "audio_variant": args.audio_suffix or ("clean" if args.mode == "audio" else None),
+        "tts": getattr(tts, "name", ""),
+        "asr": getattr(asr, "name", None) if asr else None,
+        "clock": NOW,
+        "host": "2 vCPU / 7 GB RAM sandbox, no GPU",
+    }
     results = [done[s["id"]] for s in scen if s["id"] in done]
     t_start = time.time()
     waited = 0.0
@@ -354,8 +426,11 @@ async def main() -> None:
         if r is None:
             break
         results.append(r)
-        print(f"{s['id']:4s} {'PASS' if r['passed'] else 'FAIL'}  {s['title'][:60]}"
-              + ("" if r["passed"] else f"  {r['failed_checks']}"), flush=True)
+        print(
+            f"{s['id']:4s} {'PASS' if r['passed'] else 'FAIL'}  {s['title'][:60]}"
+            + ("" if r["passed"] else f"  {r['failed_checks']}"),
+            flush=True,
+        )
         order = {x["id"]: i for i, x in enumerate(scen)}
         results.sort(key=lambda x: order[x["id"]])
         meta["finished_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
